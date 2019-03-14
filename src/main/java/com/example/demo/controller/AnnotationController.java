@@ -18,6 +18,7 @@ import java.rmi.Naming;
 @Controller
 public class AnnotationController {
 
+    //测试提交
     @RequestMapping("test")
     @ResponseBody
     public ObjectDataResponse testAnnotation(@MyRequestParam String param1,
