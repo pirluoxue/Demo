@@ -1,6 +1,7 @@
 package com.example.demo;
 
 import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.JSONObject;
 import com.alibaba.fastjson.TypeReference;
 import com.example.demo.dao.RedisDAO;
 import com.example.demo.entity.BigDecimalEntity;
@@ -9,15 +10,25 @@ import com.example.demo.entity.TestTypeEntity;
 import com.example.demo.entity.User;
 import com.example.demo.entity.change.TestChangeJson;
 import com.example.demo.util.TimeUtil;
+import org.apache.tomcat.util.codec.binary.Base64;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.http.HttpEntity;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.ResponseEntity;
 import org.springframework.test.context.junit4.SpringRunner;
+import org.springframework.web.client.RestTemplate;
 
+import java.lang.reflect.Field;
 import java.math.BigDecimal;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest
@@ -98,6 +109,55 @@ public class DemoApplicationTests {
         TestTypeEntity testTypeEntity = new TestTypeEntity();
         System.out.println(testTypeEntity.getBigInteger());
 //        testTypeEntity.setBigInteger(new big);
+    }
+
+    @Test
+    public void testField() throws IllegalAccessException {
+        BigDecimalEntity bigDecimalEntity = new BigDecimalEntity();
+        Field[] fields = bigDecimalEntity.getClass().getDeclaredFields();
+        for(Field field: fields){
+            field.setAccessible(true);
+            System.out.println(field);
+        }
+        for (int i = 0 ; i < fields.length ; i++){
+            if(fields[i].getName().equals("test1")){
+                fields[i].set(bigDecimalEntity,new BigDecimal(123));
+            }
+        }
+    }
+
+    @Test
+    public void testParam(){
+        List<BigDecimalEntity> bigDecimalEntities = new ArrayList<>();
+        BigDecimalEntity bigDecimalEntity = new BigDecimalEntity();
+        bigDecimalEntity.setTest1(new BigDecimal(1));
+        bigDecimalEntities.add(bigDecimalEntity);
+        System.out.println(bigDecimalEntities);
+        BigDecimalEntity param = bigDecimalEntities.get(0);
+        changeParam(param);
+        System.out.println(bigDecimalEntities);
+    }
+
+    private void changeParam(BigDecimalEntity bigDecimalEntity){
+        bigDecimalEntity.setTest1(new BigDecimal(999));
+        bigDecimalEntity.setTest2(new BigDecimal(999));
+    }
+
+    @Autowired
+    private RestTemplate restTemplate;
+
+    @Test
+    public void testRestTemplate(){
+        HttpHeaders httpHeaders = new HttpHeaders();
+        String authHeader = "Basic bWlhbzptaWFv";
+        httpHeaders.add("authorization", authHeader);
+        HttpEntity<String> entity = new HttpEntity<String>(null, httpHeaders);
+        String token = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE1NTMwNjg5MTAsInVzZXJfbmFtZSI6ImFkbWluIiwiYXV0aG9yaXRpZXMiOlsiUk9MRV9VU0VSIl0sImp0aSI6IjA4N2UwZjcyLWMyZjctNDUzMi05YjhiLTU1NTY4NTEzN2ZhOSIsImNsaWVudF9pZCI6Im1pYW8iLCJzY29wZSI6WyJhbGwiXX0.TIdhDGkrxBlLWt-yM6eYXfzBf0kWuJe1obazZt5ncaY";
+        String invalidToken = token + " error";
+        String checkTokenUrl = "http://localhost:8888/oauth/check_token?token=" + invalidToken;
+        String rs = restTemplate.postForObject(checkTokenUrl, entity, String.class);
+        JSONObject jsonObject = JSONObject.parseObject(rs);
+        System.out.println(jsonObject);
     }
 
 
