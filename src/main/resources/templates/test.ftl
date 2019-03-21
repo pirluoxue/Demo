@@ -11,6 +11,9 @@ SimpleTag : ${SimpleTag("0.0")}
 SimpleSub : ${SimpleSub("123456789", 3, 6)}
 <hr/>
 ArrayTagMethodModel : ${ArrayTags.ArrayTagMethodModel()}
+<hr/>
 ArrayTagDirectiveModel : <@ArrayTags.ArrayTagDirectiveModel name="喵喵喵" act="撸">0_0&nbsp;&nbsp;${paramList.act}&nbsp;&nbsp; ${paramList.name}</@ArrayTags.ArrayTagDirectiveModel>
+<hr/>
+ArrayTagDirectiveModel : <@ArrayTags.ArrayTagDirectiveModel name="汪汪汪" act="撸">-.-&nbsp;&nbsp;${paramList.act}&nbsp;&nbsp; ${paramList.name}</@ArrayTags.ArrayTagDirectiveModel>
 </body>
 </html>

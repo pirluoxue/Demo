@@ -10,23 +10,38 @@ import java.util.*;
 
 /**
  * @author chen_bq
- * @description
+ * @description 实现标签组的基类
  * @create: 2019-03-21 15:47
  **/
 public class ArrayTag extends WrappingTemplateModel implements TemplateHashModelEx2 {
 
     private Map map;
 
+    /**
+     * 键值对迭代器
+     * @return
+     * @throws TemplateModelException
+     */
     @Override
     public KeyValuePairIterator keyValuePairIterator() throws TemplateModelException {
         return new MapKeyValuePairIterator(this.map, this.getObjectWrapper());
     }
 
+    /**
+     * 单纯的返回标签组长度
+     * @return
+     * @throws TemplateModelException
+     */
     @Override
     public int size() throws TemplateModelException {
         return this.map.size();
     }
 
+    /**
+     * 模板锁
+     * @return
+     * @throws TemplateModelException
+     */
     @Override
     public TemplateCollectionModel keys() throws TemplateModelException {
         ArrayTag var1 = ArrayTag.this;
@@ -35,6 +50,11 @@ public class ArrayTag extends WrappingTemplateModel implements TemplateHashModel
         }
     }
 
+    /**
+     * 模板值锁
+     * @return
+     * @throws TemplateModelException
+     */
     @Override
     public TemplateCollectionModel values() throws TemplateModelException {
         ArrayTag var1 = ArrayTag.this;
@@ -45,7 +65,7 @@ public class ArrayTag extends WrappingTemplateModel implements TemplateHashModel
 
     /**
      * @Author chen_bq
-     * @Description 业务逻辑层
+     * @Description 获得标签组对象key值，通过“.”获得自定义的标签库标签
      * @Date 2019/3/21 16:36
      * @Param [key]
      * @return freemarker.template.TemplateModel
@@ -60,7 +80,6 @@ public class ArrayTag extends WrappingTemplateModel implements TemplateHashModel
         } catch (NullPointerException var8) {
             throw new _TemplateModelException(var8, new Object[]{"NullPointerException while getting Map entry with String key ", new _DelayedJQuote(key)});
         }
-        result = this.map.get(key);
         //测试直接返回值
         return this.wrap(result);
     }
@@ -70,9 +89,6 @@ public class ArrayTag extends WrappingTemplateModel implements TemplateHashModel
         return this.map == null || this.map.isEmpty();
     }
 
-    public Map getMap() {
-        return map;
-    }
 
     /** @deprecated */
     @Deprecated
