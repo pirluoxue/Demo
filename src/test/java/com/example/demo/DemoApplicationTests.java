@@ -29,6 +29,8 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest
@@ -158,6 +160,19 @@ public class DemoApplicationTests {
         String rs = restTemplate.postForObject(checkTokenUrl, entity, String.class);
         JSONObject jsonObject = JSONObject.parseObject(rs);
         System.out.println(jsonObject);
+    }
+
+    @Test
+    public void testIndexOfNoteUrl(){
+        String html = "<a href=\"https://www.biqudu.com/\">首页</a></li>\n" +
+                "\t\t<li><a rel=\"nofollow\" href=\"http://www.biqudu.com/modules/article/bookcase.php\">我的书架</a></li>\n" +
+                "\t\t<li><a href=\"http://www.biqudu.com/xuanhuanxiaoshuo/\">玄幻小说</a></li>";
+        String regex = "(href=\")+.*(\">)";
+        Pattern p = Pattern.compile(regex);
+        Matcher m = p.matcher(html);
+        while (m.find()){
+            System.out.println(m.group());
+        }
     }
 
 
