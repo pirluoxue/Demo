@@ -10,7 +10,7 @@ import org.springframework.scheduling.annotation.Async;
 public interface NoteService {
 
 
-    public boolean collectionNoteByIndexUrl(String indexUrl);
+    public boolean collectionNoteByIndexUrl(String indexUrl, String path, String fileName);
 
 
 

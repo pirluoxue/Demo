@@ -70,8 +70,8 @@ public class RestTemplateConfig {
     @Bean
     public HttpComponentsClientHttpRequestFactory httpComponentsClientHttpRequestFactory(SSLConnectionSocketFactory socketFactory){
         HttpComponentsClientHttpRequestFactory factory = new HttpComponentsClientHttpRequestFactory ();
-        factory.setReadTimeout(20000);//ms
-        factory.setConnectTimeout(20000);//ms
+        factory.setReadTimeout(60000);//ms
+        factory.setConnectTimeout(60000);//ms
 
         /*https过滤*/
         Registry<ConnectionSocketFactory> registry = RegistryBuilder.<ConnectionSocketFactory>create()
