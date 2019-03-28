@@ -32,6 +32,7 @@ public class DateUtilsTest {
         /*反格式化开始*/
         LocalDateTime antiFormatter = DateUtils.getDateTimeFormatterByFormatter(formatterDateTime, formatter);
         System.out.println("反格式化 : " + antiFormatter);
+        System.out.println("反格式化 : " + antiFormatter);
         /*反格式化结束*/
         /*timestamp转localdatetime开始*/
         Timestamp timestamp = new Timestamp(System.currentTimeMillis());
@@ -61,13 +62,16 @@ public class DateUtilsTest {
 
     @Test
     public void LocalDateAndLocalDateTimeTest() {
-        String date = "2018-01-01";
+        String date = "2018-01-15";
         /*不含时间*/
         String formatter = "yyyy-MM-dd";
         LocalDate localDate = LocalDate.now();
         try {
         localDate = DateUtils.getDateByFormatter(date, formatter);
         System.out.println(localDate);
+        System.out.println("localDate.atStartOfDay() " + localDate.atStartOfDay());
+        System.out.println("localDate.minusDays(1) " + localDate.minusDays(1));
+        System.out.println("localDate.minusDays(-1) " + localDate.minusDays(-1));
         }catch (Exception e) {
             System.out.println("不含时间 LocalDate转化失败");
         }
@@ -97,7 +101,7 @@ public class DateUtilsTest {
             localDateTime = DateUtils.getDateTimeFormatterByFormatter(date, formatter);
             System.out.println(localDateTime);
         }catch (Exception e){
-            System.out.println("含部分时间 LocalDateTime转化失败");
+            System.out.println("不含时间 LocalDateTime转化失败");
         }
         /*含部分时间*/
         date = "2018-01-01 12";
