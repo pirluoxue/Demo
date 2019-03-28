@@ -25,15 +25,15 @@ import java.util.HashMap;
 public class QRCodeUtil {
 
     public static void main(String[] args) {
-        createQRcode("喵喵喵1","喵喵喵0.0");
-        createQRcode("喵喵喵2","喵喵喵-.-");
-        createQRcode("喵喵喵3","喵喵喵233");
+        createQRcode("喵喵喵1","http://ijctest.wuliaoxingqiu.com/?deviceCode=30000028");
+//        createQRcode("喵喵喵2","喵喵喵-.-");
+//        createQRcode("喵喵喵3","喵喵喵233");
 //        readQRcode("喵喵喵");
     }
 
-    public static void createQRcode(String fileName, String text){
-        final int width = 300;
-        final int height = 300;
+    public static void createQRcode(String fileName, String text, int height, int width){
+        height = height==0?300:height;
+        width = width==0?300:width;
         final String format = "png";
         final String content = text;
 
@@ -58,6 +58,10 @@ public class QRCodeUtil {
         }catch(Exception e){
 
         }
+    }
+
+    public static void createQRcode(String fileName, String text){
+        createQRcode(fileName, text, 0, 0);
     }
 
     public static void readQRcode(String fileName){
