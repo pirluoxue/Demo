@@ -1,5 +1,6 @@
 package com.example.demo.util;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.time.format.FormatStyle;
@@ -17,7 +18,7 @@ public class DateUtils {
      * @param formatter
      * @return
      */
-    public static String getDateTimeFormatterByString(LocalDateTime localDateTime, String formatter){
+    public static String getDateTimeFormatterByFormatter(LocalDateTime localDateTime, String formatter){
 //        DateTimeFormatter[] formatters = new DateTimeFormatter[]{
 //                // 直接使用常量创建DateTimeFormatter格式器
 //                DateTimeFormatter.ISO_LOCAL_DATE,
@@ -39,9 +40,20 @@ public class DateUtils {
      * @param formatter
      * @return
      */
-    public static LocalDateTime getDateTimeFormatterByString(String dateTime, String formatter){
+    public static LocalDateTime getDateTimeFormatterByFormatter(String dateTime, String formatter){
         DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern(formatter);
         return LocalDateTime.parse(dateTime, dateTimeFormatter);
+    }
+
+    /**
+     * 返回LocalDate对象。只有日期没有时间的对象不能使用LocalDateTime直接返回
+     * @param date
+     * @param formatter
+     * @return
+     */
+    public static LocalDate getDateByFormatter(String date, String formatter){
+        DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern(formatter);
+        return LocalDate.parse(date);
     }
 
 
