@@ -21,10 +21,10 @@ public class ReceiveLogs1 {
 		Connection connection = factory.newConnection();
 		Channel channel = connection.createChannel();
 
-		//类型为广播模式fanout
+		//绫诲瀷涓哄箍鎾ā寮廸anout
 		channel.exchangeDeclare(EXCHANGE_NAME, "fanout");
 		String queueName = channel.queueDeclare().getQueue();
-		//参数分别为：队列名，交换器名，routing_key
+		//鍙傛暟鍒嗗埆涓猴細闃熷垪鍚嶏紝浜ゆ崲鍣ㄥ悕锛宺outing_key
 		channel.queueBind(queueName, EXCHANGE_NAME, "");
 
 		System.out.println(" [*] Waiting for messages. To exit press CTRL+C");

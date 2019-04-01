@@ -22,12 +22,9 @@ public class ReceiveLogsTopic2 {
 		factory.setHost("localhost");
 		Connection connection = factory.newConnection();
 		Channel channel = connection.createChannel();
-//		声明一个匹配模式的交换器
 		channel.exchangeDeclare(EXCHANGE_NAME, "topic");
 		String queueName = channel.queueDeclare().getQueue();
-		// 路由关键字
 		String[] routingKeys = new String[]{"*.*.rabbit", "lazy.#"};
-//		绑定路由关键字
 		for (String bindingKey : routingKeys) {
 			channel.queueBind(queueName, EXCHANGE_NAME, bindingKey);
 			System.out.println("ReceiveLogsTopic2 exchange:"+EXCHANGE_NAME+", queue:"+queueName+", BindRoutingKey:" + bindingKey);

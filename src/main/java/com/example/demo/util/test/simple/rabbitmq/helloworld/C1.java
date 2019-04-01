@@ -9,7 +9,7 @@ import com.rabbitmq.client.*;
 import java.io.IOException;
 
 /**
- * ÏûÏ¢Ïû·ÑÕß
+ * ï¿½ï¿½Ï¢ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
  * 
  * @author hushuang
  * 
@@ -24,12 +24,12 @@ public class C1 {
 		Connection connection = factory.newConnection();
 		Channel channel = connection.createChannel();
 
-		//ÉêÃ÷¶ÓÁĞ
+		//ç”³æ˜é˜Ÿåˆ—
 		channel.queueDeclare(QUEUE_NAME, false, false, false, null);
 		System.out.println("C [*] Waiting for messages. To exit press CTRL+C");
 
 		Consumer consumer = new DefaultConsumer(channel) {
-			//´Ó¶ÓÁĞÖĞ¡°È¡×ß¡±Êı¾İ¡£×¢Òâ£¡ÊÇÕæÕıÒâÒåÉÏµÄÈ¡×ßÊı¾İ
+			//ä»é˜Ÿåˆ—ä¸­â€œå–èµ°â€æ•°æ®ã€‚æ³¨æ„ï¼æ˜¯çœŸæ­£æ„ä¹‰ä¸Šçš„å–èµ°æ•°æ®
 			@Override
 			public void handleDelivery(String consumerTag, Envelope envelope, AMQP.BasicProperties properties, byte[] body) throws IOException {
 				String message = new String(body, "UTF-8");

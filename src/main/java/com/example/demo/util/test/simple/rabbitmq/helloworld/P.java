@@ -9,7 +9,7 @@ import com.rabbitmq.client.Connection;
 import com.rabbitmq.client.ConnectionFactory;
 
 /**
- * 消息生产者
+ * 锟斤拷息锟斤拷锟斤拷锟斤拷
  * @author hushuang
  *
  */
@@ -23,7 +23,7 @@ public class P {
     Connection connection = factory.newConnection();
     Channel channel = connection.createChannel();
 
-    //申明队列，将数据存储在队列中
+    //鐢虫槑闃熷垪锛屽皢鏁版嵁瀛樺偍鍦ㄩ槦鍒椾腑
     channel.queueDeclare(QUEUE_NAME, false, false, false, null);
     String message = "Hello World!";
     for(int i = 0 ; i < 10 ; i++){

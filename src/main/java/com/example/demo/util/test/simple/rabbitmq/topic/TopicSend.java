@@ -1,6 +1,6 @@
 /**
  * TODO
- * 
+ *
  */
 package com.example.demo.util.test.simple.rabbitmq.topic;
 
@@ -26,24 +26,24 @@ public class TopicSend {
 
 			connection = factory.newConnection();
 			channel = connection.createChannel();
-//			ÉùÃ÷Ò»¸öÆ¥ÅäÄ£Ê½µÄ½»»»Æ÷
+//			å£°æ˜ä¸€ä¸ªåŒ¹é…æ¨¡å¼çš„äº¤æ¢å™¨
 			channel.exchangeDeclare(EXCHANGE_NAME, "topic");
 
-			// ´ı·¢ËÍµÄÏûÏ¢
-			String[] routingKeys = new String[]{"quick.orange.rabbit", 
-												"lazy.orange.elephant", 
-												"quick.orange.fox", 
-												"lazy.brown.fox", 
-												"quick.brown.fox", 
-												"quick.orange.male.rabbit", 
-												"lazy.orange.male.rabbit"};
-//			·¢ËÍÏûÏ¢
-	        for(String severity :routingKeys){
-	        	String message = "From "+severity+" routingKey' s message!";
-	        	channel.basicPublish(EXCHANGE_NAME, severity, null, message.getBytes());
-	        	System.out.println("TopicSend [x] Sent '" + severity + "':'" + message + "'");
-	        }
-			
+			// å¾…å‘é€çš„æ¶ˆæ¯
+			String[] routingKeys = new String[]{"quick.orange.rabbit",
+					"lazy.orange.elephant",
+					"quick.orange.fox",
+					"lazy.brown.fox",
+					"quick.brown.fox",
+					"quick.orange.male.rabbit",
+					"lazy.orange.male.rabbit"};
+//			å‘é€æ¶ˆæ¯
+			for(String severity :routingKeys){
+				String message = "From "+severity+" routingKey' s message!";
+				channel.basicPublish(EXCHANGE_NAME, severity, null, message.getBytes());
+				System.out.println("TopicSend [x] Sent '" + severity + "':'" + message + "'");
+			}
+
 		} catch (Exception e) {
 			e.printStackTrace();
 		} finally {

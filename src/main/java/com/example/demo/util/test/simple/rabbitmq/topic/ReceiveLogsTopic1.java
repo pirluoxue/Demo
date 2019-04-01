@@ -1,6 +1,6 @@
 /**
  * TODO
- * 
+ *
  */
 package com.example.demo.util.test.simple.rabbitmq.topic;
 
@@ -16,18 +16,18 @@ import java.io.IOException;
 public class ReceiveLogsTopic1 {
 
 	private static final String EXCHANGE_NAME = "topic_logs";
-	 
+
 	public static void main(String[] argv) throws Exception {
 		ConnectionFactory factory = new ConnectionFactory();
 		factory.setHost("localhost");
 		Connection connection = factory.newConnection();
 		Channel channel = connection.createChannel();
-//		ÉùÃ÷Ò»¸öÆ¥ÅäÄ£Ê½µÄ½»»»Æ÷
+//		å£°æ˜ä¸€ä¸ªåŒ¹é…æ¨¡å¼çš„äº¤æ¢å™¨
 		channel.exchangeDeclare(EXCHANGE_NAME, "topic");
 		String queueName = channel.queueDeclare().getQueue();
-		// Â·ÓÉ¹Ø¼ü×Ö
+		// è·¯ç”±å…³é”®å­—
 		String[] routingKeys = new String[]{"*.orange.*"};
-//		°ó¶¨Â·ÓÉ¹Ø¼ü×Ö
+//		ç»‘å®šè·¯ç”±å…³é”®å­—
 		for (String bindingKey : routingKeys) {
 			channel.queueBind(queueName, EXCHANGE_NAME, bindingKey);
 			System.out.println("ReceiveLogsTopic1 exchange:"+EXCHANGE_NAME+", queue:"+queueName+", BindRoutingKey:" + bindingKey);

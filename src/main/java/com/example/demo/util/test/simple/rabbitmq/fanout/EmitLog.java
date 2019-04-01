@@ -26,7 +26,6 @@ public class EmitLog {
 
         channel.exchangeDeclare(EXCHANGE_NAME, "fanout");
 
-//		分发消息
 		for(int i = 0 ; i < 5; i++){
 			String message = "Hello World! " + i;
 			 channel.basicPublish(EXCHANGE_NAME, "", null, message.getBytes());
