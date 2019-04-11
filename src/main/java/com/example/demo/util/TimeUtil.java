@@ -4,6 +4,7 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.ZoneOffset;
 import java.time.format.DateTimeFormatter;
 
 /**
@@ -333,6 +334,14 @@ public class TimeUtil {
         for (String dateTime: DateTime){
             System.out.println(dateTime);
         }
+    }
+
+    /**
+     * 获得当前毫秒数
+     * @return
+     */
+    public static long getNowMilliSecond(){
+        return LocalDateTime.now().toInstant(ZoneOffset.of("+8")).toEpochMilli();
     }
 
 }

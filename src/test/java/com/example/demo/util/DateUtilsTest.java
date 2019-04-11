@@ -1,11 +1,13 @@
 package com.example.demo.util;
 
+import ch.qos.logback.core.net.SyslogOutputStream;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.context.web.WebAppConfiguration;
+import sun.util.resources.cldr.ur.TimeZoneNames_ur;
 
 import java.sql.Timestamp;
 import java.time.Instant;
@@ -121,6 +123,14 @@ public class DateUtilsTest {
         }catch (Exception e){
             System.out.println("LocalDateTime转化失败");
         }
+    }
+
+    @Test
+    public void testMilli(){
+        long localdatetime = TimeUtil.getNowMilliSecond();
+        long timestamp = System.currentTimeMillis();
+        System.out.println(localdatetime);
+        System.out.println(timestamp);
     }
 
 }
