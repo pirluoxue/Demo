@@ -1,4 +1,4 @@
-package com.example.demo.entity.thread;
+package com.example.demo.model.thread;
 
 import com.example.demo.util.IntelligentUtil;
 import com.example.demo.util.SpringContextUtils;

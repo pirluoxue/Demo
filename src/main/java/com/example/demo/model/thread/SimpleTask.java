@@ -1,6 +1,4 @@
-package com.example.demo.entity.thread;
-
-import com.sun.org.apache.regexp.internal.RE;
+package com.example.demo.model.thread;
 
 import java.util.concurrent.Callable;
 

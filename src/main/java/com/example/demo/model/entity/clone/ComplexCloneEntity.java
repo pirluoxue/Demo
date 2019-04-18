@@ -1,4 +1,4 @@
-package com.example.demo.entity.clone;
+package com.example.demo.model.entity.clone;
 
 import com.example.demo.util.StringUtil;
 import lombok.Data;

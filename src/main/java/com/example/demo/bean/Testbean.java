@@ -1,15 +1,13 @@
 package com.example.demo.bean;
 
-import com.example.demo.entity.SuperUser;
-import com.example.demo.entity.User;
-import com.example.demo.entity.bean.TestBeanEntity;
-import com.example.demo.entity.change.TestChangeJson;
+import com.example.demo.model.entity.simple.SuperUser;
+import com.example.demo.model.entity.simple.User;
+import com.example.demo.model.entity.bean.TestBeanEntity;
+import com.example.demo.model.entity.change.TestChangeJson;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Primary;
 import org.springframework.stereotype.Component;
-
-import javax.sql.DataSource;
 
 /**
  * @author chen_bq

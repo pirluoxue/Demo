@@ -1,13 +1,7 @@
 package com.example.demo.util;
 
-import com.example.demo.entity.BigDecimalEntity;
-import com.example.demo.entity.thread.SimpleTask;
-import com.mchange.v2.holders.ThreadSafeShortHolder;
-import netscape.security.UserTarget;
+import com.example.demo.model.thread.SimpleTask;
 
-import javax.swing.plaf.metal.MetalCheckBoxIcon;
-import javax.swing.text.html.HTMLDocument;
-import java.net.Authenticator;
 import java.util.*;
 import java.util.concurrent.FutureTask;
 import java.util.regex.Matcher;

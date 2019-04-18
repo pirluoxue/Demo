@@ -1,7 +1,6 @@
-package com.example.demo.entity;
+package com.example.demo.model.entity.simple;
 
 import lombok.Data;
-import lombok.RequiredArgsConstructor;
 
 /**
  * @author chen_bq

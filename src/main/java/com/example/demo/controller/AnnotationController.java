@@ -2,13 +2,12 @@ package com.example.demo.controller;
 
 import com.example.demo.components.annotation.CurrentUser;
 import com.example.demo.components.annotation.MyRequestParam;
-import com.example.demo.entity.common.ObjectDataResponse;
+import com.example.demo.model.entity.common.ObjectDataResponse;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import javax.servlet.http.HttpServletRequest;
-import java.rmi.Naming;
 
 /**
  * @author chen_bq

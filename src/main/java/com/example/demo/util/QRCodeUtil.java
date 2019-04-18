@@ -25,10 +25,8 @@ import java.util.HashMap;
 public class QRCodeUtil {
 
     public static void main(String[] args) {
-        createQRcode("喵喵喵1","http://ijctest.wuliaoxingqiu.com/?deviceCode=30000028");
-//        createQRcode("喵喵喵2","喵喵喵-.-");
-//        createQRcode("喵喵喵3","喵喵喵233");
-//        readQRcode("喵喵喵");
+        createQRcode("微信测试","http://wenap.cn/?deviceCode=30000028");
+        createQRcode("支付宝回调测试","http://ijctest.wuliaoxingqiu.com/order/api/aliNotifyReceive");
     }
 
     public static void createQRcode(String fileName, String text, int height, int width){

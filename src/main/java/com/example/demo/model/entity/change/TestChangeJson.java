@@ -1,4 +1,4 @@
-package com.example.demo.entity.change;
+package com.example.demo.model.entity.change;
 
 import lombok.Data;
 

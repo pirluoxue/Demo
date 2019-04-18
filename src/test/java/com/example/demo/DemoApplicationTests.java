@@ -1,35 +1,27 @@
 package com.example.demo;
 
-import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
-import com.alibaba.fastjson.TypeReference;
 import com.example.demo.dao.RedisDAO;
-import com.example.demo.entity.BigDecimalEntity;
-import com.example.demo.entity.LongTestEntity;
-import com.example.demo.entity.TestTypeEntity;
-import com.example.demo.entity.User;
-import com.example.demo.entity.change.TestChangeJson;
+import com.example.demo.model.entity.simple.BigDecimalEntity;
+import com.example.demo.model.entity.simple.LongTestEntity;
+import com.example.demo.model.entity.simple.TestTypeEntity;
+import com.example.demo.model.entity.change.TestChangeJson;
 import com.example.demo.service.NoteService;
 import com.example.demo.util.TimeUtil;
-import org.apache.tomcat.util.codec.binary.Base64;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
-import org.springframework.http.ResponseEntity;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.web.client.RestTemplate;
 
 import java.lang.reflect.Field;
 import java.math.BigDecimal;
 import java.text.ParseException;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 

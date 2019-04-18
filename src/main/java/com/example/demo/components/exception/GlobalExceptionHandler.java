@@ -1,8 +1,8 @@
 package com.example.demo.components.exception;
 
-import com.example.demo.entity.common.ObjectDataResponse;
-import com.example.demo.entity.common.RestStatus;
-import com.example.demo.entity.common.StatusCode;
+import com.example.demo.model.entity.common.ObjectDataResponse;
+import com.example.demo.model.entity.common.RestStatus;
+import com.example.demo.model.entity.common.StatusCode;
 import com.google.common.collect.ImmutableMap;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

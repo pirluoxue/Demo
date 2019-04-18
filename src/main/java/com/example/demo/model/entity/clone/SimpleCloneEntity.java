@@ -1,7 +1,6 @@
-package com.example.demo.entity.clone;
+package com.example.demo.model.entity.clone;
 
 import lombok.Data;
-import org.springframework.context.annotation.Bean;
 
 /**
  * @author chen_bq

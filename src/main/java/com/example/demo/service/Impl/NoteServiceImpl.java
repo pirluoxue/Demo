@@ -1,7 +1,6 @@
 package com.example.demo.service.Impl;
 
-import com.alibaba.fastjson.JSONObject;
-import com.example.demo.entity.thread.NoteTask;
+import com.example.demo.model.thread.NoteTask;
 import com.example.demo.service.NoteService;
 import com.example.demo.util.IntelligentUtil;
 import com.example.demo.util.SpringContextUtils;
@@ -11,12 +10,9 @@ import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 
-import javax.print.attribute.standard.OrientationRequested;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.FutureTask;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 /**
  * @author chen_bq

@@ -1,8 +1,7 @@
-package com.example.demo.entity;
+package com.example.demo.model;
 
-import com.example.demo.entity.clone.ComplexCloneEntity;
-import com.example.demo.entity.clone.SimpleCloneEntity;
-import com.example.demo.util.DateUtils;
+import com.example.demo.model.entity.clone.ComplexCloneEntity;
+import com.example.demo.model.entity.clone.SimpleCloneEntity;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -10,10 +9,6 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 import java.time.Duration;
 import java.time.LocalDateTime;
-import java.time.ZoneOffset;
-import java.time.temporal.TemporalAmount;
-
-import static org.junit.Assert.*;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @SpringBootTest(classes = SimpleCloneEntity.class)
