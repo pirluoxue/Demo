@@ -25,7 +25,9 @@ import java.util.HashMap;
 public class QRCodeUtil {
 
     public static void main(String[] args) {
-        createQRcode("微信测试","http://wenap.cn/?deviceCode=30000028");
+        createQRcode("微信测试30000028","http://wenap.cn/?deviceCode=30000028");
+        createQRcode("微信测试20000746","http://wenap.cn/?deviceCode=20000746");
+        createQRcode("微信测试20002639","http://wenap.cn/?deviceCode=20002639");
         createQRcode("支付宝回调测试","http://ijctest.wuliaoxingqiu.com/order/api/aliNotifyReceive");
     }
 

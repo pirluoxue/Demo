@@ -1,11 +1,15 @@
 package com.example.demo.simple;
 
 import com.example.demo.model.entity.clone.SimpleCloneEntity;
+import com.example.demo.model.entity.simple.ConfigEntity;
 import com.example.demo.model.entity.simple.User;
+import com.example.demo.util.SpringContextUtils;
 import com.fasterxml.jackson.databind.ser.impl.UnknownSerializer;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.context.annotation.Bean;
 import org.springframework.test.context.junit4.SpringRunner;
 
 import java.util.ArrayList;
@@ -49,6 +53,16 @@ public class SimpleTest {
         System.out.println(new Date().getTime());
         System.out.println(System.currentTimeMillis());
         System.out.println(new Date().getTime()==System.currentTimeMillis());
+    }
+
+    private ConfigEntity configEntity = new ConfigEntity();
+
+    @Test
+    public void test2(){
+        System.out.println(configEntity);
+        //撒币想要注入纯实体
+//        ConfigEntity configEntity = SpringContextUtils.getBean(ConfigEntity.class);
+//        System.out.println(configEntity);
     }
 
 }
