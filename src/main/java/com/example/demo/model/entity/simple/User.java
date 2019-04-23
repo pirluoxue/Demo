@@ -34,15 +34,18 @@ public class User extends SuperUser {
     public static void main(String[] args) {
         User user = new User();
         user.setStr("asd");
-        System.out.println(user.getStr1());
-        System.out.println(user.getStr2());
+        System.out.println("实例化子类~");
+        System.out.println("子类值" + user.getStr1());
+        System.out.println("父类值" + user.getStr2());
         SuperUser superUser = new SuperUser();
+        System.out.println("实例化父类~");
         superUser.setStr("test");
-        System.out.println(superUser.getStr());
+        System.out.println("父类值" + superUser.getStr());
+        System.out.println("子类转父类~");
         superUser = user;
-        System.out.println(superUser.getStr());
-        System.out.println(((User) superUser).getStr1());
-        System.out.println(((User) superUser).getStr2());
+        System.out.println("父类值" + superUser.getStr());
+        System.out.println("父类强转子类 子类值" + ((User) superUser).getStr1());
+        System.out.println("父类强转子类 父类值" + ((User) superUser).getStr2());
     }
 
 }

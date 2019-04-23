@@ -12,6 +12,8 @@ public class SuperUser {
 
     private String str;
 
+    private String nothing;
+
     public void test(){
         System.out.println("SuperUser");
         str = "SuperUser";
