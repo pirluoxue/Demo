@@ -29,7 +29,7 @@ public class QRCodeUtil {
         createQRcode("微信测试30000029","http://wenap.cn/?deviceCode=30000029");
         createQRcode("微信测试20000746","http://wenap.cn/?deviceCode=20000746");
         createQRcode("微信测试20002639","http://wenap.cn/?deviceCode=20002639");
-        createQRcode("支付宝回调测试","http://ijctest.wuliaoxingqiu.com/order/api/aliNotifyReceive");
+        createQRcode("支付宝回调测试","http://wenap.cn/order/api/aliNotifyReceive");
     }
 
     public static void createQRcode(String fileName, String text, int height, int width){

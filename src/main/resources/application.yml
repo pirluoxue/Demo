@@ -12,5 +12,18 @@ spring:
         max-idle: 8
     database: 0
     timeout: 2000
+
 server:
   port: 8088
+
+jdbc1:
+  driverClassName: com.mysql.jdbc.Driver
+  url: jdbc:mysql://120.55.60.50:3306/mhe?useUnicode=true&characterEncoding=utf8&jdbcCompliantTruncation=false&useSSL=false
+  username: root
+  password: Xm@xhe2018
+jdbc2:
+  driverClassName: com.mysql.jdbc.Driver
+  url: jdbc:mysql://192.168.10.24:3306/yhldb?useUnicode=true&characterEncoding=utf8&jdbcCompliantTruncation=false&useSSL=false
+  username: writeuser
+  password: yhl@write.com
+
