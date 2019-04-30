@@ -1,7 +1,10 @@
 package com.example.demo.util;
 
+import com.example.demo.model.collection.DataResourceEnum;
 import org.jooq.DSLContext;
 import org.jooq.impl.DSL;
+
+import java.sql.Connection;
 
 /**
  * @author chen_bq
@@ -10,10 +13,10 @@ import org.jooq.impl.DSL;
  **/
 public class JooqUtil {
 
-//    public static DSLContext getCreate(){
-//        ConnectionUtil connectionUtil = new ConnectionUtil();
-//        DSLContext dslContext = DSL.using();
-//    }
+    public static DSLContext getCreate(Connection connection){
+        DSLContext resource = DSL.using(connection);
+        return resource;
+    }
 
 
 }
