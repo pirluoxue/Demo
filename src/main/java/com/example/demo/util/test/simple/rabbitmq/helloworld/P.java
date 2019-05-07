@@ -23,7 +23,7 @@ public class P {
     Channel channel = connection.createChannel();
 
     //申明队列，将数据存储在队列中
-    channel.queueDeclare(QUEUE_NAME, false, false, false, null);
+    channel.queueDeclare(QUEUE_NAME, true, false, false, null);
     String message = "Hello World!";
     for(int i = 0 ; i < 10 ; i++){
       channel.basicPublish("", QUEUE_NAME, null, (message + "  " + i).getBytes("UTF-8"));

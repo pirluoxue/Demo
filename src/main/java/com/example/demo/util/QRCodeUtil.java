@@ -67,7 +67,7 @@ public class QRCodeUtil {
 
     public static void readQRcode(String fileName){
         MultiFormatReader formatReader = new MultiFormatReader();
-        File file = new File("E:/QRcode/" + fileName + ".png");
+        File file = new File("D:/QRcode/" + fileName + ".png");
 
         BufferedImage image = null;
         try {
