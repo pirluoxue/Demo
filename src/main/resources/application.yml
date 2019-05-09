@@ -1,0 +1,25 @@
+
+spring:
+  redis:
+    host: localhost
+    port: 6379
+    password: 123456
+    jedis:
+      pool:
+        max-active: 8
+        max-wait: -1s
+        min-idle: 0
+        max-idle: 8
+    database: 0
+    timeout: 2000
+
+server:
+  port: 8088
+
+
+jdbc2:
+  driverClassName: com.mysql.jdbc.Driver
+  url: jdbc:mysql://192.168.10.24:3306/yhldb?useUnicode=true&characterEncoding=utf8&jdbcCompliantTruncation=false&useSSL=false&serverTimezone=Asia/Shanghai
+  username: root
+  password: 123456
+
