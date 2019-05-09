@@ -11,7 +11,7 @@ import java.util.concurrent.ThreadPoolExecutor;
 
 /**
  * @Classname ThreadPoolConfig
- * @Description TODO
+ * @Description 线程池配置
  * @Date 2019-05-09
  * @Created by chen_bq
  */
