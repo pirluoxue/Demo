@@ -19,6 +19,13 @@
     </properties>
 
     <dependencies>
+        <!--  支付宝SDK -->
+        <dependency>
+            <groupId>com.alipay.sdk</groupId>
+            <artifactId>alipay-sdk-java</artifactId>
+            <version>3.7.4.ALL</version>
+        </dependency>
+
         <dependency>
             <groupId>org.jooq</groupId>
             <artifactId>jooq-codegen</artifactId>
@@ -156,7 +163,7 @@
                         <!--<username>root</username>-->
                         <!--<password>Xm@xhe2018</password>-->
                         <driver>com.mysql.jdbc.Driver</driver>
-                        <url>jdbc:mysql://192.168.10.24:3306/yhldb?useUnicode=true&amp;characterEncoding=UTF-8&amp;useSSL=false</url>
+                        <url>jdbc:mysql://192.168.10.24:3306/opentogetdb?useUnicode=true&amp;characterEncoding=UTF-8&amp;useSSL=false</url>
                         <username>root</username>
                         <password>123456</password>
                     </jdbc>
@@ -168,6 +175,7 @@
                             <includes>
                                 <!-- system -->
                                 |user
+                                |order
                                 <!--|xx_member-->
 
                             </includes>
@@ -176,7 +184,7 @@
                             <!--inputSchema 输入模式-->
                             <schemata>
                                 <schema>
-                                    <inputSchema>yhldb</inputSchema>
+                                    <inputSchema>opentogetdb</inputSchema>
                                 </schema>
                             </schemata>
                             <!--强制类型-->

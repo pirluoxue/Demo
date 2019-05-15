@@ -1,7 +1,6 @@
 package com.example.demo.model.collection;
 
 import com.example.demo.util.DataResourceUtil;
-import lombok.Data;
 
 import java.sql.Connection;
 
@@ -13,7 +12,7 @@ import java.sql.Connection;
 
 public enum DataResourceEnum {
 
-    DATA_RESOURCE(DataResourceUtil.getInstance().getConnection("jdbc1").getConn()),
+//    DATA_RESOURCE(DataResourceUtil.getInstance().getConnection("jdbc1").getConn()),
     DATA_TARGET(DataResourceUtil.getInstance().getConnection("jdbc2").getConn());
 
     private Connection conn;

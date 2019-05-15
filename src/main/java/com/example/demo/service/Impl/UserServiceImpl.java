@@ -1,18 +1,18 @@
 package com.example.demo.service.Impl;
 
-import java.util.List;
-
 import com.example.demo.dao.repositry.UserRepository;
-import com.example.demo.model.entity.jooq.form.UserForm;
+import com.example.demo.model.entity.form.UserForm;
 import com.example.demo.service.UserService;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.List;
+
 /**
   * User
-  * Created by CoderMaker on 2019/04/27.
+  * Created by CoderMaker on 2019/05/14.
   */
 @Service
 public class UserServiceImpl implements UserService {
@@ -28,7 +28,6 @@ public class UserServiceImpl implements UserService {
 	  * @Param user
 	  * @return Data mapping entity list
 	  */
-	@Override
 	public List<UserForm> queryUserListByCondition(UserForm user) {
 		return userMapper.queryUserListByCondition(user);
 	}
@@ -39,7 +38,6 @@ public class UserServiceImpl implements UserService {
       * @Param user
 	  * @return Data mapping entity list
 	  */
-	@Override
 	public List<UserForm> queryUserListByConditionNoPage(UserForm user){
 		return userMapper.queryUserListByConditionNoPage(user);
 	}
@@ -50,7 +48,6 @@ public class UserServiceImpl implements UserService {
 	  * @Param user
 	  * @return Total Data
 	  */
-	@Override
 	public Integer queryUserNumByCondition(UserForm user) {
 		return userMapper.queryUserNumByCondition(user);
 	}
@@ -60,10 +57,14 @@ public class UserServiceImpl implements UserService {
 	  * Add data based on entity class attributes.
 	  * @Param user
 	  */
-	@Override
 	@Transactional
 	public void addUser(UserForm user) {
 		userMapper.addUser(user);
+	}
+
+	@Transactional
+	public boolean saveAndUpdate(UserForm userForm){
+		return userMapper.saveAndUpdate(userForm);
 	}
 
 	/**
@@ -71,7 +72,6 @@ public class UserServiceImpl implements UserService {
 	  * Delete data according to the primary key.
 	  * @Param id  PrimaryKey
 	  */
-	@Override
 	@Transactional
 	public void deleteUser(Integer id) {
 		userMapper.deleteUser(id);
@@ -83,9 +83,17 @@ public class UserServiceImpl implements UserService {
 	  * @Param id  PrimaryKey
 	  * @return Data mapping entity
 	  */
-	@Override
 	public UserForm getUser(Integer id) {
 		return userMapper.getUser(id);
+	}
+	/**
+	  * 根据主键获取数据实体
+	  * Querying Data entity based on primary key.
+	  * @Param id  PrimaryKey
+	  * @return Data mapping entity
+	  */
+	public UserForm getUserByUserId(String userId) {
+		return userMapper.getUserByUserId(userId);
 	}
 
 	/**
@@ -93,7 +101,6 @@ public class UserServiceImpl implements UserService {
 	  * Modify data based on entity class attributes.
 	  * @Param user
 	  */
-	@Override
 	@Transactional
 	public void editUser(UserForm user) {
 		userMapper.editUser(user);
@@ -104,7 +111,6 @@ public class UserServiceImpl implements UserService {
 	  * Querying all data.
 	  * @return Data mapping entity list
 	  */
-	@Override
 	public List<UserForm> queryAllUser(){
 		return userMapper.queryAllUser();
 	}

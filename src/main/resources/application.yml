@@ -13,13 +13,16 @@ spring:
     database: 0
     timeout: 2000
 
+  jooq:
+    sql-dialect: mysql
+
 server:
   port: 8088
 
 
 jdbc2:
   driverClassName: com.mysql.jdbc.Driver
-  url: jdbc:mysql://192.168.10.24:3306/yhldb?useUnicode=true&characterEncoding=utf8&jdbcCompliantTruncation=false&useSSL=false&serverTimezone=Asia/Shanghai
+  url: jdbc:mysql://192.168.10.24:3306/opentogetdb?useUnicode=true&characterEncoding=utf8&jdbcCompliantTruncation=false&useSSL=false&serverTimezone=Asia/Shanghai
   username: root
   password: 123456
 

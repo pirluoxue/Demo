@@ -55,6 +55,12 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(Exception.class)
     public ObjectDataResponse exception(Exception e, HttpServletRequest request) {
         final RestStatus status = EXCEPTION_MAPPINGS.get(e.getClass());
+        if(status == null){
+            return ObjectDataResponse.builder()
+                    .msg(e.getMessage())
+                    .code(StatusCode.SERVER_UNKNOWN_ERROR.code())
+                    .build();
+        }
         //检索异常错误码对象
         ObjectDataResponse objectDataResponse = ObjectDataResponse.builder()
                 .code(status.code())

@@ -8,6 +8,7 @@ import com.example.demo.model.entity.simple.TestTypeEntity;
 import com.example.demo.model.entity.change.TestChangeJson;
 import com.example.demo.service.NoteService;
 import com.example.demo.util.TimeUtil;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -36,13 +37,13 @@ public class DemoApplicationTests {
     @Autowired
     private RedisDAO redisDAO;
 
-    @Test
+    @Ignore
     public void testRedis(){
 //        redisDAO.set("asd","test dao");
         System.out.println(redisDAO.get("asd"));
     }
 
-    @Test
+    @Ignore
     public void testChangeAssert(){
         TestChangeJson testChangeJson = new TestChangeJson();
         testChangeJson.setA("1");
@@ -63,7 +64,7 @@ public class DemoApplicationTests {
 //        System.out.println(changeJson);
     }
 
-    @Test
+    @Ignore
     public void testSDF() throws ParseException {
         String str = "2018-12-12 - 2018-12-13";
 //        String str = "2018-12-12";
@@ -75,7 +76,7 @@ public class DemoApplicationTests {
         }
     }
 
-    @Test
+    @Ignore
     public void testBigDecimal(){
         BigDecimalEntity bIgDecimalEntity = new BigDecimalEntity();
         bIgDecimalEntity.setTest1(new BigDecimal(1));
@@ -88,7 +89,7 @@ public class DemoApplicationTests {
         System.out.println(bigDecimal);
     }
 
-    @Test
+    @Ignore
     public void testlong(){
         LongTestEntity a = new LongTestEntity();
         System.out.println(a.getA());
@@ -99,14 +100,14 @@ public class DemoApplicationTests {
         System.out.println(a.getB());
     }
 
-    @Test
+    @Ignore
     public void testBigInteger(){
         TestTypeEntity testTypeEntity = new TestTypeEntity();
         System.out.println(testTypeEntity.getBigInteger());
 //        testTypeEntity.setBigInteger(new big);
     }
 
-    @Test
+    @Ignore
     public void testField() throws IllegalAccessException {
         BigDecimalEntity bigDecimalEntity = new BigDecimalEntity();
         Field[] fields = bigDecimalEntity.getClass().getDeclaredFields();
@@ -121,7 +122,7 @@ public class DemoApplicationTests {
         }
     }
 
-    @Test
+    @Ignore
     public void testParam(){
         List<BigDecimalEntity> bigDecimalEntities = new ArrayList<>();
         BigDecimalEntity bigDecimalEntity = new BigDecimalEntity();
@@ -141,7 +142,7 @@ public class DemoApplicationTests {
     @Autowired
     private RestTemplate restTemplate;
 
-    @Test
+    @Ignore
     public void testRestTemplate(){
         HttpHeaders httpHeaders = new HttpHeaders();
         String authHeader = "Basic bWlhbzptaWFv";
@@ -155,7 +156,7 @@ public class DemoApplicationTests {
         System.out.println(jsonObject);
     }
 
-    @Test
+    @Ignore
     public void testIndexOfNoteUrl(){
         String testHTML = "<li>\n" +
                 "                        <a href=\"https://www.biqudu.com/\">首页</a>\n" +
@@ -188,7 +189,7 @@ public class DemoApplicationTests {
 
     @Autowired
     private NoteService noteService;
-    @Test
+    @Ignore
     public void testNoteService(){
         noteService.collectionNoteByIndexUrl("https://www.biqudu.com/54_54836/", "e:\\notePack\\", "test");
     }

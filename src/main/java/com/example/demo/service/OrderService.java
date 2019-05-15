@@ -1,60 +1,52 @@
 package com.example.demo.service;
-import com.example.demo.model.entity.form.UserForm;
+
+import com.example.demo.model.entity.form.OrderForm;
 
 import java.util.List;
 
 /**
- * User Service Interface
- * Created by CoderMaker on 2019/05/14.
+ * Order Service Interface
+ * Created by CoderMaker on 2019/05/15.
  */
-public interface UserService {
+public interface OrderService {
 
 	/**
 	  * 根据实体类条件查询数据(分页)
 	  * Querying data based on entity class conditions.(pagination)
-	  * @Param user
+	  * @Param order
 	  * @return Data mapping entity list
 	  */
-	List<UserForm> queryUserListByCondition(UserForm user);
+	List<OrderForm> queryOrderListByCondition(OrderForm order);
 
 	/**
 	  * 根据实体类条件查询数据(无分页)
 	  * Querying data based on entity class conditions.(no pagination)
-	  * @Param user
+	  * @Param order
 	  * @return Data mapping entity list
 	  */
-	List<UserForm> queryUserListByConditionNoPage(UserForm user);
+	List<OrderForm> queryOrderListByConditionNoPage(OrderForm order);
 
 	/**
 	  * 根据实体类条件查询数据总条数
 	  * Querying data count based on entity class conditions.
-	  * @Param user
+	  * @Param order
 	  * @return Total Data
 	  */
-	Integer queryUserNumByCondition(UserForm user);
+	Integer queryOrderNumByCondition(OrderForm order);
 
 	/**
       * 根据实体类属性进行数据添加
 	  * Add data based on entity class attributes.
-	  * @Param user
+	  * @Param order
 	  */
-	void addUser(UserForm user);
-
-	/**
-	 * @Author chen_bq
-	 * @Description 保存并更新。若已存在则根据id更新数据
-	 * @Date 2019/5/15 9:25
-	 * @Param [user]
-	 * @return void
-	 **/
-	boolean saveAndUpdate(UserForm user);
+	void addOrder(OrderForm order);
 
 	/**
 	  * 根据主键删除数据
 	  * Delete data according to the primary key.
 	  * @Param id  PrimaryKey
 	  */
-	void deleteUser(Integer id);
+	void deleteOrder(Integer id);
 
 	/**
 	  * 根据主键获取数据实体
@@ -62,21 +54,19 @@ public interface UserService {
 	  * @Param id  PrimaryKey
 	  * @return Data mapping entity
 	  */
-	UserForm getUser(Integer id);
-
-	UserForm getUserByUserId(String userId);
+	OrderForm getOrder(Integer id);
 
 	/**
 	  * 根据实体类属性修改数据
 	  * Modify data based on entity class attributes.
-	  * @Param user
+	  * @Param order
 	  */
-	void editUser(UserForm user);
+	void editOrder(OrderForm order);
 
 	/**
 	  * 查询所有数据
 	  * Querying all data.
 	  * @return Data mapping entity list
 	  */
-	List<UserForm> queryAllUser();
+	List<OrderForm> queryAllOrder();
 }

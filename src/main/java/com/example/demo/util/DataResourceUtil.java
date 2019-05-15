@@ -1,6 +1,5 @@
 package com.example.demo.util;
 
-import lombok.Data;
 import org.yaml.snakeyaml.Yaml;
 
 import java.io.FileInputStream;
@@ -43,13 +42,11 @@ public class DataResourceUtil {
                 map = (Map) yaml.load(new FileInputStream(url.getFile()));
                 Set keys = map.keySet();
                 Iterator iterator = keys.iterator();
-                int i = 1;
                 while (iterator.hasNext()){
                     String key = iterator.next() + "";
                     if(key.startsWith("jdbc")){
-                        Map jdbc = (Map) map.get("jdbc" + i);
-                        setJdbc("jdbc" + i, jdbc);
-                        i++;
+                        Map jdbc = (Map) map.get(key);
+                        setJdbc(key, jdbc);
                     }
                 }
             }
