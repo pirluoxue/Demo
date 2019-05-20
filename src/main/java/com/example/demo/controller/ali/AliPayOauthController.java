@@ -141,6 +141,8 @@ public class AliPayOauthController {
         String status = params.get("status");
         //返回脱敏的支付宝账号，如需要返回不脱敏的支付宝用户账号，需要用户在签约页面上授权
         String alipay_logon_id = params.get("alipay_logon_id");
+        //异步类型，用于和status一起判断用户合约是否正常
+        String dut_user_sign = params.get("dut_user_sign");
         UserService userService = SpringContextUtils.getBean(UserServiceImpl.class);
         UserForm userForm = new UserForm();
         userForm.setUserUserid(alipay_user_id);
@@ -173,6 +175,7 @@ public class AliPayOauthController {
         alipayRequest.setBizContent(getBizContent());
         //设置业务参数，alipayModel为前端发送的请求信息，开发者需要根据实际情况填充此类
         alipayRequest.setBizModel(alipayModel);
+        //可以通过设定默认值，也可以通过动态传入
         alipayRequest.setReturnUrl(prop.getProperty("RETURN_URL"));
         alipayRequest.setNotifyUrl(prop.getProperty("NOTIFY_URL"));
         System.out.println("alipayRequest="+alipayRequest.getBizContent()+alipayRequest.getReturnUrl()+alipayRequest.getBizModel());
@@ -335,6 +338,7 @@ public class AliPayOauthController {
         jsonObject.put("sign_scene",AliAgreementConstants.SIGN_SCENE);
         JSONObject access_params=new JSONObject();
         access_params.put("channel",AliAgreementConstants.CHANNEL);
+//        access_params.put("channel",AliAgreementConstants.CHANNEL_SCANFACE);
         jsonObject.put("access_params",access_params);
         JSONObject deviceNo=new JSONObject();
         deviceNo.put("out_device_id","1010101");

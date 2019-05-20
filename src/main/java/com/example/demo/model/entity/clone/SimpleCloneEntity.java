@@ -34,4 +34,5 @@ public class SimpleCloneEntity implements Cloneable{
         return baseEntity;
     }
 
+
 }

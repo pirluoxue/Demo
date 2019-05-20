@@ -1,25 +1,18 @@
 package com.example.demo.util;
 
-import ch.qos.logback.core.net.SyslogOutputStream;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
+import org.springframework.boot.autoconfigure.jdbc.DataSourceAutoConfiguration;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
-import org.springframework.test.context.junit4.SpringRunner;
-import org.springframework.test.context.web.WebAppConfiguration;
-import sun.util.resources.cldr.ur.TimeZoneNames_ur;
 
 import java.sql.Timestamp;
-import java.time.Instant;
-import java.time.LocalDate;
-import java.time.LocalDateTime;
-import java.time.ZoneId;
-import java.time.format.DateTimeFormatter;
-
-import static org.junit.Assert.*;
+import java.time.*;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @SpringBootTest(classes = DateUtils.class)
+@EnableAutoConfiguration(exclude = DataSourceAutoConfiguration.class)
 public class DateUtilsTest {
 
     public static void main(String[] args) {
@@ -33,7 +26,6 @@ public class DateUtilsTest {
         /*格式化测试结束*/
         /*反格式化开始*/
         LocalDateTime antiFormatter = DateUtils.getDateTimeFormatterByFormatter(formatterDateTime, formatter);
-        System.out.println("反格式化 : " + antiFormatter);
         System.out.println("反格式化 : " + antiFormatter);
         /*反格式化结束*/
         /*timestamp转localdatetime开始*/
@@ -131,6 +123,29 @@ public class DateUtilsTest {
         long timestamp = System.currentTimeMillis();
         System.out.println(localdatetime);
         System.out.println(timestamp);
+        timestamp += 10000000;
+        Instant instant = Instant.ofEpochMilli(timestamp);
+        long date = Duration.between(LocalDateTime.now(), LocalDateTime.ofInstant(instant, ZoneOffset.of("+8"))).toMillis();
+        System.out.println("毫秒数 ： " + date);
     }
+
+    @Test
+    public void testLocaldatetime(){
+        long milliSecond = TimeUtil.getNowMilliSecond();
+        LocalDateTime localDateTime = LocalDateTime.now().plusMinutes(1);
+        System.out.println("毫秒数 ： " + (localDateTime.toInstant(ZoneOffset.of("+8")).toEpochMilli() - milliSecond));
+    }
+
+    @Test
+    public void LocalDateTimeIsTest(){
+        LocalDateTime localDateTime = LocalDateTime.now();
+        //时间增加一天
+        LocalDateTime compare = localDateTime.plusDays(1);
+        //比较大小
+        System.out.println(localDateTime + " 比 " + compare + " 早 " + localDateTime.isBefore(compare));
+
+
+    }
+
 
 }

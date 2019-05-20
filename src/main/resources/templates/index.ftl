@@ -19,7 +19,10 @@
             style="width: 200px;height: 150px;margin: 100px auto;display: block;font-size: 40px">解除授权
     </button>
     <button onclick="aliAgreementTradePay()"
-            style="width: 200px;height: 150px;margin: 100px auto;display: block;font-size: 40px">付款
+            style="width: 200px;height: 150px;margin: 100px auto;display: block;font-size: 40px">免密付款
+    </button>
+    <button onclick="aliTradeRePay()"
+            style="width: 200px;height: 150px;margin: 100px auto;display: block;font-size: 40px">欠款还款
     </button>
 </div>
 <script type="text/javascript" src="/static/js/jquery-3.2.1.js"></script>
@@ -64,6 +67,7 @@
         }, "json");
     }
 
+
     function alipayUserAgreementQuery() {
         //授权后才能使用。否则默认空值，使用默认userId测试
         var userId =  ${Session["userId"]!'0'};
@@ -84,6 +88,20 @@
         var formData = {userId: userId};
         $.post("/api/aliAgreementTradePay", formData, function (res) {
             console.log(res);
+        }, "json");
+    }
+
+    function aliTradeRePay() {
+        //授权后才能使用。否则默认空值，使用默认userId测试
+        var userId =  ${Session["userId"]!'0'};
+        var formData = {userId: userId};
+        $.post("/api/aliTradeRePay", formData, function (res) {
+            console.log(res);
+            const div = document.createElement('divform');
+            div.innerHTML = res.value.body;
+            document.body.appendChild(div);
+            document.forms[0].acceptCharset = 'UTF-8';//保持与支付宝默认编码格式一致，如果不一致将会出现：调试错误，请回到请求来源地，重新发起请求，错误代码 invalid-signature 错误原因: 验签出错，建议检查签名字符串或签名私钥与应用公钥是否匹配
+            document.forms[0].submit();
         }, "json");
     }
 </script>
