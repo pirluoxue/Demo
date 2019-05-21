@@ -1,12 +1,12 @@
 package com.example.demo.model.entity.ali;
 
 /**
- * @Classname AliAgreementConstants
+ * @Classname AliPayAgreementConstants
  * @Description 支付宝代扣静态参数类
  * @Date 2019-05-15
  * @Created by chen_bq
  */
-public class AliAgreementConstants {
+public class AliPayAgreementConstants {
 
     public static String PRODUCT_CODE_OAUTH = "ONE_TIME_AUTH";
     public static String PRODUCT_CODE_TOPAY = "GENERAL_WITHHOLDING";

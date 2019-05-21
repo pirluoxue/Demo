@@ -14,6 +14,7 @@ import com.example.demo.service.UserService;
 import com.example.demo.util.SpringContextUtils;
 
 import javax.servlet.http.HttpServletRequest;
+import java.sql.Timestamp;
 
 /**
  * @Classname ALiUtils
@@ -58,6 +59,9 @@ public class AliUtils {
                     userForm.setUserGender(jsonObject.getString("gender"));
                     userForm.setUserName(jsonObject.getString("nick_name"));
                     userForm.setUserUserid(jsonObject.getString("user_id"));
+                    userForm.setUserUpdatetime(new Timestamp(System.currentTimeMillis()));
+                    userForm.setUserStatus(UserForm.STSTUS_TEMP);
+                    userForm.setUserEnable(UserForm.ENABLE);
                     userService.saveAndUpdate(userForm);
                     httpServletRequest.getSession().setAttribute("userId", userForm.getUserUserid());
                     return true;

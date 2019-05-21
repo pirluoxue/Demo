@@ -3,6 +3,15 @@
 <head>
     <meta charset="UTF-8">
     <title>测试页</title>
+    <style>
+        div > button{
+            width: 400px;
+            height: 150px;
+            margin: 100px auto;
+            display: block;
+            font-size: 40px
+        }
+    </style>
 </head>
 <body>
 <div style="width: 100%">
@@ -10,19 +19,19 @@
         信息授权
     </button>
     <button onclick="alipayUserAgreementPageSign()"
-            style="width: 200px;height: 150px;margin: 100px auto;display: block;font-size: 40px">支付授权
+            >支付授权
     </button>
     <button onclick="alipayUserAgreementQuery()"
-            style="width: 200px;height: 150px;margin: 100px auto;display: block;font-size: 40px">授权查询
+            >授权查询
     </button>
     <button onclick="alipayUserAgreementUnsign()"
-            style="width: 200px;height: 150px;margin: 100px auto;display: block;font-size: 40px">解除授权
+            >解除授权
     </button>
     <button onclick="aliAgreementTradePay()"
-            style="width: 200px;height: 150px;margin: 100px auto;display: block;font-size: 40px">免密付款
+            >免密付款（0.01元）
     </button>
     <button onclick="aliTradeRePay()"
-            style="width: 200px;height: 150px;margin: 100px auto;display: block;font-size: 40px">欠款还款
+            >欠款还款（暂未开通）
     </button>
 </div>
 <script type="text/javascript" src="/static/js/jquery-3.2.1.js"></script>
@@ -87,7 +96,9 @@
         var userId =  ${Session["userId"]!'0'};
         var formData = {userId: userId};
         $.post("/api/aliAgreementTradePay", formData, function (res) {
-            console.log(res);
+            if(res.value.msg == 'success'){
+                alert("支付成功！")
+            }
         }, "json");
     }
 

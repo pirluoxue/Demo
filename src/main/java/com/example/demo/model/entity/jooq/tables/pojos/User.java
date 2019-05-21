@@ -10,6 +10,9 @@ import java.sql.Timestamp;
 import javax.annotation.Generated;
 import javax.validation.constraints.Size;
 
+import javax.annotation.Generated;
+import javax.validation.constraints.Size;
+
 
 /**
  * 会员表

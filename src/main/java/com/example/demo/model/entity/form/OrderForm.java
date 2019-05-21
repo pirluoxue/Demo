@@ -11,5 +11,10 @@ import lombok.Data;
 public class OrderForm extends Order {
     private String gmtPayment_start; //  交易支付时间_开始时间
     private String gmtPayment_end; //  交易支付时间_结束时间
+
+    public static int ORDER_STATUS_NOT_PAY = 0;
+    public static int ORDER_STATUS_PAYING = 1;
+    public static int ORDER_STATUS_PAID = 2;
+    public static int ORDER_STATUS_UNABLE_PAY = 3;
 }
 

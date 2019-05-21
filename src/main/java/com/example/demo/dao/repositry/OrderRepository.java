@@ -72,18 +72,20 @@ public class OrderRepository {
 	 */
 	public void addOrder(OrderForm order){
 		create.insertInto(ORDER).columns(getBaseColumnList())
-                .values(
-					order.getId(),
-					order.getOuttradeno(),
-					order.getTotalamount(),
-					order.getTradeno(),
-					order.getBuyerlogonid(),
-					order.getReceiptamount(),
-					order.getBuyerpayamount(),
-					order.getGmtpayment(),
-					order.getFundchannel(),
-					order.getFundamount(),
-					order.getBuyeruserid()
+				.values(
+						order.getId(),
+						order.getOuttradeno(),
+						order.getTotalamount(),
+						order.getTradeno(),
+						order.getBuyerlogonid(),
+						order.getReceiptamount(),
+						order.getBuyerpayamount(),
+						order.getGmtpayment(),
+						order.getFundchannel(),
+						order.getFundamount(),
+						order.getBuyeruserid(),
+						order.getBuyerid(),
+						order.getOrderstatus()
 				).execute();
 	}
 
@@ -132,112 +134,126 @@ public class OrderRepository {
      * @Param var1 自定义字段集合
      * @return 基本查询字段+自定义字段集合
      */
-    private List<Field<?>> getBaseColumnList(Field<?>...var1){
-        List<Field<?>> selectFieldList= Lists.newArrayList(
-			ORDER.ID,
-			ORDER.OUTTRADENO,
-			ORDER.TOTALAMOUNT,
-			ORDER.TRADENO,
-			ORDER.BUYERLOGONID,
-			ORDER.RECEIPTAMOUNT,
-			ORDER.BUYERPAYAMOUNT,
-			ORDER.GMTPAYMENT,
-			ORDER.FUNDCHANNEL,
-			ORDER.FUNDAMOUNT,
-			ORDER.BUYERUSERID
+	private List<Field<?>> getBaseColumnList(Field<?>...var1){
+		List<Field<?>> selectFieldList= Lists.newArrayList(
+				ORDER.ID,
+				ORDER.OUTTRADENO,
+				ORDER.TOTALAMOUNT,
+				ORDER.TRADENO,
+				ORDER.BUYERLOGONID,
+				ORDER.RECEIPTAMOUNT,
+				ORDER.BUYERPAYAMOUNT,
+				ORDER.GMTPAYMENT,
+				ORDER.FUNDCHANNEL,
+				ORDER.FUNDAMOUNT,
+				ORDER.BUYERUSERID,
+				ORDER.BUYERID,
+				ORDER.ORDERSTATUS
 		);
-        selectFieldList.addAll(Lists.newArrayList(var1));
-        return selectFieldList;
-    }
+		selectFieldList.addAll(Lists.newArrayList(var1));
+		return selectFieldList;
+	}
 
 	 /**
      * 查询条件构造
      * @Param order
      * @return
      */
-    private Condition queryCondition(OrderForm order){
-        Condition condition = DSL.trueCondition(); //equals where 1=1
-		if(order.getId() != null){
-			condition = condition.and(ORDER.ID.eq(order.getId()));
-		}
-		if(!Strings.isNullOrEmpty(order.getOuttradeno())){
-			condition = condition.and(ORDER.OUTTRADENO.containsIgnoreCase(order.getOuttradeno()));
-		}
-		if(order.getTotalamount() != null){
-			condition = condition.and(ORDER.TOTALAMOUNT.eq(order.getTotalamount()));
-		}
-		if(!Strings.isNullOrEmpty(order.getTradeno())){
-			condition = condition.and(ORDER.TRADENO.containsIgnoreCase(order.getTradeno()));
-		}
-		if(!Strings.isNullOrEmpty(order.getBuyerlogonid())){
-			condition = condition.and(ORDER.BUYERLOGONID.containsIgnoreCase(order.getBuyerlogonid()));
-		}
-		if(!Strings.isNullOrEmpty(order.getReceiptamount())){
-			condition = condition.and(ORDER.RECEIPTAMOUNT.containsIgnoreCase(order.getReceiptamount()));
-		}
-		if(order.getBuyerpayamount() != null){
-			condition = condition.and(ORDER.BUYERPAYAMOUNT.eq(order.getBuyerpayamount()));
-		}
-		if(!Strings.isNullOrEmpty(order.getGmtPayment_start())){
-			condition = condition.and(ORDER.GMTPAYMENT.ge(Timestamp.valueOf(order.getGmtPayment_start())));
-		}
-		if(!Strings.isNullOrEmpty(order.getGmtPayment_end())){
-			condition = condition.and(ORDER.GMTPAYMENT.le(Timestamp.valueOf(order.getGmtPayment_end())));
-		}
-		if(!Strings.isNullOrEmpty(order.getFundchannel())){
-			condition = condition.and(ORDER.FUNDCHANNEL.containsIgnoreCase(order.getFundchannel()));
-		}
-		if(order.getFundamount() != null){
-			condition = condition.and(ORDER.FUNDAMOUNT.eq(order.getFundamount()));
-		}
-		if(!Strings.isNullOrEmpty(order.getBuyeruserid())){
-			condition = condition.and(ORDER.BUYERUSERID.containsIgnoreCase(order.getBuyeruserid()));
-		}
-		return condition;
-	}
+	 private Condition queryCondition(OrderForm order){
+		 Condition condition = DSL.trueCondition(); //equals where 1=1
+		 if(order.getId() != null){
+			 condition = condition.and(ORDER.ID.eq(order.getId()));
+		 }
+		 if(!Strings.isNullOrEmpty(order.getOuttradeno())){
+			 condition = condition.and(ORDER.OUTTRADENO.containsIgnoreCase(order.getOuttradeno()));
+		 }
+		 if(order.getTotalamount() != null){
+			 condition = condition.and(ORDER.TOTALAMOUNT.eq(order.getTotalamount()));
+		 }
+		 if(!Strings.isNullOrEmpty(order.getTradeno())){
+			 condition = condition.and(ORDER.TRADENO.containsIgnoreCase(order.getTradeno()));
+		 }
+		 if(!Strings.isNullOrEmpty(order.getBuyerlogonid())){
+			 condition = condition.and(ORDER.BUYERLOGONID.containsIgnoreCase(order.getBuyerlogonid()));
+		 }
+		 if(!Strings.isNullOrEmpty(order.getReceiptamount())){
+			 condition = condition.and(ORDER.RECEIPTAMOUNT.containsIgnoreCase(order.getReceiptamount()));
+		 }
+		 if(order.getBuyerpayamount() != null){
+			 condition = condition.and(ORDER.BUYERPAYAMOUNT.eq(order.getBuyerpayamount()));
+		 }
+		 if(!Strings.isNullOrEmpty(order.getGmtPayment_start())){
+			 condition = condition.and(ORDER.GMTPAYMENT.ge(Timestamp.valueOf(order.getGmtPayment_start())));
+		 }
+		 if(!Strings.isNullOrEmpty(order.getGmtPayment_end())){
+			 condition = condition.and(ORDER.GMTPAYMENT.le(Timestamp.valueOf(order.getGmtPayment_end())));
+		 }
+		 if(!Strings.isNullOrEmpty(order.getFundchannel())){
+			 condition = condition.and(ORDER.FUNDCHANNEL.containsIgnoreCase(order.getFundchannel()));
+		 }
+		 if(order.getFundamount() != null){
+			 condition = condition.and(ORDER.FUNDAMOUNT.eq(order.getFundamount()));
+		 }
+		 if(!Strings.isNullOrEmpty(order.getBuyeruserid())){
+			 condition = condition.and(ORDER.BUYERUSERID.containsIgnoreCase(order.getBuyeruserid()));
+		 }
+		 if(!Strings.isNullOrEmpty(order.getBuyerid())){
+			 condition = condition.and(ORDER.BUYERID.containsIgnoreCase(order.getBuyerid()));
+		 }
+		 if(order.getOrderstatus() != null){
+			 condition = condition.and(ORDER.ORDERSTATUS.eq(order.getOrderstatus()));
+		 }
+		 return condition;
+	 }
 
 	 /**
      * 更新条件值构造
      * @Param order
      * @return
      */
-    private Map<Field<?>,Object> setValueEmptyClause(OrderForm order){
-        Map<Field<?>,Object> map= Maps.newHashMap();
-	 	if(order.getId() != null){
-			map.put(ORDER.ID,order.getId());
-		}
-		if(!Strings.isNullOrEmpty(order.getOuttradeno())){
-			map.put(ORDER.OUTTRADENO,order.getOuttradeno());
-		}
-	 	if(order.getTotalamount() != null){
-			map.put(ORDER.TOTALAMOUNT,order.getTotalamount());
-		}
-		if(!Strings.isNullOrEmpty(order.getTradeno())){
-			map.put(ORDER.TRADENO,order.getTradeno());
-		}
-		if(!Strings.isNullOrEmpty(order.getBuyerlogonid())){
-			map.put(ORDER.BUYERLOGONID,order.getBuyerlogonid());
-		}
-		if(!Strings.isNullOrEmpty(order.getReceiptamount())){
-			map.put(ORDER.RECEIPTAMOUNT,order.getReceiptamount());
-		}
-	 	if(order.getBuyerpayamount() != null){
-			map.put(ORDER.BUYERPAYAMOUNT,order.getBuyerpayamount());
-		}
-	 	if(order.getGmtpayment() != null){
-			map.put(ORDER.GMTPAYMENT,order.getGmtpayment());
-		}
-		if(!Strings.isNullOrEmpty(order.getFundchannel())){
-			map.put(ORDER.FUNDCHANNEL,order.getFundchannel());
-		}
-	 	if(order.getFundamount() != null){
-			map.put(ORDER.FUNDAMOUNT,order.getFundamount());
-		}
-		if(!Strings.isNullOrEmpty(order.getBuyeruserid())){
-			map.put(ORDER.BUYERUSERID,order.getBuyeruserid());
-		}
-		return map;
-	}
+	 private Map<Field<?>,Object> setValueEmptyClause(OrderForm order){
+		 Map<Field<?>,Object> map= Maps.newHashMap();
+		 if(order.getId() != null){
+			 map.put(ORDER.ID,order.getId());
+		 }
+		 if(!Strings.isNullOrEmpty(order.getOuttradeno())){
+			 map.put(ORDER.OUTTRADENO,order.getOuttradeno());
+		 }
+		 if(order.getTotalamount() != null){
+			 map.put(ORDER.TOTALAMOUNT,order.getTotalamount());
+		 }
+		 if(!Strings.isNullOrEmpty(order.getTradeno())){
+			 map.put(ORDER.TRADENO,order.getTradeno());
+		 }
+		 if(!Strings.isNullOrEmpty(order.getBuyerlogonid())){
+			 map.put(ORDER.BUYERLOGONID,order.getBuyerlogonid());
+		 }
+		 if(!Strings.isNullOrEmpty(order.getReceiptamount())){
+			 map.put(ORDER.RECEIPTAMOUNT,order.getReceiptamount());
+		 }
+		 if(order.getBuyerpayamount() != null){
+			 map.put(ORDER.BUYERPAYAMOUNT,order.getBuyerpayamount());
+		 }
+		 if(order.getGmtpayment() != null){
+			 map.put(ORDER.GMTPAYMENT,order.getGmtpayment());
+		 }
+		 if(!Strings.isNullOrEmpty(order.getFundchannel())){
+			 map.put(ORDER.FUNDCHANNEL,order.getFundchannel());
+		 }
+		 if(order.getFundamount() != null){
+			 map.put(ORDER.FUNDAMOUNT,order.getFundamount());
+		 }
+		 if(!Strings.isNullOrEmpty(order.getBuyeruserid())){
+			 map.put(ORDER.BUYERUSERID,order.getBuyeruserid());
+		 }
+		 if(!Strings.isNullOrEmpty(order.getBuyerid())){
+			 map.put(ORDER.BUYERID,order.getBuyerid());
+		 }
+		 if(order.getOrderstatus() != null){
+			 map.put(ORDER.ORDERSTATUS,order.getOrderstatus());
+		 }
+		 return map;
+	 }
 	//endregion
     /**
      * 获取排序字段

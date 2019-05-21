@@ -16,6 +16,16 @@ spring:
   jooq:
     sql-dialect: mysql
 
+debug: true
+
+logging:
+  path: ./log
+  file: demo.log
+  level:
+    root: WARN
+    org.springframework.web: DEBUG
+
+
 server:
   port: 8088
 
