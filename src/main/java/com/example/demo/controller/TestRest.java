@@ -1,19 +1,11 @@
 package com.example.demo.controller;
 
-import com.example.demo.model.entity.simple.SimpleEntity;
-import com.mchange.v1.io.InputStreamUtils;
-import org.springframework.http.server.ServerHttpRequest;
-import org.springframework.http.server.ServletServerHttpRequest;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import com.example.demo.model.entity.jooq.tables.pojos.User;
+import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.ServletInputStream;
-import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import java.io.IOException;
-import java.util.Map;
 
 /**
  * @Classname TestRest
@@ -53,6 +45,11 @@ public class TestRest {
         }
         String strcont = content.toString();// 内容
         System.out.println(strcont);
+    }
+
+    @RequestMapping(value = "test/restpost", method = RequestMethod.POST)
+    public String restpost(@RequestBody User user){
+        return user.toString();
     }
 
 

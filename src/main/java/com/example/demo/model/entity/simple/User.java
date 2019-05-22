@@ -48,6 +48,7 @@ public class User extends SuperUser {
         System.out.println("父类强转子类 父类值" + ((User) superUser).getStr2());
     }
 
+
 }
 
 

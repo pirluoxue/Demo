@@ -1,15 +1,10 @@
 package com.example.demo.simple;
 
-import com.example.demo.model.entity.clone.SimpleCloneEntity;
 import com.example.demo.model.entity.simple.ConfigEntity;
 import com.example.demo.model.entity.simple.User;
-import com.example.demo.util.SpringContextUtils;
-import com.fasterxml.jackson.databind.ser.impl.UnknownSerializer;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.context.annotation.Bean;
 import org.springframework.test.context.junit4.SpringRunner;
 
 import java.util.ArrayList;
@@ -64,5 +59,24 @@ public class SimpleTest {
 //        ConfigEntity configEntity = SpringContextUtils.getBean(ConfigEntity.class);
 //        System.out.println(configEntity);
     }
+
+    @Test
+    public void testSubList(){
+        List<User> list = new ArrayList<>();
+        User user = new User();
+        user.setStr("asd");
+        list.add(user);
+        List<User> sublist = list.subList(0,1);
+        System.out.println(sublist);
+        sublist.get(0).setStr("qwe");
+        System.out.println(sublist);
+        System.out.println(list);
+        List<User> itList = new ArrayList<>();
+        itList.add(list.get(0));
+        itList.get(0).setStr("zxc");
+        System.out.println(itList);
+        System.out.println(list);
+    }
+
 
 }

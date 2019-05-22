@@ -1,21 +1,20 @@
 package com.example.demo.util.thread;
 
+import com.alibaba.fastjson.JSONObject;
 import com.example.demo.util.SpringContextUtils;
-import org.assertj.core.api.ThrowableAssert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.autoconfigure.AutoConfigureOrder;
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 import org.springframework.boot.autoconfigure.jdbc.DataSourceAutoConfiguration;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.core.task.TaskExecutor;
-import org.springframework.test.context.junit.jupiter.SpringJUnitConfig;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
+import org.springframework.web.client.RestTemplate;
 
+import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.CountDownLatch;
-
-import static org.junit.Assert.*;
 
 /**
  * @Classname ThreadPoolUtilTest
@@ -72,5 +71,66 @@ public class ThreadPoolUtilTest {
         System.out.println("所有的统计任务执行完成");
     }
 
+    @Test
+    public void testPublicParams() throws InterruptedException {
+        int threadNum = Thread.activeCount();
+        System.out.println("初始线程数： " + threadNum);
+        ThreadPublicParams threadPublicParams = ThreadPublicParams.getInstance();
+        Map map = new ConcurrentHashMap();
+        map.put("key", "value");
+        threadPublicParams.setMap(map);
+        CountDownLatch latch = new CountDownLatch(10);
+        System.out.println("latch初始数量：" + latch.getCount());
+        for(int i = 0 ;i < 10 ; i++){
+            taskExecutor.execute(new ThreadExecutorParams(latch));
+        }
+        latch.await();// 等待所有人任务结束
+        System.out.println("所有的统计任务执行完成");
+    }
+
+    @Test
+    public void testLoopPost() throws InterruptedException {
+        int threadNum = Thread.activeCount();
+        CountDownLatch latch = new CountDownLatch(10);
+        for(int i = 0 ;i < 10 ; i++){
+            taskExecutor.execute(new Runnable() {
+                @Override
+                public void run() {
+                    RestTemplate restTemplate = SpringContextUtils.getBean(RestTemplate.class);
+//                    String url = "http://localhost:8085/order/api/prePayOrder";
+                    String url = "http://localhost:8085/order/api/prePayOrder?openId=oVb6x1EOpoJBIqPmCZDXlmyJT2RA&deviceCode=20002639&scanId=1&orderSource=1&menuId=11&cardId=59";
+//                    JSONObject jsonObject = new JSONObject();
+//                    jsonObject.put("openId", "oVb6x1EOpoJBIqPmCZDXlmyJT2RA");
+//                    jsonObject.put("deviceCode", "20002639");
+//                    jsonObject.put("scanId", "1");
+//                    jsonObject.put("orderSource", "1");
+//                    jsonObject.put("menuId", "11");
+//                    jsonObject.put("cardId", "59");
+//                    String rs = restTemplate.postForObject(url, jsonObject.toString(), String.class);
+                    String rs = restTemplate.postForObject(url,null, String.class);
+                    System.out.println(rs);
+                    latch.countDown();
+                }
+            });
+        }
+        latch.await();// 等待所有人任务结束
+        System.out.println("所有的统计任务执行完成");
+    }
+
+    @Autowired
+    private RestTemplate restTemplate;
+
+    @Test
+    public void testRestPost(){
+        String url = "http://localhost:8088/test/restpost";
+//        User user = new User();
+//        user.setUserId(123123);
+//        user.setUserAddress("阿里布达");
+//        String rs = restTemplate.postForObject(url, user, String.class);
+        JSONObject jsonObject = new JSONObject();
+        jsonObject.put("userId","123123");
+        String rs = restTemplate.postForObject(url, jsonObject, String.class);
+        System.out.println(rs);
+    }
 
 }
