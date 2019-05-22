@@ -193,6 +193,13 @@ public class DemoApplicationTests {
     public void testNoteService(){
         noteService.collectionNoteByIndexUrl("https://www.biqudu.com/54_54836/", "e:\\notePack\\", "test");
     }
+    
+    @Test
+    public void testNginx(){
+        for(int i = 0 ; i < 100;i++){
+            System.out.println(restTemplate.getForObject("http://47.96.85.51:10035/test", String.class));
+        }
+    }
 
     public static void main(String[] args) {
         int a = 10;

@@ -89,6 +89,33 @@ public class ThreadPoolUtilTest {
     }
 
     @Test
+    public void testMultByMap() throws InterruptedException {
+        int threadNum = Thread.activeCount();
+        System.out.println("初始线程数： " + threadNum);
+        ThreadPublicParams threadPublicParams = ThreadPublicParams.getInstance();
+        Map map = new ConcurrentHashMap();
+        map.put("count", "0");
+        threadPublicParams.setMap(map);
+        CountDownLatch latch = new CountDownLatch(10);
+        System.out.println("latch初始数量：" + latch.getCount());
+        for(int i = 0 ;i < 10 ; i++){
+            taskExecutor.execute(new Runnable() {
+                @Override
+                public void run() {
+                    ThreadPublicParams count = ThreadPublicParams.getInstance();
+                    Map<String,String> countMap = count.getMap();
+                    int countNum = Integer.parseInt(countMap.get("count"));
+                    countNum ++;
+                    countMap.replace("count", countNum +"");
+                }
+            });
+        }
+        latch.await();// 等待所有人任务结束
+        System.out.println("所有的统计任务执行完成");
+        System.out.println("最后统计埋点数量为： " + threadPublicParams.getMap().get("count"));
+    }
+
+    @Test
     public void testLoopPost() throws InterruptedException {
         int threadNum = Thread.activeCount();
         CountDownLatch latch = new CountDownLatch(10);
