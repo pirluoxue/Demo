@@ -16,5 +16,6 @@ public class OrderForm extends Order {
     public static int ORDER_STATUS_PAYING = 1;
     public static int ORDER_STATUS_PAID = 2;
     public static int ORDER_STATUS_UNABLE_PAY = 3;
+    public static int ORDER_STATUS_SYNC_EXCEPTION = 4;
 }
 

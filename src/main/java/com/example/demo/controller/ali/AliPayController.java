@@ -2,17 +2,19 @@ package com.example.demo.controller.ali;
 
 import com.alipay.api.AlipayApiException;
 import com.alipay.api.AlipayClient;
-import com.alipay.api.domain.AgreementParams;
-import com.alipay.api.domain.AlipayTradePayModel;
-import com.alipay.api.domain.AlipayTradeWapPayModel;
-import com.alipay.api.domain.GoodsDetail;
+import com.alipay.api.domain.*;
+import com.alipay.api.request.AlipayTradeOrderinfoSyncRequest;
 import com.alipay.api.request.AlipayTradePayRequest;
 import com.alipay.api.request.AlipayTradeWapPayRequest;
+import com.alipay.api.response.AlipayTradeOrderinfoSyncResponse;
 import com.alipay.api.response.AlipayTradePayResponse;
 import com.alipay.api.response.AlipayTradeWapPayResponse;
 import com.example.demo.model.entity.ali.AliPayAgreementConstants;
+import com.example.demo.model.entity.form.OrderForm;
 import com.example.demo.model.entity.form.UserForm;
+import com.example.demo.model.entity.jooq.tables.pojos.Order;
 import com.example.demo.service.Impl.UserServiceImpl;
+import com.example.demo.service.OrderService;
 import com.example.demo.service.UserService;
 import com.example.demo.util.SpringContextUtils;
 import com.example.demo.util.ali.AlipayConfig;
@@ -21,6 +23,7 @@ import com.example.demo.util.ali.Result;
 import lombok.Data;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -47,12 +50,14 @@ public class AliPayController {
 
     private final static Logger logger = LoggerFactory.getLogger(AliPayController.class);
 
+    @Autowired
+    private OrderService orderService;
+
     @RequestMapping(value = "/api/aliAgreementTradePay", method = RequestMethod.POST)
     @ResponseBody
     public Object AliAgreementTradePay(HttpServletRequest request, HttpServletResponse response, ModelMap modelMap, String userId){
         Result<AlipayTradePayResponse> result = new Result<AlipayTradePayResponse>();
         Properties prop = AlipayConfig.getProperties();
-
         AlipayTradePayModel alipayModel = getAlipayTradePayModelByUserId(userId);
 
         //初始化请求类
@@ -71,23 +76,69 @@ public class AliPayController {
                 //TODO 实际业务处理，开发者编写。可以通过alipayResponse.getXXX的形式获取到返回值
                 //尽量不要在这里写订单逻辑，因为至此，支付还未完成，需要等待异步回调。
                 // 如果在这里直接处理订单信息，则存在数据重复等异常
-//                OrderForm orderForm = new OrderForm();
-//                orderForm.setOuttradeno(alipayResponse.getOutTradeNo());
-//                orderForm.setBuyeruserid(alipayResponse.getBuyerUserId());
-//                orderForm.setBuyerlogonid(alipayResponse.getBuyerLogonId());
-//                orderForm.setBuyerpayamount(new BigDecimal(alipayResponse.getBuyerPayAmount()));
-//                orderForm.setGmtpayment(new Timestamp(alipayResponse.getGmtPayment().getTime()));
-//                orderForm.setReceiptamount(alipayResponse.getReceiptAmount());
-//                orderForm.setTotalamount(new BigDecimal(alipayResponse.getTotalAmount()));
-//                orderForm.setTradeno(alipayResponse.getTradeNo());
-//                orderForm.setOrderstatus(OrderForm.ORDER_STATUS_PAYING);
-//                OrderService orderService = SpringContextUtils.getBean(OrderServiceImpl.class);
-//                orderService.addOrder(orderForm);
                 UserService userService = SpringContextUtils.getBean(UserServiceImpl.class);
                 UserForm userForm = userService.getUserByUserId(alipayResponse.getBuyerUserId());
                 userForm.setUserUpdatetime(new Timestamp(System.currentTimeMillis()));
                 userForm.setUserStatus("UNSIGN");
                 userService.editUser(userForm);
+            } else {
+                System.out.println("调用失败");
+                System.out.println(alipayResponse.getSubMsg());
+            }
+            result.setSuccess(true);
+            result.setValue(alipayResponse);
+            return result;
+        } catch (AlipayApiException e) {
+            e.printStackTrace();
+            if(e.getCause() instanceof java.security.spec.InvalidKeySpecException){
+                result.setMessage("商户私钥格式不正确，请确认配置文件Alipay-Config.properties中是否配置正确");
+                return result;
+            }
+        }
+        return null;
+    }
+
+    @RequestMapping(value = "/api/aliAgreementRepaymentAsnc", method = RequestMethod.POST)
+    @ResponseBody
+    public Object AliAgreementRepaymentAsnc(HttpServletRequest request, HttpServletResponse response, ModelMap modelMap, String userId){
+        Result<AlipayTradeOrderinfoSyncResponse> result = new Result<AlipayTradeOrderinfoSyncResponse>();
+        Properties prop = AlipayConfig.getProperties();
+        AlipayTradeOrderinfoSyncModel alipayTradeOrderinfoSyncModel = getAlipayTradeOrderinfoSyncModelByUserId(userId);
+        if(alipayTradeOrderinfoSyncModel == null){
+            result.setSuccess(false);
+            result.setMessage("不存在需要同步的订单");
+            return result;
+        }
+
+        //初始化请求类
+        AlipayTradeOrderinfoSyncRequest alipayRequest = new AlipayTradeOrderinfoSyncRequest();
+        //设置业务参数，alipayModel为前端发送的请求信息，开发者需要根据实际情况填充此类
+        alipayRequest.setBizModel(alipayTradeOrderinfoSyncModel);
+        //sdk请求客户端，已将配置信息初始化
+        AlipayClient alipayClient = DefaultAlipayClientFactory.getAlipayClient();
+        try {
+            //因为是接口服务，使用exexcute方法获取到返回值
+            AlipayTradeOrderinfoSyncResponse alipayResponse = alipayClient.execute(alipayRequest);
+            if(alipayResponse.isSuccess()){
+                System.out.println("同步支付宝订单。调用成功");
+                OrderForm orderForm = new OrderForm();
+                orderForm.setBuyeruserid(alipayResponse.getBuyerUserId());
+                orderForm.setOuttradeno(alipayResponse.getOutTradeNo());
+                orderForm.setTradeno(alipayResponse.getTradeNo());
+                List<OrderForm> orderForms = orderService.queryOrderListByCondition(orderForm);
+                if(orderForms == null || orderForms.size() <= 0){
+                    logger.debug("同步信息异常，直接暂时存库");
+                    orderForm.setOrderstatus(OrderForm.ORDER_STATUS_SYNC_EXCEPTION);
+                    orderForm.setGmtpayment(new Timestamp(System.currentTimeMillis()));
+                    orderService.addOrder(orderForm);
+                }else{
+                    orderForm.setId(orderForms.get(0).getId());
+                    orderForm.setOrderstatus(OrderForm.ORDER_STATUS_PAID);
+                    orderForm.setGmtpayment(new Timestamp(System.currentTimeMillis()));
+                    orderService.editOrder(orderForm);
+                    System.out.println("更新同步订单信息：" + (Order)orderForm);
+                }
+                //TODO 实际业务处理，开发者编写。可以通过alipayResponse.getXXX的形式获取到返回值
             } else {
                 System.out.println("调用失败");
                 System.out.println(alipayResponse.getSubMsg());
@@ -154,6 +205,24 @@ public class AliPayController {
         alipayModel.setSubject("测试欠款还款");
         alipayModel.setTimeoutExpress("3d");
         alipayModel.setTotalAmount("0.01");
+        return alipayModel;
+    }
+
+    private AlipayTradeOrderinfoSyncModel getAlipayTradeOrderinfoSyncModelByUserId(String userId){
+        OrderForm condition = new OrderForm();
+        //暂时只搜查询无法购买的订单进行同步
+        condition.setBuyeruserid(userId);
+        condition.setOrderstatus(OrderForm.ORDER_STATUS_UNABLE_PAY);
+        List<OrderForm> orderForms = orderService.queryOrderListByCondition(condition);
+        if(orderForms == null || orderForms.size() <= 0){
+            return null;
+        }
+        OrderForm syncOrder = orderForms.get(0);
+        AlipayTradeOrderinfoSyncModel alipayModel = new AlipayTradeOrderinfoSyncModel();
+        alipayModel.setTradeNo(syncOrder.getTradeno());
+        alipayModel.setOutRequestNo(syncOrder.getOuttradeno());
+        alipayModel.setBizType(AliPayAgreementConstants.ORDERINFO_SYNC_BIZ_TYPE);
+        alipayModel.setOrderBizInfo(AliPayAgreementConstants.ORDERINFO_SYNC_ORDER_BIZ_INFO_COMPLETE);
         return alipayModel;
     }
 

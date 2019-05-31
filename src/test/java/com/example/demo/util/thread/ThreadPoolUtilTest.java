@@ -2,6 +2,7 @@ package com.example.demo.util.thread;
 
 import com.alibaba.fastjson.JSONObject;
 import com.example.demo.util.SpringContextUtils;
+import com.google.common.base.Strings;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -12,9 +13,14 @@ import org.springframework.core.task.TaskExecutor;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.web.client.RestTemplate;
 
+import java.time.Duration;
+import java.time.LocalDateTime;
 import java.util.Map;
+import java.util.Queue;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.ConcurrentLinkedQueue;
 import java.util.concurrent.CountDownLatch;
+import java.util.concurrent.atomic.LongAdder;
 
 /**
  * @Classname ThreadPoolUtilTest
@@ -71,6 +77,7 @@ public class ThreadPoolUtilTest {
         System.out.println("所有的统计任务执行完成");
     }
 
+    /*公共参数多线程测试*/
     @Test
     public void testPublicParams() throws InterruptedException {
         int threadNum = Thread.activeCount();
@@ -88,31 +95,84 @@ public class ThreadPoolUtilTest {
         System.out.println("所有的统计任务执行完成");
     }
 
+    /*多线程计数器测试*/
     @Test
-    public void testMultByMap() throws InterruptedException {
+    public void testAdderByMap() throws InterruptedException {
         int threadNum = Thread.activeCount();
         System.out.println("初始线程数： " + threadNum);
         ThreadPublicParams threadPublicParams = ThreadPublicParams.getInstance();
-        Map map = new ConcurrentHashMap();
-        map.put("count", "0");
-        threadPublicParams.setMap(map);
-        CountDownLatch latch = new CountDownLatch(10);
+        Map<String, LongAdder> stringLongAdderMap = new ConcurrentHashMap<>();
+        stringLongAdderMap.put("count", new LongAdder());
+        threadPublicParams.setLongAdderMap(stringLongAdderMap);
+        CountDownLatch latch = new CountDownLatch(100);
         System.out.println("latch初始数量：" + latch.getCount());
-        for(int i = 0 ;i < 10 ; i++){
+        LocalDateTime beginTime = LocalDateTime.now();
+        for(int i = 0 ;i < 100 ; i++){
             taskExecutor.execute(new Runnable() {
                 @Override
                 public void run() {
                     ThreadPublicParams count = ThreadPublicParams.getInstance();
-                    Map<String,String> countMap = count.getMap();
-                    int countNum = Integer.parseInt(countMap.get("count"));
-                    countNum ++;
-                    countMap.replace("count", countNum +"");
+//                    Map<String,String> countMap = count.getMap();
+                    for(int i = 0 ;i < 100000 ; i ++){
+                        //使用concurrentHashMap计数，但是依然无法解决问题
+//                        count.increase("count");
+                        //使用LongAdder计数,成功
+//                        count.getLongAdder().increment();
+                        //混合concurrentHashMap和LongAdder的计数器，为了解决单容器，多计数的问题
+                        count.increaseLongAdder("count");
+                    }
+                    latch.countDown();
                 }
             });
         }
         latch.await();// 等待所有人任务结束
+        LocalDateTime endTime = LocalDateTime.now();
         System.out.println("所有的统计任务执行完成");
-        System.out.println("最后统计埋点数量为： " + threadPublicParams.getMap().get("count"));
+//        System.out.println("最后统计埋点数量为： " + threadPublicParams.getCalcMap().get("count"));
+//        System.out.println("最后统计埋点数量为： " + threadPublicParams.getLongAdder().sum());
+        System.out.println("最后统计埋点数量为： " + threadPublicParams.getLongAdderMap().get("count").sum());
+        Duration duration = Duration.between(beginTime, endTime);
+        System.out.println("总用时：" + duration);
+        threadPublicParams.getCalcMap().replace("asd",1);
+        System.out.println("顺便测试replace为null的情况：" + threadPublicParams.getCalcMap().get("asd"));
+    }
+
+    /*多线程测试队列*/
+    @Test
+    public void testQueueForThred() throws InterruptedException {
+        int threadNum = Thread.activeCount();
+        System.out.println("初始线程数： " + threadNum);
+        ThreadPublicParams threadPublicParams = ThreadPublicParams.getInstance();
+        Queue queue = new ConcurrentLinkedQueue();
+        for(int i = 0 ; i < 1000 ; i++){
+            queue.add("task" + i);
+        }
+        threadPublicParams.setQueue(queue);
+        CountDownLatch latch = new CountDownLatch(10);
+        System.out.println("latch初始数量：" + latch.getCount());
+        LocalDateTime beginTime = LocalDateTime.now();
+        for(int i = 0 ;i < 10 ; i++){
+            taskExecutor.execute(new Runnable() {
+                @Override
+                public void run() {
+                    for(int i = 0 ;i < 1000 ; i ++){
+                        String task = ThreadPublicParams.getInstance().getQueue().poll();
+                        if(!Strings.isNullOrEmpty(task)){
+                            System.out.println(Thread.currentThread().getName() + " 获得 " + task);
+                        }else{
+                            System.out.println(Thread.currentThread().getName() + " 拿不到task，task取完");
+                            break;
+                        }
+                    }
+                    latch.countDown();
+                }
+            });
+        }
+        latch.await();// 等待所有人任务结束
+        LocalDateTime endTime = LocalDateTime.now();
+        System.out.println("所有的统计任务执行完成");
+        Duration duration = Duration.between(beginTime, endTime);
+        System.out.println("总用时：" + duration);
     }
 
     @Test

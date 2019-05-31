@@ -1,9 +1,11 @@
 package com.example.demo.util;
 
+import java.time.DayOfWeek;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
-import java.time.format.FormatStyle;
+import java.time.format.TextStyle;
+import java.util.Locale;
 
 /**
  * @author chen_bq
@@ -54,6 +56,16 @@ public class DateUtils {
     public static LocalDate getDateByFormatter(String date, String formatter){
         DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern(formatter);
         return LocalDate.parse(date);
+    }
+
+    public static void main(String[] args) {
+        LocalDate localDate = LocalDate.now();
+        DayOfWeek dayOfWeek = localDate.getDayOfWeek();
+        System.out.println(dayOfWeek);
+        System.out.println(dayOfWeek.getDisplayName(TextStyle.FULL, Locale.CHINA));
+        System.out.println(dayOfWeek.getDisplayName(TextStyle.FULL, Locale.CHINESE));
+        LocalDate date = LocalDate.parse("2019-05-01");
+        System.out.println(date);
     }
 
 

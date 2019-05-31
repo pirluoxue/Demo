@@ -33,6 +33,9 @@
     <button onclick="aliTradeRePay()"
             >欠款还款（暂未开通）
     </button>
+    <button onclick="aliAgreementRepayment()"
+            >免费还款
+    </button>
 </div>
 <script type="text/javascript" src="/static/js/jquery-3.2.1.js"></script>
 <script>
@@ -82,12 +85,7 @@
         var userId =  ${Session["userId"]!'0'};
         var formData = {userId: userId};
         $.post("/api/alipayUserAgreementQuery", formData, function (res) {
-            console.log(res);
-            const div = document.createElement('divform');
-            div.innerHTML = res.value.body;
-            document.body.appendChild(div);
-            document.forms[0].acceptCharset = 'UTF-8';//保持与支付宝默认编码格式一致，如果不一致将会出现：调试错误，请回到请求来源地，重新发起请求，错误代码 invalid-signature 错误原因: 验签出错，建议检查签名字符串或签名私钥与应用公钥是否匹配
-            document.forms[0].submit();
+            alert(res.value.body.alipay_user_agreement_query_response.sub_msg)
         }, "json");
     }
 
@@ -113,6 +111,17 @@
             document.body.appendChild(div);
             document.forms[0].acceptCharset = 'UTF-8';//保持与支付宝默认编码格式一致，如果不一致将会出现：调试错误，请回到请求来源地，重新发起请求，错误代码 invalid-signature 错误原因: 验签出错，建议检查签名字符串或签名私钥与应用公钥是否匹配
             document.forms[0].submit();
+        }, "json");
+    }
+
+    function aliAgreementRepayment() {
+        //测试写死自己的userid
+        var userId =  ${Session["userId"]!'0'};
+        var formData = {userId: userId};
+        $.post("/api/aliAgreementRepaymentAsnc", formData, function (res) {
+            if(res.value.msg == 'success'){
+                alert("支付成功！")
+            }
         }, "json");
     }
 </script>

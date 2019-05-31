@@ -4,11 +4,10 @@
 package com.example.demo.model.entity.jooq.tables.pojos;
 
 
-import java.io.Serializable;
-import java.sql.Timestamp;
-
 import javax.annotation.Generated;
 import javax.validation.constraints.Size;
+import java.io.Serializable;
+import java.sql.Timestamp;
 
 import javax.annotation.Generated;
 import javax.validation.constraints.Size;

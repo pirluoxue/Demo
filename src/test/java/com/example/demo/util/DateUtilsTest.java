@@ -69,6 +69,17 @@ public class DateUtilsTest {
         }catch (Exception e) {
             System.out.println("不含时间 LocalDate转化失败");
         }
+        /*不含日*/
+        formatter = "yyyy-MM";
+        try {
+        localDate = DateUtils.getDateByFormatter(date, formatter);
+        System.out.println(localDate);
+        System.out.println("localDate.atStartOfDay() " + localDate.atStartOfDay());
+        System.out.println("localDate.minusDays(1) " + localDate.minusDays(1));
+        System.out.println("localDate.minusDays(-1) " + localDate.minusDays(-1));
+        }catch (Exception e) {
+            System.out.println("不含日 LocalDate转化失败");
+        }
         /*含部分时间*/
         date = "2018-01-01 12";
         formatter = "yyyy-MM-dd HH";
