@@ -19,7 +19,6 @@ public class C1 {
 	public static void main(String[] argv) throws Exception {
 		ConnectionFactory factory = new ConnectionFactory();
 		factory.setHost("localhost");
-//		factory.setHost("47.96.19.99");
 		/*测试字段*/
 		factory.setVirtualHost("/");
 		factory.setUsername("test");
