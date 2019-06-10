@@ -24,12 +24,12 @@ public class ThreadLocalUtilTest {
     @Test
     public void threadLocalTest(){
         Map<String, LocalDateTime> map = new HashMap<>();
+        System.out.println(LocalDateTime.now());
         for(int i = 0 ;i < 10000; i ++){
             Instant instant = Instant.ofEpochMilli(System.currentTimeMillis() + i);
             ZoneId zone = ZoneId.systemDefault();
             map.put(i + "", LocalDateTime.ofInstant(instant, zone));
         }
-        System.out.println();
         Set<String> keys = map.keySet();
         System.out.println(LocalDateTime.now());
         for(String key:keys){
@@ -55,8 +55,8 @@ public class ThreadLocalUtilTest {
         System.out.println(ThreadLocalUtil.getInstance().getSession("9999"));
         System.out.println(LocalDateTime.now());
         Map<String, ThreadLocalEntity> result = (Map<String, ThreadLocalEntity>)ThreadLocalUtil.getInstance().getThreadLocal().get();
-        System.out.println("过期移除后数量： " + result.size());
         ThreadLocalUtil.getInstance().remove();
+        System.out.println("过期移除后数量： " + result.size());
     }
 
     @Test
@@ -72,11 +72,11 @@ public class ThreadLocalUtilTest {
         System.out.println("初始化map长度 " + map.size());
         int nowThreadCount = Thread.activeCount();
         for(int i = 0; i < 3 ;i++){
-            SimpleThread simpleThread = new SimpleThread(ThreadLocalUtil.getInstance().getThreadLocal());
+            SimpleThread simpleThread = new SimpleThread(ThreadLocalUtil.getInstance().getThreadLocal(), i);
             Thread thread = new Thread(simpleThread);
             thread.start();
             Map testMap = (Map<String, ThreadLocalEntity>)simpleThread.getThreadLocal().get();
-            System.out.println(testMap.get("1"));
+            System.out.println("获取key 1 为 " + testMap.get("1"));
         }
         SimpleThread simpleThread = new SimpleThread(ThreadLocalUtil.getInstance().getThreadLocal());
         Thread thread = new Thread(simpleThread);
@@ -91,7 +91,13 @@ public class ThreadLocalUtilTest {
         map = (Map<String, ThreadLocalEntity>) ThreadLocalUtil.getInstance().getThreadLocal().get();
         if(map !=null){
             System.out.println("最终map长度 " + map.size());
-            System.out.println("线程 " + thread.getName() + " 数据为 " + simpleThread.getThreadLocalEntity());
+            System.out.println("线程 " + thread.getName());
+            Map<String, ThreadLocalEntity> test = (Map<String, ThreadLocalEntity>)simpleThread.getThreadLocal().get();
+            Iterator iterator = test.keySet().iterator();
+            while (iterator.hasNext()) {
+                System.out.println(test.get(iterator.next()));
+            }
+            System.out.println("ThreadLocalUtil.getInstance() 数据为 " + ThreadLocalUtil.getInstance().getThreadLocal().get());
         }else{
             System.out.println("boom!!!");
         }

@@ -17,6 +17,7 @@ public class SimpleThread implements Runnable {
 
     private ThreadLocal threadLocal;
     private ThreadLocalEntity threadLocalEntity;
+    private int threadId;
 
     public SimpleThread(ThreadLocal threadLocal){
         this.threadLocal = threadLocal;
@@ -24,9 +25,20 @@ public class SimpleThread implements Runnable {
         System.out.println("线程 " + Thread.currentThread().getName() + "  " + result.get("1"));
     }
 
+    public SimpleThread(ThreadLocal threadLocal, int threadId){
+        this.threadLocal = threadLocal;
+        Map<String, ThreadLocalEntity> result = (Map<String, ThreadLocalEntity>)this.threadLocal.get();
+        System.out.println("线程 " + Thread.currentThread().getName() + "  " + result.get("1"));
+        this.threadId = threadId;
+        //测试main线程增添信息
+        ThreadLocalEntity threadLocalEntity = new ThreadLocalEntity();
+        threadLocalEntity.setSession("main Test " + threadId);
+        result.put("Test " + threadId,threadLocalEntity);
+    }
+
     @Override
     public void run() {
-        //即便使用了instance模式，获得的依然还是该线程的独有的threadlocal，因此数据为空
+        //即便使用了instance模式，获得的依然还是该线程的独有的threadlocal，因此数据为空。录入的数据还是在main线程中
         Map<String, ThreadLocalEntity> result = (Map<String, ThreadLocalEntity>)ThreadLocalUtil.getInstance().getThreadLocal().get();
         long id = Thread.currentThread().getId();
         System.out.println("线程 " + Thread.currentThread().getName()
@@ -60,7 +72,8 @@ public class SimpleThread implements Runnable {
         Map<String, ThreadLocalEntity> map = (Map<String, ThreadLocalEntity>)ThreadLocalUtil.getInstance().getThreadLocal().get();
         System.out.println("线程 " + Thread.currentThread().getName() + "  结束时数据：" + map.get(Thread.currentThread().getName()));
         this.threadLocalEntity = map.get(Thread.currentThread().getName());
-        ThreadLocalUtil.getInstance().remove();
+        //清空公共的ThreadLocal
+//        ThreadLocalUtil.getInstance().remove();
         Thread.interrupted();
     }
 }
