@@ -56,7 +56,7 @@ public class ThreadPoolUtilTest {
     }
 
 
-    @Autowired
+    @Autowired(required = false)
     private TaskExecutor taskExecutor;
 
     @Test
@@ -183,24 +183,13 @@ public class ThreadPoolUtilTest {
             taskExecutor.execute(new Runnable() {
                 @Override
                 public void run() {
-                    try {
-                        Thread.sleep(1000);
-                    } catch (InterruptedException e) {
-                        e.printStackTrace();
-                    }
                     RestTemplate restTemplate = SpringContextUtils.getBean(RestTemplate.class);
 //                    String url = "http://localhost:8085/order/api/prePayOrder";
 //                    String url = "http://localhost:8085/order/api/prePayOrder?openId=oVb6x1EOpoJBIqPmCZDXlmyJT2RA&deviceCode=30000028&scanId=1&orderSource=1&menuId=42&cardId=270";
-                    String url = "http://localhost:8085/order/api/prePayOrder?openId=oVb6x1EOpoJBIqPmCZDXlmyJT2RA&deviceCode=22000038&scanId=1&orderSource=1&menuId=11&cardId=81";
-//                    JSONObject jsonObject = new JSONObject();
-//                    jsonObject.put("openId", "oVb6x1EOpoJBIqPmCZDXlmyJT2RA");
-//                    jsonObject.put("deviceCode", "20002639");
-//                    jsonObject.put("scanId", "1");
-//                    jsonObject.put("orderSource", "1");
-//                    jsonObject.put("menuId", "11");
-//                    jsonObject.put("cardId", "59");
-//                    String rs = restTemplate.postForObject(url, jsonObject.toString(), String.class);
-                    String rs = restTemplate.postForObject(url,null, String.class);
+//                    String url = "http://localhost:8085/order/api/prePayOrder?openId=oVb6x1EOpoJBIqPmCZDXlmyJT2RA&deviceCode=22000038&scanId=1&orderSource=1&menuId=11&cardId=81";
+//                    String url = "http://localhost:9035/paramProduct?user=asd" + Math.random();
+                    String url = "http://localhost:9035/paramFeign?param=asd" + Math.random();
+                    String rs = restTemplate.getForObject(url, String.class);
                     System.out.println(rs);
                     latch.countDown();
                 }
