@@ -202,9 +202,9 @@ public class DemoApplicationTests {
     }
 
     public static void main(String[] args) {
-        int a = 10;
-        int b = 3;
-        System.out.println(a/b);
+        Long a = 10L;
+        Integer b = 10;
+        System.out.println(a.intValue() == b );
     }
 
 }

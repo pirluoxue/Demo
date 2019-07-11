@@ -46,6 +46,16 @@ public class User extends SuperUser {
         System.out.println("父类值" + superUser.getStr());
         System.out.println("父类强转子类 子类值" + ((User) superUser).getStr1());
         System.out.println("父类强转子类 父类值" + ((User) superUser).getStr2());
+
+        System.out.println("父类直接强转子类");
+        try {
+            SuperUser superUser1 = new SuperUser();
+            User test = (User) superUser1;
+            System.out.println("测试结果 " + test);
+        }catch (Exception e){
+            System.out.println("非通过子类初始化的父类，无法直接转换为子类");
+        }
+        
     }
 
 

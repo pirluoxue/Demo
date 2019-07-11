@@ -17,6 +17,7 @@ public class DelayProduct {
 
     private final static String QUEUE_NAME = "hello queue";
     private final static String QUEUE_EXCHANGE = "hello queue";
+//    private final static String QUEUE_EXCHANGE = "checkExchange";
     private final static String DEAD_QUEUE_NAME = "Dead queue";
     private final static String DEAD_QUEUE_EXCHANGE = "Dead queue";
     private final static String ROUTE_KEY = "routeKey.*";
@@ -33,13 +34,13 @@ public class DelayProduct {
         factory.setPort(5672);
         Connection connection = factory.newConnection();
         Channel channel = connection.createChannel();
-
         String routeKey = "routeKey.test";
+//        String routeKey = "checkQueue";
         String message = "Hello World!";
-        for(int i = 0 ; i < 10 ; i++){
+        for(int i = 0 ; i < 1000 ; i++){
             AMQP.BasicProperties basicProperties = new AMQP.BasicProperties().builder()
                     .contentEncoding("UTF-8")
-                    .expiration(String.valueOf(i * 1000))
+                    .expiration(String.valueOf(i * 100))
                     .build();
             //参数为：exchange，routekey，basicProperties，message
             channel.basicPublish(QUEUE_EXCHANGE, routeKey, basicProperties, (message + "  " + i).getBytes("UTF-8"));

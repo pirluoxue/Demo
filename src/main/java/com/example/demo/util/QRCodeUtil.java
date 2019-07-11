@@ -6,14 +6,10 @@ import com.google.zxing.client.j2se.MatrixToImageWriter;
 import com.google.zxing.common.BitMatrix;
 import com.google.zxing.common.HybridBinarizer;
 import com.google.zxing.qrcode.decoder.ErrorCorrectionLevel;
-import com.google.zxing.qrcode.encoder.QRCode;
-import org.springframework.core.codec.Hints;
 
 import javax.imageio.ImageIO;
 import java.awt.image.BufferedImage;
 import java.io.File;
-import java.io.IOException;
-import java.nio.file.Path;
 import java.sql.Timestamp;
 import java.util.HashMap;
 
@@ -25,13 +21,8 @@ import java.util.HashMap;
 public class QRCodeUtil {
 
     public static void main(String[] args) {
-//        createQRcode("微信测试30000028","http://wenap.cn/?deviceCode=30000028");
-//        createQRcode("微信测试30000029","http://wenap.cn/?deviceCode=30000029");
-//        createQRcode("微信测试20000746","http://wenap.cn/?deviceCode=20000746");
-//        createQRcode("微信测试20002639","http://wenap.cn/?deviceCode=20002639");
-//        createQRcode("支付宝回调测试","http://wenap.cn/order/api/aliNotifyReceive");
-        createQRcode("支付宝支付线上测试","http://wenap.cn:8088/index");
-        createQRcode("支付宝支付本地测试","http://24z00278u5.qicp.vip/index");
+        createQRcode("支付宝QRcode支付测试","https://qr.alipay.com/bax0480672qfy24mewg3204a");
+        createQRcode("微信QRcode支付测试","weixin://wxpay/bizpayurl?pr=d32VoWT");
     }
 
     public static void createQRcode(String fileName, String text, int height, int width){
