@@ -1,5 +1,6 @@
 package com.example.demo.simple;
 
+import com.example.demo.model.entity.simple.BigDecimalEntity;
 import com.example.demo.model.entity.simple.ConfigEntity;
 import com.example.demo.model.entity.simple.User;
 import org.junit.Test;
@@ -7,9 +8,11 @@ import org.junit.runner.RunWith;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit4.SpringRunner;
 
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  * @author chen_bq
@@ -76,6 +79,24 @@ public class SimpleTest {
         itList.get(0).setStr("zxc");
         System.out.println(itList);
         System.out.println(list);
+    }
+
+    @Test
+    public void streamLambdaTest(){
+        List<BigDecimalEntity> list = new ArrayList<>();
+        list.add(new BigDecimalEntity(new BigDecimal(1), new BigDecimal(2)));
+        list.add(new BigDecimalEntity(new BigDecimal(2), new BigDecimal(2)));
+        list.add(new BigDecimalEntity(new BigDecimal(3), new BigDecimal(2)));
+        list.add(new BigDecimalEntity(new BigDecimal(4), new BigDecimal(2)));
+        list.add(new BigDecimalEntity(new BigDecimal(-1), new BigDecimal(2)));
+        list.add(new BigDecimalEntity(new BigDecimal(-2), new BigDecimal(2)));
+        list.add(new BigDecimalEntity(new BigDecimal(-3), new BigDecimal(2)));
+        List<BigDecimalEntity> listOrdered = list.stream().sorted((p1, p2) -> (p1.getTest1().subtract(p2.getTest1()).intValue()))
+                .collect(Collectors.toList());
+        for (BigDecimalEntity b : listOrdered){
+            System.out.println(b);
+        }
+
     }
 
 
