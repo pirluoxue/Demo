@@ -82,7 +82,7 @@ public class SimpleTest {
     }
 
     @Test
-    public void streamLambdaTest(){
+    public void streamSortLambdaTest(){
         List<BigDecimalEntity> list = new ArrayList<>();
         list.add(new BigDecimalEntity(new BigDecimal(1), new BigDecimal(2)));
         list.add(new BigDecimalEntity(new BigDecimal(2), new BigDecimal(2)));
@@ -91,12 +91,42 @@ public class SimpleTest {
         list.add(new BigDecimalEntity(new BigDecimal(-1), new BigDecimal(2)));
         list.add(new BigDecimalEntity(new BigDecimal(-2), new BigDecimal(2)));
         list.add(new BigDecimalEntity(new BigDecimal(-3), new BigDecimal(2)));
+        //从小到大排序排序，解释：p1为前者，p2为后者，前后对比大小，默认小到大
         List<BigDecimalEntity> listOrdered = list.stream().sorted((p1, p2) -> (p1.getTest1().subtract(p2.getTest1()).intValue()))
                 .collect(Collectors.toList());
         for (BigDecimalEntity b : listOrdered){
             System.out.println(b);
         }
+        System.out.println("****************************");
+        //从大到小排序排序，解释：p1为前者，p2为后者，前后对比大小，默认小到大，取反值则从大到小
+        listOrdered = list.stream().sorted((p1, p2) -> (p2.getTest1().subtract(p1.getTest1()).intValue()))
+                .collect(Collectors.toList());
+        for (BigDecimalEntity b : listOrdered){
+            System.out.println(b);
+        }
+        System.out.println("****************************");
+        //从大到小排序排序，解释：p2为前者，p1为后者，前后对比大小，默认小到大，但前后顺序相反则打印为从大到小
+        listOrdered = list.stream().sorted((p2, p1) -> (p1.getTest1().subtract(p2.getTest1()).intValue()))
+                .collect(Collectors.toList());
+        for (BigDecimalEntity b : listOrdered){
+            System.out.println(b);
+        }
+    }
 
+    @Test
+    public void stramFiltterLambdaTest(){
+        List<Integer> integers = new ArrayList<>();
+        integers.add(1);
+        integers.add(2);
+        integers.add(3);
+        integers.add(4);
+        integers.add(5);
+        //拦截小于3的部分
+        List<Integer> filters = integers.stream().filter(e -> e < 3)
+                .collect(Collectors.toList());
+        for (Integer i : filters){
+            System.out.println(i);
+        }
     }
 
 

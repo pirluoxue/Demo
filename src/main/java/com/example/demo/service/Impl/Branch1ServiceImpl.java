@@ -16,4 +16,9 @@ public class Branch1ServiceImpl implements BranchService {
         return "this is brach1";
     }
 
+    @Override
+    public String branchParent() {
+        return "extends BranchParentService";
+    }
+
 }
