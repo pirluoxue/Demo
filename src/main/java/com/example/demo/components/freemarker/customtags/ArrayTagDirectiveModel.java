@@ -2,13 +2,9 @@ package com.example.demo.components.freemarker.customtags;
 
 import freemarker.core.Environment;
 import freemarker.template.*;
-import freemarker.template.utility.ObjectWrapperWithAPISupport;
-import lombok.Data;
-import lombok.NoArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
 import java.io.IOException;
-import java.util.List;
 import java.util.Map;
 
 /**
@@ -28,7 +24,7 @@ public class ArrayTagDirectiveModel implements TemplateDirectiveModel {
         Version version = new Version(2,3,22);
         if(map.get("name") != null){
             String str = map.get("name").toString();
-            if(!str.equalsIgnoreCase("喵喵喵")){
+            if(!"喵喵喵".equalsIgnoreCase(str)){
                 map.remove("act");
                 map.put("act", "除了喵，都不能动");
             }

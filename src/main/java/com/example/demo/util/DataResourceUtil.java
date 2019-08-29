@@ -29,6 +29,9 @@ public class DataResourceUtil {
     }
 
     public ConnectionUtil getConnection(String key){
+        if (map == null || map.isEmpty()){
+            return null;
+        }
         return map.get(key);
     }
 

@@ -39,7 +39,7 @@ public class DemoApplicationTests {
 
     @Ignore
     public void testRedis(){
-//        redisDAO.set("asd","test dao");
+        redisDAO.set("asd","test dao");
         System.out.println(redisDAO.get("asd"));
     }
 
@@ -201,10 +201,12 @@ public class DemoApplicationTests {
         }
     }
 
-    public static void main(String[] args) {
+    @Test
+    public void simpleTest(){
         Long a = 10L;
         Integer b = 10;
         System.out.println(a.intValue() == b );
+        System.out.println(15 * 1_000 + 15);
     }
 
 }

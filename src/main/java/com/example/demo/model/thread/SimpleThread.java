@@ -74,6 +74,7 @@ public class SimpleThread implements Runnable {
         this.threadLocalEntity = map.get(Thread.currentThread().getName());
         //清空公共的ThreadLocal
 //        ThreadLocalUtil.getInstance().remove();
+        threadLocal.remove();
         Thread.interrupted();
     }
 }

@@ -28,6 +28,7 @@ public class UserServiceImpl implements UserService {
 	  * @Param user
 	  * @return Data mapping entity list
 	  */
+	@Override
 	public List<UserForm> queryUserListByCondition(UserForm user) {
 		return userMapper.queryUserListByCondition(user);
 	}
@@ -38,6 +39,7 @@ public class UserServiceImpl implements UserService {
       * @Param user
 	  * @return Data mapping entity list
 	  */
+	@Override
 	public List<UserForm> queryUserListByConditionNoPage(UserForm user){
 		return userMapper.queryUserListByConditionNoPage(user);
 	}
@@ -48,6 +50,7 @@ public class UserServiceImpl implements UserService {
 	  * @Param user
 	  * @return Total Data
 	  */
+	@Override
 	public Integer queryUserNumByCondition(UserForm user) {
 		return userMapper.queryUserNumByCondition(user);
 	}
@@ -57,11 +60,13 @@ public class UserServiceImpl implements UserService {
 	  * Add data based on entity class attributes.
 	  * @Param user
 	  */
+	@Override
 	@Transactional
 	public void addUser(UserForm user) {
 		userMapper.addUser(user);
 	}
 
+	@Override
 	@Transactional
 	public boolean saveAndUpdate(UserForm userForm){
 		return userMapper.saveAndUpdate(userForm);
@@ -72,6 +77,7 @@ public class UserServiceImpl implements UserService {
 	  * Delete data according to the primary key.
 	  * @Param id  PrimaryKey
 	  */
+	@Override
 	@Transactional
 	public void deleteUser(Integer id) {
 		userMapper.deleteUser(id);
@@ -83,6 +89,7 @@ public class UserServiceImpl implements UserService {
 	  * @Param id  PrimaryKey
 	  * @return Data mapping entity
 	  */
+	@Override
 	public UserForm getUser(Integer id) {
 		return userMapper.getUser(id);
 	}
@@ -92,6 +99,7 @@ public class UserServiceImpl implements UserService {
 	  * @Param id  PrimaryKey
 	  * @return Data mapping entity
 	  */
+	@Override
 	public UserForm getUserByUserId(String userId) {
 		return userMapper.getUserByUserId(userId);
 	}
@@ -101,6 +109,7 @@ public class UserServiceImpl implements UserService {
 	  * Modify data based on entity class attributes.
 	  * @Param user
 	  */
+	@Override
 	@Transactional
 	public void editUser(UserForm user) {
 		userMapper.editUser(user);
@@ -111,6 +120,7 @@ public class UserServiceImpl implements UserService {
 	  * Querying all data.
 	  * @return Data mapping entity list
 	  */
+	@Override
 	public List<UserForm> queryAllUser(){
 		return userMapper.queryAllUser();
 	}

@@ -5,10 +5,10 @@ package com.example.demo.model.entity.decorate;
  * @description
  * @create: 2019-04-23 09:57
  **/
-public abstract class GirlsDeorate implements Girls {
+public abstract class AbstractGirlsDeorate implements Girls {
 
     private Girls girls;
-    public GirlsDeorate(Girls girls){
+    public AbstractGirlsDeorate(Girls girls){
         this.girls = girls;
     }
 

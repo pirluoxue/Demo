@@ -63,8 +63,9 @@ public final class AlipayConfig {
 	 * @return
 	 */
 	public static Properties getProperties() {
-		if (prop == null)
+		if (prop == null) {
 			initPropertis();
+		}
 		return prop;
 	}
 

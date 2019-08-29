@@ -20,14 +20,12 @@ public class BranchServiceTest {
         BranchService branchService1 = SpringContextUtils.getBean(Branch1ServiceImpl.class);
         System.out.println("注入 branchService1 实现接口");
         System.out.println(branchService1.getBranch());
-        System.out.println(" branchService1 实现接口的 default 方法");
+        System.out.println("branchService1 实现接口的 default 方法");
         System.out.println(branchService1.branchParent());
         BranchService branchService2 = SpringContextUtils.getBean(Branch2ServiceImpl.class);
         System.out.println("注入 branchService2 实现接口");
         System.out.println(branchService2.getBranch());
-        System.out.println(" branchService2 实现接口的 default 方法");
+        System.out.println("branchService2 实现接口的 default 方法");
         System.out.println(branchService2.branchParent());
-
-
     }
 }

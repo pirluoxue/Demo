@@ -1,5 +1,6 @@
 package com.example.demo.util.http;
 
+import org.apache.http.Consts;
 import org.apache.http.HttpResponse;
 import org.apache.http.NameValuePair;
 import org.apache.http.client.HttpClient;
@@ -7,8 +8,6 @@ import org.apache.http.client.entity.UrlEncodedFormEntity;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.client.methods.HttpPost;
 import org.apache.http.impl.client.HttpClientBuilder;
-import org.apache.http.message.BasicNameValuePair;
-import org.apache.http.protocol.HTTP;
 import org.apache.http.util.EntityUtils;
 
 import java.io.IOException;
@@ -33,7 +32,7 @@ public class HttpClientUtil {
         List<NameValuePair> nvp = new ArrayList<NameValuePair>();
 //        nvp.add(new BasicNameValuePair("username","admin"));
 //        nvp.add(new BasicNameValuePair("password", "123456"));
-        httpost.setEntity(new UrlEncodedFormEntity(nvp, HTTP.UTF_8));
+        httpost.setEntity(new UrlEncodedFormEntity(nvp, Consts.UTF_8));
         HttpResponse response1 = client.execute(httpost);
         httpost.abort();//关闭httppost，不关闭的话下面使用httpget会报错
         if (response1.getStatusLine().getStatusCode() == 302) {//使用httppost执行，会导致302重定向，response中会包含重定向的地址yyy，需使用get方式访问

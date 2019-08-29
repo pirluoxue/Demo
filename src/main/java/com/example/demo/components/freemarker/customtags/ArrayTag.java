@@ -3,8 +3,6 @@ package com.example.demo.components.freemarker.customtags;
 import freemarker.core._DelayedJQuote;
 import freemarker.core._TemplateModelException;
 import freemarker.template.*;
-import lombok.Data;
-import lombok.NoArgsConstructor;
 
 import java.util.*;
 

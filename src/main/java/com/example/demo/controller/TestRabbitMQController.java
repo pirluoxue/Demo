@@ -21,7 +21,7 @@ public class TestRabbitMQController {
     private final static String QUEUE_NAME = "hello";
 
     @RequestMapping("test/send/rabbitmq")
-    public void TestSendRabbitMQ() throws IOException, TimeoutException {
+    public void testSendRabbitMQ() throws IOException, TimeoutException {
         System.out.println("发送rabbitMQ消息");
         ConnectionFactory factory = new ConnectionFactory();
 //    factory.setHost("localhost");
@@ -45,7 +45,7 @@ public class TestRabbitMQController {
     }
 
     @RequestMapping("test/receive/rabbitmq")
-    public String TestReceiveRabbitMQ() throws IOException, TimeoutException {
+    public String testReceiveRabbitMQ() throws IOException, TimeoutException {
         ConnectionFactory factory = new ConnectionFactory();
 //		factory.setHost("localhost");
         factory.setHost("47.96.19.99");

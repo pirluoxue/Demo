@@ -5,7 +5,7 @@ package com.example.demo.model.entity.decorate;
  * @description
  * @create: 2019-04-23 10:23
  **/
-public class FantasticGirls extends GirlsDeorate {
+public class FantasticGirls extends AbstractGirlsDeorate {
     public FantasticGirls(Girls girls) {
         super(girls);
     }

@@ -104,19 +104,19 @@ public class TestRest {
     }
 
     public static void main(String[] args) throws UnsupportedEncodingException {
-        User Null = new User();
-        User user = Objects.requireNonNull(Null, "空指针User");
+        User nullUser = new User();
+        User user = Objects.requireNonNull(nullUser, "空指针User");
     }
 
     public static String unicodeEncode(String string) {
         char[] utfBytes = string.toCharArray();
         String unicodeBytes = "";
         for (int i = 0; i < utfBytes.length; i++) {
-            String hexB = Integer.toHexString(utfBytes[i]);
-            if (hexB.length() <= 2) {
-                hexB = "00" + hexB;
+            String hexByte = Integer.toHexString(utfBytes[i]);
+            if (hexByte.length() <= 2) {
+                hexByte = "00" + hexByte;
             }
-            unicodeBytes = unicodeBytes + "\\u" + hexB;
+            unicodeBytes = unicodeBytes + "\\u" + hexByte;
         }
         return unicodeBytes;
     }
