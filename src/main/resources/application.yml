@@ -1,9 +1,11 @@
 
 spring:
   redis:
+#    host: localhost
+#    password: 123456
     host: localhost
+    password: 123456.com
     port: 6379
-    password: 123456
     jedis:
       pool:
         max-active: 8
@@ -12,6 +14,7 @@ spring:
         max-idle: 8
     database: 0
     timeout: 2000
+
 
   jooq:
     sql-dialect: mysql
@@ -23,15 +26,26 @@ logging:
   file: demo.log
   level:
     root: WARN
+#    root: DEBUG
+#    root: info
     org.springframework.web: DEBUG
 
 server:
   port: 8088
+  ssl:
+    key-alias: chen_bq
+#    yml根为项目根目录
+    key-store: server.keystore
+    key-password: 123456
+    key-store-type: JKS
+#    配置为false则不读取信息
+    enabled: false
 
 
-jdbc2:
-  driverClassName: com.mysql.jdbc.Driver
-  url: jdbc:mysql://192.168.10.24:3306/opentogetdb?useUnicode=true&characterEncoding=utf8&jdbcCompliantTruncation=false&useSSL=false&serverTimezone=Asia/Shanghai
-  username: root
-  password: 123456
+#jdbc2:
+#  driverClassName: com.mysql.jdbc.Driver
+#  url: jdbc:mysql://192.168.10.24:3306/opentogetdb?useUnicode=true&characterEncoding=utf8&jdbcCompliantTruncation=false&useSSL=false&serverTimezone=Asia/Shanghai
+#  username: root
+#  password: 123456
+
 

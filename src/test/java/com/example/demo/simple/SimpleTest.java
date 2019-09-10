@@ -223,7 +223,6 @@ public class SimpleTest {
         while ((line = br.readLine()) != null) {
             System.out.println(line);
         }
-
     }
 
 }

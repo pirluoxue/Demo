@@ -19,6 +19,12 @@
     </properties>
 
     <dependencies>
+        <!-- https://mvnrepository.com/artifact/org.springframework.boot/spring-boot-starter-activemq -->
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-activemq</artifactId>
+            <version>2.1.3.RELEASE</version>
+        </dependency>
 
         <!-- https://mvnrepository.com/artifact/org.mongodb/mongo-java-driver -->
         <dependency>
@@ -164,95 +170,95 @@
             </plugin>
 
             <!--jooq 构建构建工具-->
-            <plugin>
-                <groupId>org.jooq</groupId>
-                <artifactId>jooq-codegen-maven</artifactId>
-                <version>${jooq.version}</version>
-                <executions>
-                    <execution>
-                        <goals>
-                            <goal>generate</goal>
-                        </goals>
-                    </execution>
-                </executions>
-                <dependencies>
-                    <dependency>
-                        <groupId>mysql</groupId>
-                        <artifactId>mysql-connector-java</artifactId>
-                        <version>${mysql.version}</version>
-                    </dependency>
-                </dependencies>
-                <configuration>
-                    <!-- JDBC connection parameters -->
-                    <jdbc>
-                        <!--<driver>com.mysql.jdbc.Driver</driver>-->
-                        <!--<url>jdbc:mysql://120.55.60.50:3306/mhe?useUnicode=true&amp;characterEncoding=UTF-8&amp;useSSL=false</url>-->
-                        <!--<username>root</username>-->
-                        <!--<password>Xm@xhe2018</password>-->
-                        <driver>com.mysql.jdbc.Driver</driver>
-                        <url>jdbc:mysql://192.168.10.24:3306/opentogetdb?useUnicode=true&amp;characterEncoding=UTF-8&amp;useSSL=false</url>
-                        <username>root</username>
-                        <password>123456</password>
-                    </jdbc>
-                    <generator>
-                        <!--<name>com.xiaobo.parkingmanage.components.jooq.MyGenerator</name>-->
-                        <database>
-                            <name>org.jooq.meta.mysql.MySQLDatabase</name>
-                            <!--include和exclude用于控制为数据库中哪些表生成代码-->
-                            <includes>
-                                <!-- system -->
-                                |user
-                                |order
-                                <!--|xx_member-->
+<!--            <plugin>-->
+<!--                <groupId>org.jooq</groupId>-->
+<!--                <artifactId>jooq-codegen-maven</artifactId>-->
+<!--                <version>${jooq.version}</version>-->
+<!--                <executions>-->
+<!--                    <execution>-->
+<!--                        <goals>-->
+<!--                            <goal>generate</goal>-->
+<!--                        </goals>-->
+<!--                    </execution>-->
+<!--                </executions>-->
+<!--                <dependencies>-->
+<!--                    <dependency>-->
+<!--                        <groupId>mysql</groupId>-->
+<!--                        <artifactId>mysql-connector-java</artifactId>-->
+<!--                        <version>${mysql.version}</version>-->
+<!--                    </dependency>-->
+<!--                </dependencies>-->
+<!--                <configuration>-->
+<!--                    &lt;!&ndash; JDBC connection parameters &ndash;&gt;-->
+<!--                    <jdbc>-->
+<!--                        &lt;!&ndash;<driver>com.mysql.jdbc.Driver</driver>&ndash;&gt;-->
+<!--                        &lt;!&ndash;<url>jdbc:mysql://120.55.60.50:3306/mhe?useUnicode=true&amp;characterEncoding=UTF-8&amp;useSSL=false</url>&ndash;&gt;-->
+<!--                        &lt;!&ndash;<username>root</username>&ndash;&gt;-->
+<!--                        &lt;!&ndash;<password>Xm@xhe2018</password>&ndash;&gt;-->
+<!--                        <driver>com.mysql.jdbc.Driver</driver>-->
+<!--                        <url>jdbc:mysql://192.168.10.24:3306/opentogetdb?useUnicode=true&amp;characterEncoding=UTF-8&amp;useSSL=false</url>-->
+<!--                        <username>root</username>-->
+<!--                        <password>123456</password>-->
+<!--                    </jdbc>-->
+<!--                    <generator>-->
+<!--                        &lt;!&ndash;<name>com.xiaobo.parkingmanage.components.jooq.MyGenerator</name>&ndash;&gt;-->
+<!--                        <database>-->
+<!--                            <name>org.jooq.meta.mysql.MySQLDatabase</name>-->
+<!--                            &lt;!&ndash;include和exclude用于控制为数据库中哪些表生成代码&ndash;&gt;-->
+<!--                            <includes>-->
+<!--                                &lt;!&ndash; system &ndash;&gt;-->
+<!--                                |user-->
+<!--                                |order-->
+<!--                                &lt;!&ndash;|xx_member&ndash;&gt;-->
 
-                            </includes>
-                            <!--<excludes></excludes>-->
-                            <!--数据库名-->
-                            <!--inputSchema 输入模式-->
-                            <schemata>
-                                <schema>
-                                    <inputSchema>opentogetdb</inputSchema>
-                                </schema>
-                            </schemata>
-                            <!--强制类型-->
-                            <forcedTypes>
-                                <forcedType>
-                                    <name>BOOLEAN</name>
-                                    <types>(?i:TINYINT(\s*\(\d+\))?(\s*UNSIGNED)?)</types>
-                                </forcedType>
-                            </forcedTypes>
-                        </database>
-                        <generate>
-                            <!--生成dao和pojo-->
-                            <pojos>true</pojos>
-                            <validationAnnotations>true</validationAnnotations>
-                            <!-- Generate interfaces that will be implemented by records and/or pojos.
-                             You can also use these interfaces in Record.into(Class<?>) and similar
-                             methods, to let jOOQ return proxy objects for them.
-                             Defaults to false -->
-                            <interfaces>false</interfaces>
-                            <daos>false</daos>
-                            <deprecated>true</deprecated>
-                            <routines>true</routines>
-                        </generate>
-                        <!-- 生成策略配置 -->
-                        <!--<strategy>-->
-                            <!--<matchers>-->
-                                <!--<tables>-->
-                                    <!--<table>-->
-                                        <!--&lt;!&ndash; These elements influence the naming of a generated POJO object.  &ndash;&gt;-->
-                                        <!--<pojoExtends>com.example.demo.model.entity.common.BaseEntity</pojoExtends>-->
-                                    <!--</table>-->
-                                <!--</tables>-->
-                            <!--</matchers>-->
-                        <!--</strategy>-->
-                        <target>
-                            <packageName>com.example.demo.model.entity.jooq</packageName>
-                            <directory>src/main/java</directory>
-                        </target>
-                    </generator>
-                </configuration>
-            </plugin>
+<!--                            </includes>-->
+<!--                            &lt;!&ndash;<excludes></excludes>&ndash;&gt;-->
+<!--                            &lt;!&ndash;数据库名&ndash;&gt;-->
+<!--                            &lt;!&ndash;inputSchema 输入模式&ndash;&gt;-->
+<!--                            <schemata>-->
+<!--                                <schema>-->
+<!--                                    <inputSchema>opentogetdb</inputSchema>-->
+<!--                                </schema>-->
+<!--                            </schemata>-->
+<!--                            &lt;!&ndash;强制类型&ndash;&gt;-->
+<!--                            <forcedTypes>-->
+<!--                                <forcedType>-->
+<!--                                    <name>BOOLEAN</name>-->
+<!--                                    <types>(?i:TINYINT(\s*\(\d+\))?(\s*UNSIGNED)?)</types>-->
+<!--                                </forcedType>-->
+<!--                            </forcedTypes>-->
+<!--                        </database>-->
+<!--                        <generate>-->
+<!--                            &lt;!&ndash;生成dao和pojo&ndash;&gt;-->
+<!--                            <pojos>true</pojos>-->
+<!--                            <validationAnnotations>true</validationAnnotations>-->
+<!--                            &lt;!&ndash; Generate interfaces that will be implemented by records and/or pojos.-->
+<!--                             You can also use these interfaces in Record.into(Class<?>) and similar-->
+<!--                             methods, to let jOOQ return proxy objects for them.-->
+<!--                             Defaults to false &ndash;&gt;-->
+<!--                            <interfaces>false</interfaces>-->
+<!--                            <daos>false</daos>-->
+<!--                            <deprecated>true</deprecated>-->
+<!--                            <routines>true</routines>-->
+<!--                        </generate>-->
+<!--                        &lt;!&ndash; 生成策略配置 &ndash;&gt;-->
+<!--                        &lt;!&ndash;<strategy>&ndash;&gt;-->
+<!--                            &lt;!&ndash;<matchers>&ndash;&gt;-->
+<!--                                &lt;!&ndash;<tables>&ndash;&gt;-->
+<!--                                    &lt;!&ndash;<table>&ndash;&gt;-->
+<!--                                        &lt;!&ndash;&lt;!&ndash; These elements influence the naming of a generated POJO object.  &ndash;&gt;&ndash;&gt;-->
+<!--                                        &lt;!&ndash;<pojoExtends>com.example.demo.model.entity.common.BaseEntity</pojoExtends>&ndash;&gt;-->
+<!--                                    &lt;!&ndash;</table>&ndash;&gt;-->
+<!--                                &lt;!&ndash;</tables>&ndash;&gt;-->
+<!--                            &lt;!&ndash;</matchers>&ndash;&gt;-->
+<!--                        &lt;!&ndash;</strategy>&ndash;&gt;-->
+<!--                        <target>-->
+<!--                            <packageName>com.example.demo.model.entity.jooq</packageName>-->
+<!--                            <directory>src/main/java</directory>-->
+<!--                        </target>-->
+<!--                    </generator>-->
+<!--                </configuration>-->
+<!--            </plugin>-->
         </plugins>
     </build>
 

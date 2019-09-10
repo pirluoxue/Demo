@@ -1,6 +1,5 @@
 package com.example.demo.util;
 
-import com.example.demo.model.collection.DataResourceEnum;
 import org.jooq.DSLContext;
 import org.jooq.impl.DSL;
 
@@ -14,6 +13,9 @@ import java.sql.Connection;
 public class JooqUtil {
 
     public static DSLContext getCreate(Connection connection){
+        if (connection == null){
+            return null;
+        }
         DSLContext resource = DSL.using(connection);
         return resource;
     }

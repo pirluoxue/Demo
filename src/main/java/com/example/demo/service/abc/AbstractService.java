@@ -9,5 +9,4 @@ public abstract class AbstractService {
 
     public abstract String getString();
 
-
 }

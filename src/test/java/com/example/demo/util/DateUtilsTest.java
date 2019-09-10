@@ -1,5 +1,6 @@
 package com.example.demo.util;
 
+import org.apache.activemq.util.TimeUtils;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
@@ -9,6 +10,7 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 import java.sql.Timestamp;
 import java.time.*;
+import java.util.concurrent.TimeUnit;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @SpringBootTest(classes = DateUtils.class)
@@ -154,8 +156,26 @@ public class DateUtilsTest {
         LocalDateTime compare = localDateTime.plusDays(1);
         //比较大小
         System.out.println(localDateTime + " 比 " + compare + " 早 " + localDateTime.isBefore(compare));
+    }
 
-
+    /**
+     * @Author chen_bq
+     * @Description 测试Java自带的TimeUnit
+     * @Date 2019/9/10 11:30
+     */
+    @Test
+    public void timeUnitTest(){
+        // 如果遇到需要增减时间戳的时候直接使用concurrent的timeunit工具比较合适，方便且避免歧义
+        long nowTime = System.currentTimeMillis();
+        System.out.println("now time : " + new Timestamp(nowTime));
+        nowTime += TimeUnit.SECONDS.toMillis(1);
+        System.out.println("after add 1 seconds : " + new Timestamp(nowTime));
+        nowTime += TimeUnit.MINUTES.toMillis(1);
+        System.out.println("after add 1 minute : " + new Timestamp(nowTime));
+        nowTime += TimeUnit.HOURS.toMillis(1);
+        System.out.println("after add 1 hour : " + new Timestamp(nowTime));
+        nowTime += TimeUnit.DAYS.toMillis(1);
+        System.out.println("after add 1 day : " + new Timestamp(nowTime));
     }
 
 

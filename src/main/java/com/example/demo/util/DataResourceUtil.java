@@ -5,10 +5,10 @@ import org.yaml.snakeyaml.Yaml;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.net.URL;
-import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
 import java.util.Set;
+import java.util.concurrent.ConcurrentHashMap;
 
 /**
  * @author chen_bq
@@ -17,7 +17,7 @@ import java.util.Set;
  **/
 public class DataResourceUtil {
 
-    private static Map<String, ConnectionUtil> map = new HashMap<>();
+    private static Map<String, ConnectionUtil> map = new ConcurrentHashMap<>();
 
     private static DataResourceUtil instance;
 
@@ -30,7 +30,7 @@ public class DataResourceUtil {
 
     public ConnectionUtil getConnection(String key){
         if (map == null || map.isEmpty()){
-            return null;
+            return new ConnectionUtil();
         }
         return map.get(key);
     }

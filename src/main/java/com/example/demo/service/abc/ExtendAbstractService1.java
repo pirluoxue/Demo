@@ -12,4 +12,5 @@ public class ExtendAbstractService1 extends AbstractService {
     public String getString() {
         return "this is ExtendAbstractService 1";
     }
+
 }

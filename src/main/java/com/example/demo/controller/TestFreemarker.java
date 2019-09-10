@@ -16,4 +16,10 @@ public class TestFreemarker {
         return "test";
     }
 
+    @RequestMapping("test/freemarker/https")
+    public String testFreemarkerHttps(){
+        return "test";
+    }
+
+
 }

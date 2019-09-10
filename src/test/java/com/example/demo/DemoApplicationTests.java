@@ -2,10 +2,10 @@ package com.example.demo;
 
 import com.alibaba.fastjson.JSONObject;
 import com.example.demo.dao.RedisDAO;
+import com.example.demo.model.entity.change.TestChangeJson;
 import com.example.demo.model.entity.simple.BigDecimalEntity;
 import com.example.demo.model.entity.simple.LongTestEntity;
 import com.example.demo.model.entity.simple.TestTypeEntity;
-import com.example.demo.model.entity.change.TestChangeJson;
 import com.example.demo.service.NoteService;
 import com.example.demo.util.TimeUtil;
 import org.junit.Ignore;
@@ -207,6 +207,13 @@ public class DemoApplicationTests {
         Integer b = 10;
         System.out.println(a.intValue() == b );
         System.out.println(15 * 1_000 + 15);
+    }
+
+    @Test
+    public void replaceStringTest(){
+        String url = "http://test";
+        System.out.println(url);
+        System.out.println(url.replace("http", "https"));
     }
 
 }

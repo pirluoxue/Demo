@@ -22,6 +22,9 @@ public enum DataResourceEnum {
     }
 
     public Connection getConn(){
+        if (this == null){
+            return null;
+        }
         return this.conn;
     }
 

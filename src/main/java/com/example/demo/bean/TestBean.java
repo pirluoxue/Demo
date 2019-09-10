@@ -15,7 +15,7 @@ import org.springframework.stereotype.Component;
  * @create: 2019-04-01 15:16
  **/
 @Component
-public class Testbean {
+public class TestBean {
 
     //测试通过@Qualifier标签注入
     //如果没有复数个同名的bean，则不需要加@Qualifier就可以注入。当使用多个返回相同的bean时，那是才需要用@Qualifier区分。详情测试参考Testbean测试类。
