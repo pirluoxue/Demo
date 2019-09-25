@@ -1,7 +1,5 @@
 package com.example.demo.simple;
 
-import com.alibaba.fastjson.JSON;
-import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import com.example.demo.model.entity.simple.BigDecimalEntity;
 import com.example.demo.model.entity.simple.ConfigEntity;
@@ -10,14 +8,20 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.test.context.junit4.SpringRunner;
 
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.StringReader;
 import java.math.BigDecimal;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Date;
+import java.util.List;
+import java.util.concurrent.atomic.AtomicLong;
 import java.util.stream.Collectors;
 
 /**
@@ -223,6 +227,33 @@ public class SimpleTest {
         while ((line = br.readLine()) != null) {
             System.out.println(line);
         }
+    }
+
+    @Autowired
+    private RedisTemplate redisTemplate;
+
+    @Test
+    public void redisTest(){
+        redisTemplate.opsForList().leftPush("test1", "redis pop test");
+        // pop即取出
+        System.out.println(redisTemplate.opsForList().leftPop("test1"));
+        // 返回为null
+        System.out.println(redisTemplate.opsForList().leftPop("test1"));
+    }
+
+    /**
+     * @Author chen_bq
+     * @Description atomicLong 测试类
+     * @Date 2019/9/25 13:59
+     */
+    @Test
+    public void atomicLongTest(){
+        // Java原子类，用于计数器，效率低于longAdder
+        AtomicLong atomicLong = new AtomicLong();
+        // 相当于getNum(); num++;
+        System.out.println(atomicLong.getAndIncrement());
+        System.out.println(atomicLong.getAndIncrement());
+        System.out.println(atomicLong.getAndIncrement());
     }
 
 }

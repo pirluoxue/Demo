@@ -4,11 +4,10 @@ import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
 import com.example.demo.model.entity.ali.common.ALiNotifyEntity;
 import com.example.demo.model.entity.jooq.tables.pojos.User;
+import com.example.demo.model.entity.simple.TestHttpPostEntity;
 import com.example.demo.util.pingan.TLinx2Util;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RestController;
+import com.google.common.base.Strings;
+import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.ServletInputStream;
 import javax.servlet.http.HttpServletRequest;
@@ -41,6 +40,37 @@ public class TestRest {
         return "hello world";
     }
 
+    @RequestMapping(value = "test/post_entity", method = RequestMethod.POST)
+    public String testPostEntity(HttpServletRequest request, @RequestBody TestHttpPostEntity entity) throws IOException {
+        if (entity != null) {
+            System.out.println(entity);
+            return "success";
+        }
+        printlnParam(request);
+        return "can't received";
+    }
+
+    @RequestMapping(value = "test/post_entity/delay", method = RequestMethod.POST)
+    public String testPostEntityForDelay(HttpServletRequest request, @RequestBody TestHttpPostEntity entity) throws IOException, InterruptedException {
+        Long delayMillSecond = 3000L;
+        Thread.sleep(delayMillSecond);
+        if (entity != null) {
+            System.out.println(entity);
+            return "success";
+        }
+        printlnParam(request);
+        return "can't received";
+    }
+
+    @RequestMapping(value = "test/get_param", method = RequestMethod.GET)
+    public String testGetParam(@RequestParam String name, @RequestParam Integer number) {
+        if (!Strings.isNullOrEmpty(name) && number != null) {
+            System.out.println("name " + name + "  number " + number);
+            return "success";
+        }
+        return "can't received";
+    }
+
     private void printlnParam(HttpServletRequest request) throws IOException {
         //获得输入流
         ServletInputStream servletInputStream = request.getInputStream();
@@ -58,21 +88,21 @@ public class TestRest {
     }
 
     @RequestMapping(value = "test/restpost", method = RequestMethod.POST)
-    public String restpost(@RequestBody User user){
+    public String restpost(@RequestBody User user) {
         return user.toString();
     }
 
 
     @RequestMapping(value = "test/notify")
-    public JSONObject notify(@RequestBody String jsonParams){
+    public JSONObject notify(@RequestBody String jsonParams) {
         System.out.println(jsonParams);
         try {
             ALiNotifyEntity aLiNotifyEntity = JSON.toJavaObject(JSONObject.parseObject(jsonParams), ALiNotifyEntity.class);
             System.out.println(aLiNotifyEntity);
-        }catch (Exception e){
+        } catch (Exception e) {
             System.out.println("转化失败");
         }
-        
+
 //        Map paramsMap = aLiNotifyEntity.getTradeResult().getParamsMap();
 //        System.out.println(paramsMap);
 
