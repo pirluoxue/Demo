@@ -10,10 +10,8 @@ import org.apache.http.protocol.HTTP;
 
 import java.io.FileNotFoundException;
 import java.io.IOException;
-import java.net.URI;
-import java.net.URL;
-import java.net.URLDecoder;
-import java.net.URLEncoder;
+import java.io.InputStreamReader;
+import java.net.*;
 import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
@@ -58,7 +56,7 @@ public class HttpClientUtils {
         postEntity.setIgnoreStr("can't watch me");
         HttpRequest request = HttpRequest.newBuilder()
             .version(HttpClient.Version.HTTP_1_1)
-            .uri(URI.create(URLEncoder.encode(url, Consts.UTF_8)))
+            .uri(URI.create(url))
             // 默认超时时间
             .timeout(Duration.ofMinutes(2))
             .header("Content-Type", "application/json;charset=UTF-8")
@@ -103,7 +101,7 @@ public class HttpClientUtils {
             .version(HttpClient.Version.HTTP_1_1)
             // get请求的传统，还是要追加后缀。按照restful规范，载入页面的时候需要用get，
             // 为了避免过多的暴露参数，一般会对参数进行加密，服务端时再解密。但是这样效率较低，而且安全性依旧不高
-            .uri(URI.create(URLDecoder.decode(url, Consts.UTF_8)))
+            .uri(URI.create(url))
             // 默认超时时间
             .timeout(Duration.ofMinutes(2))
             // 请求类型
@@ -125,6 +123,5 @@ public class HttpClientUtils {
         new HttpClientUtils().postTest();
         new HttpClientUtils().getTest();
     }
-
 
 }

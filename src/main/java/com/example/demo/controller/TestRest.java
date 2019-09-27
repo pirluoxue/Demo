@@ -2,17 +2,18 @@ package com.example.demo.controller;
 
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
+import com.example.demo.components.annotation.OperationLog;
 import com.example.demo.model.entity.ali.common.ALiNotifyEntity;
+import com.example.demo.model.entity.common.Description;
+import com.example.demo.model.entity.common.LogType;
 import com.example.demo.model.entity.jooq.tables.pojos.User;
 import com.example.demo.model.entity.simple.TestHttpPostEntity;
+import com.example.demo.util.common.CommonUtil;
 import com.example.demo.util.pingan.TLinx2Util;
 import com.google.common.base.Strings;
 import org.springframework.web.bind.annotation.*;
 
-import javax.servlet.ServletInputStream;
 import javax.servlet.http.HttpServletRequest;
-import java.io.IOException;
-import java.io.UnsupportedEncodingException;
 import java.util.Objects;
 
 /**
@@ -31,60 +32,53 @@ public class TestRest {
     }
 
     @RequestMapping("test/rest")
-    public String testRest(HttpServletRequest request) throws IOException {
+    public String testRest(HttpServletRequest request) {
 //        Map<String, String[]> map = request.getParameterMap();
 //        String[] simpleEntity = map.get("SimpleEntity(map");
 //        System.out.println(simpleEntity[0]);
-        /*仅能选择一种方法获取HttpServletRequest内的参数，哪怕使用getParameterMap也会清空请求参数*/
-        printlnParam(request);
+        /*仅能选择一种方法获取HttpServletRequest内的参数，哪怕使用getParameterMap也会清空请求参数
+         * 现在通过过滤器实现多次读取*/
+        String str = CommonUtil.getPostBodyToStringByRequest(request);
+        System.out.println(str);
         return "hello world";
     }
 
     @RequestMapping(value = "test/post_entity", method = RequestMethod.POST)
-    public String testPostEntity(HttpServletRequest request, @RequestBody TestHttpPostEntity entity) throws IOException {
+    public String testPostEntity(HttpServletRequest request, @RequestBody TestHttpPostEntity entity) {
         if (entity != null) {
             System.out.println(entity);
             return "success";
         }
-        printlnParam(request);
+        String str = CommonUtil.getPostBodyToStringByRequest(request);
+        System.out.println(str);
         return "can't received";
     }
 
     @RequestMapping(value = "test/post_entity/delay", method = RequestMethod.POST)
-    public String testPostEntityForDelay(HttpServletRequest request, @RequestBody TestHttpPostEntity entity) throws IOException, InterruptedException {
+    public String testPostEntityForDelay(HttpServletRequest request, @RequestBody TestHttpPostEntity entity) {
         Long delayMillSecond = 3000L;
-        Thread.sleep(delayMillSecond);
+        try {
+            Thread.sleep(delayMillSecond);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
         if (entity != null) {
             System.out.println(entity);
             return "success";
         }
-        printlnParam(request);
+        String str = CommonUtil.getPostBodyToStringByRequest(request);
+        System.out.println(str);
         return "can't received";
     }
 
+    @OperationLog(logtype = LogType.CommonType, description = Description.TEST_GET_PARAM)
     @RequestMapping(value = "test/get_param", method = RequestMethod.GET)
-    public String testGetParam(@RequestParam String name, @RequestParam Integer number) {
+    public String testGetParam(HttpServletRequest request, @RequestParam String name, @RequestParam Integer number) {
         if (!Strings.isNullOrEmpty(name) && number != null) {
             System.out.println("name " + name + "  number " + number);
             return "success";
         }
         return "can't received";
-    }
-
-    private void printlnParam(HttpServletRequest request) throws IOException {
-        //获得输入流
-        ServletInputStream servletInputStream = request.getInputStream();
-        //创建StringBuilder暂存信息
-        StringBuilder content = new StringBuilder();
-        byte[] b = new byte[1024];
-        int lens = -1;
-        //读入流
-        while ((lens = servletInputStream.read(b)) > 0) {
-            //写入StringBuilder
-            content.append(new String(b, 0, lens));
-        }
-        String strcont = content.toString();// 内容
-        System.out.println(strcont);
     }
 
     @RequestMapping(value = "test/restpost", method = RequestMethod.POST)
@@ -133,7 +127,7 @@ public class TestRest {
         return success;
     }
 
-    public static void main(String[] args) throws UnsupportedEncodingException {
+    public static void main(String[] args) {
         User nullUser = new User();
         User user = Objects.requireNonNull(nullUser, "空指针User");
     }
