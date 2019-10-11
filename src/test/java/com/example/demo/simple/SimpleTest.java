@@ -36,8 +36,13 @@ public class SimpleTest {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(SimpleTest.class);
 
+    /**
+     * @Author chen_bq
+     * @Description 测试list中的对象修改对list的影响，证明本质上都是指向对象的
+     * @Date 2019/9/29 16:42
+     */
     @Test
-    public void test() {
+    public void listTest() {
         List<User> users = new ArrayList<>();
         User user1 = new User();
         user1.setStr("1");
@@ -59,6 +64,11 @@ public class SimpleTest {
         users.get(2).setStr("change 3");
     }
 
+    /**
+     * @Author chen_bq
+     * @Description 证明new Date().getTime() 和 System.currentTimeMillis() 结果一致
+     * @Date 2019/9/29 16:43
+     */
     @Test
     public void test1() {
         System.out.println(new Date().getTime());
@@ -76,8 +86,13 @@ public class SimpleTest {
 //        System.out.println(configEntity);
     }
 
+    /**
+     * @Author chen_bq
+     * @Description 测试截取list的结果，并改变参数的情况
+     * @Date 2019/9/29 16:40
+     */
     @Test
-    public void testSubList() {
+    public void subListTest() {
         List<User> list = new ArrayList<>();
         User user = new User();
         user.setStr("asd");
@@ -94,6 +109,11 @@ public class SimpleTest {
         System.out.println(list);
     }
 
+    /**
+     * @Author chen_bq
+     * @Description java8 测试Steam sorted的lambda表达式
+     * @Date 2019/9/29 16:39
+     */
     @Test
     public void streamSortLambdaTest() {
         List<BigDecimalEntity> list = new ArrayList<>();
@@ -126,6 +146,11 @@ public class SimpleTest {
         }
     }
 
+    /**
+     * @Author chen_bq
+     * @Description 测试Stream filter 拦截的lambda表达式
+     * @Date 2019/9/29 16:44
+     */
     @Test
     public void stramFiltterLambdaTest() {
         List<Integer> integers = new ArrayList<>();
@@ -142,6 +167,11 @@ public class SimpleTest {
         }
     }
 
+    /**
+     * @Author chen_bq
+     * @Description 测试Stream过程流处理的lambda表达式
+     * @Date 2019/9/29 16:45
+     */
     @Test
     public void streamFlatTest() {
         List<String> strings = Arrays.asList("Hello", "World");
@@ -156,6 +186,11 @@ public class SimpleTest {
         }
     }
 
+    /**
+     * @Author chen_bq
+     * @Description 测试截取list，更新，增删的变化
+     * @Date 2019/9/29 16:46
+     */
     @Test
     public void sublistTest() {
         ArrayList arrayList = new ArrayList();
@@ -189,6 +224,11 @@ public class SimpleTest {
 
     private Logger logger = LoggerFactory.getLogger(SimpleTest.class);
 
+    /**
+     * @Author chen_bq
+     * @Description slf4的测试
+     * @Date 2019/9/29 16:46
+     */
     @Test
     public void slf4jTest(){
         logger.info("info 喵喵喵？？？");
@@ -206,6 +246,11 @@ public class SimpleTest {
         }
     }
 
+    /**
+     * @Author chen_bq
+     * @Description 测试bufferreader读取json
+     * @Date 2019/9/29 16:47
+     */
     @Test
     public void bufferReader() throws IOException {
         List<JSONObject> json = new ArrayList<>();
@@ -232,6 +277,11 @@ public class SimpleTest {
     @Autowired
     private RedisTemplate redisTemplate;
 
+    /**
+     * @Author chen_bq
+     * @Description redisTemplate的pop方法结果测试
+     * @Date 2019/9/29 16:47
+     */
     @Test
     public void redisTest(){
         redisTemplate.opsForList().leftPush("test1", "redis pop test");
