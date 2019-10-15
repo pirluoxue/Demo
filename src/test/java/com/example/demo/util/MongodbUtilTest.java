@@ -2,26 +2,25 @@ package com.example.demo.util;
 
 import com.alibaba.fastjson.JSONObject;
 import com.example.demo.util.common.ConsoleProgressBar;
+import com.example.demo.util.mongo.ChnlUtiAvgLog;
 import com.example.demo.util.mongo.Stalog;
+import com.example.demo.util.mongo.UserTerminalInfo;
 import com.example.demo.util.snowflake.SnowFlake;
-import com.google.inject.Stage;
-import com.mongodb.*;
-import com.mongodb.client.ClientSession;
+import com.mongodb.MongoClient;
+import com.mongodb.MongoClientOptions;
+import com.mongodb.MongoCredential;
+import com.mongodb.ServerAddress;
 import com.mongodb.client.FindIterable;
 import com.mongodb.client.MongoCursor;
 import com.mongodb.client.MongoDatabase;
-import org.bson.BsonDocument;
-import org.bson.BsonValue;
+import com.rabbitmq.client.impl.ChannelN;
 import org.bson.Document;
-import org.bson.LazyBSONList;
-import org.bson.conversions.Bson;
 import org.junit.Ignore;
 import org.junit.Test;
 import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.data.mongodb.core.query.Query;
 
-import javax.print.Doc;
 import java.sql.Timestamp;
 import java.time.Duration;
 import java.util.*;
@@ -218,7 +217,7 @@ public class MongodbUtilTest {
         System.out.println(document);
     }
 
-    @Ignore
+    @Test
     public void insertDemo() throws InterruptedException {
         MongoClient mongoClient = getMongoClient("testdb");
         MongoTemplate mongoTemplate = new MongoTemplate(mongoClient, "macc");
@@ -228,47 +227,89 @@ public class MongodbUtilTest {
         thread.start();
         SnowFlake snowFlake = new SnowFlake(2, 3);
         for (int i = 0; i < 20000; i++) {
-            List<Stalog> list = new ArrayList<>();
+            List list = new ArrayList<>();
             for (int j = 0; j < 1000; j++) {
-                Stalog stalog = new Stalog();
-                stalog.setId("" + snowFlake.nextId());
-                stalog.setMac("1234.1234.1234." + j);
-                stalog.setActiveTime(System.currentTimeMillis());
-                stalog.setOfflineTime(new Date());
-                stalog.setOnlineTime(new Date());
-                stalog.setAuthoffTime(new Date());
-                stalog.setWifiUpDown(j % 10L);
-                stalog.setUtcCode(j % 10);
-                stalog.setAuthTime(new Date());
-                stalog.setBand("");
-                stalog.setBuildingId(i * j);
-                stalog.setBuildingName("test BuildingName");
-                stalog.setChannel("test ChannelName");
-                stalog.setDeviceAliasName("test DeviceAliasName");
-                stalog.setDeviceName("test DeviceName");
-                stalog.setDhcpOption12("127.0.0.1");
-                stalog.setDhcpOption55("127.0.0.1");
-                stalog.setDhcpOption60("127.0.0.1");
-                stalog.setDownlinkRate(100.0f);
-                stalog.setUplinkRate(100.0f);
-                stalog.setUpdownlinkRate(100.0f);
-                stalog.setGroupId(i);
-                stalog.setGroupName(i + "groupName");
-                stalog.setTimeDelay(123);
-                stalog.setTermidString("TermidString");
-                stalog.setTermidVersion("termidVersion");
-                stalog.setOsType(i + "");
-                stalog.setLogType("system_info");
-                stalog.setReasonSource("ReasonSource");
-                stalog.setReasonCode(i * j);
-                stalog.setProductType("Switch");
-                list.add(stalog);
+                ChnlUtiAvgLog chnlUtiAvgLog = getChnlUtiAvgLog(i, j, snowFlake.nextId() + "");
+                list.add(chnlUtiAvgLog);
             }
-            mongoTemplate.insert(list, "onofflineUserHistory");
+            mongoTemplate.insert(list, "chnlUtiLog");
             progressBar.setCompleteTask(i + 1);
         }
         mongoClient.close();
         latch.await();
     }
+
+    private Stalog getStaLog(String sn, int mainId, int secondId) {
+        Stalog stalog = new Stalog();
+        stalog.setId(sn);
+        stalog.setMac("1234.1234.1234." + secondId);
+        stalog.setActiveTime(System.currentTimeMillis());
+        stalog.setOfflineTime(new Date());
+        stalog.setOnlineTime(new Date());
+        stalog.setAuthoffTime(new Date());
+        stalog.setWifiUpDown(secondId % 10L);
+        stalog.setUtcCode(secondId % 10);
+        stalog.setAuthTime(new Date());
+        stalog.setBand("");
+        stalog.setBuildingId(mainId * secondId);
+        stalog.setBuildingName("test BuildingName");
+        stalog.setChannel("test ChannelName");
+        stalog.setDeviceAliasName("test DeviceAliasName");
+        stalog.setDeviceName("test DeviceName");
+        stalog.setDhcpOption12("127.0.0.1");
+        stalog.setDhcpOption55("127.0.0.1");
+        stalog.setDhcpOption60("127.0.0.1");
+        stalog.setDownlinkRate(100.0f);
+        stalog.setUplinkRate(100.0f);
+        stalog.setUpdownlinkRate(100.0f);
+        stalog.setGroupId(mainId);
+        stalog.setGroupName(mainId + "groupName");
+        stalog.setTimeDelay(123);
+        stalog.setTermidString("TermidString");
+        stalog.setTermidVersion("termidVersion");
+        stalog.setOsType(mainId + "");
+        stalog.setLogType("system_info");
+        stalog.setReasonSource("ReasonSource");
+        stalog.setReasonCode(mainId * secondId);
+        stalog.setProductType("Switch");
+        return stalog;
+    }
+
+    private UserTerminalInfo getUserTerminalInfo(int mainId, int secondId) {
+        UserTerminalInfo userTerminalInfo = new UserTerminalInfo();
+        userTerminalInfo.setBuildingId(mainId + 5000);
+        userTerminalInfo.setDay(20190920 + secondId % 10);
+        userTerminalInfo.setIsZeroData(secondId % 2 == 0 ? "false" : "true");
+        userTerminalInfo.setManufactureEn(secondId % 4 == 0 ? "false" : "true");
+        userTerminalInfo.setCount(Integer.toUnsignedLong(secondId));
+        userTerminalInfo.setUtcCode(mainId);
+        userTerminalInfo.setOsType(secondId % 4 == 0 ? "windows" : "linux");
+        return userTerminalInfo;
+    }
+
+    private ChnlUtiAvgLog getChnlUtiAvgLog(int mainId, int secondId, String sn){
+        ChnlUtiAvgLog chnlUtiAvgLog = new ChnlUtiAvgLog();
+        chnlUtiAvgLog.setSn(sn);
+        chnlUtiAvgLog.setAvgUtilization(mainId * 123 + secondId * 123);
+        chnlUtiAvgLog.setBuildingId(mainId);
+        chnlUtiAvgLog.setRadioIndex(secondId);
+        chnlUtiAvgLog.setTenantId(mainId);
+        return chnlUtiAvgLog;
+    }
+
+    @Test
+    public void mongoTemplateFindTest() {
+        MongoClient mongoClient = getMongoClient("testdb");
+        MongoTemplate mongoTemplate = new MongoTemplate(mongoClient, "macc");
+        Query query = new Query();
+        query.addCriteria(Criteria.where("groupId").is(17951));
+        List list = mongoTemplate.find(query, Stalog.class, "onofflineUserHistory");
+        System.out.println(list.size());
+        query.skip(2000).limit(1);
+        list = mongoTemplate.find(query, Stalog.class, "onofflineUserHistory");
+        System.out.println(list.size());
+        mongoClient.close();
+    }
+
 
 }

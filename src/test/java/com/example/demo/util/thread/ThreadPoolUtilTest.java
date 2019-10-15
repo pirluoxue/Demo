@@ -56,23 +56,17 @@ public class ThreadPoolUtilTest {
     }
 
 
-    @Autowired(required = false)
+    @Autowired
     private TaskExecutor taskExecutor;
 
     @Test
     public void testExecutor() throws InterruptedException {
-        int threadNum = Thread.activeCount();
-        System.out.println("初始线程数： " + threadNum);
         //记录线程处理，其实可以理解为线程安全的int值，而且还需要手动在线程中调用countDown减线程
         CountDownLatch latch = new CountDownLatch(10);
         System.out.println("latch初始数量：" + latch.getCount());
         for(int i = 0 ;i < 10 ; i++){
             taskExecutor.execute(new ThreadExecutor(latch));
         }
-//        while (true){
-//            Thread.sleep(2000);
-//            System.out.println("latch数量：" + latch.getCount());
-//        }
         latch.await();// 等待所有人任务结束
         System.out.println("所有的统计任务执行完成");
     }

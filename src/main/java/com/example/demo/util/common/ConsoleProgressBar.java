@@ -15,6 +15,7 @@ import java.util.concurrent.CountDownLatch;
 @Data
 public class ConsoleProgressBar implements Runnable{
 
+    private final static String ARROW = ">";
     private final static String ONE_EIGHTH = "▏";
     private final static String ONE_FORTH = "▎";
     private final static String THIRD_EIGHTH = "▍";
@@ -55,6 +56,7 @@ public class ConsoleProgressBar implements Runnable{
         Thread.sleep(1000);
         for (int i = 0 ; i < 1000 ; i ++){
             progressBar.setCompleteTask(i + 1);
+            Thread.sleep(1000);
         }
         countDownLatch.await();
     }
@@ -72,7 +74,7 @@ public class ConsoleProgressBar implements Runnable{
             int currentProgress = percent.multiply(BigDecimal.valueOf(COMPLETE_NUMBER)).setScale(BigDecimal.ROUND_HALF_UP).intValue();
             int surplusProgress = totalTask - currentProgress;
             while (currentProgress -- > 0){
-                System.out.print(ONE_EIGHTH);
+                System.out.print(ARROW);
             }
             // 保留2位小数，四舍五入 向上取整
             System.out.println("  " + percent.multiply(BigDecimal.valueOf(PERCENT)).setScale(2, BigDecimal.ROUND_HALF_UP) + "%");

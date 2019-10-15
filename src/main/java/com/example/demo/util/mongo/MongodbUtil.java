@@ -1,4 +1,4 @@
-package com.example.demo.util;
+package com.example.demo.util.mongo;
 
 import com.mongodb.MongoClient;
 import com.mongodb.MongoClientOptions;
@@ -31,11 +31,10 @@ public class MongodbUtil {
             //用户名、默认库名、密码
             MongoCredential credential = MongoCredential.createCredential("root", "testdb", "123456".toCharArray());
             MongoClient mongoClient = new MongoClient(serverAddressList, credential, myOptions);
-
             // 连接到数据库
             MongoDatabase mongoDatabase = mongoClient.getDatabase("testdb");
             System.out.println("Connect to database successfully");
-            FindIterable<Document> findIterable  = mongoDatabase.getCollection("testUser").find();
+            FindIterable<Document> findIterable = mongoDatabase.getCollection("testUser").find();
             MongoCursor<Document> mongoCursor = findIterable.iterator();
             while(mongoCursor.hasNext()){
                 System.out.println(mongoCursor.next());
@@ -47,5 +46,4 @@ public class MongodbUtil {
             e.printStackTrace();
         }
     }
-
 }

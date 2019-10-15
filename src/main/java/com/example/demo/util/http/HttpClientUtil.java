@@ -20,6 +20,7 @@ import java.util.List;
  * @Date 2019-06-12
  * @Created by chen_bq
  */
+@Deprecated
 public class HttpClientUtil {
 
     //获取需登录网站信息

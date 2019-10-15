@@ -25,7 +25,7 @@ import javax.servlet.http.HttpServletRequest;
  **/
 @ControllerAdvice
 public class GlobalExceptionHandler {
-    private static final Logger LOGGER = LoggerFactory.getLogger(GlobalExceptionHandler.class);
+    private static final Logger logger = LoggerFactory.getLogger(GlobalExceptionHandler.class);
     private static final ImmutableMap<Class<? extends Throwable>, RestStatus> EXCEPTION_MAPPINGS;
 
     static {
@@ -54,18 +54,20 @@ public class GlobalExceptionHandler {
     @ResponseBody
     @ExceptionHandler(Exception.class)
     public ObjectDataResponse exception(Exception e, HttpServletRequest request) {
+        // 记录日志，避免拦截器等出入异常引发的问题难以发现
+        logger.warn(e.getCause().getStackTrace().toString());
         final RestStatus status = EXCEPTION_MAPPINGS.get(e.getClass());
-        if(status == null){
+        if (status == null) {
             return ObjectDataResponse.builder()
-                    .msg(e.getMessage())
-                    .code(StatusCode.SERVER_UNKNOWN_ERROR.code())
-                    .build();
+                .code(StatusCode.SERVER_UNKNOWN_ERROR.code())
+                .msg(e.getMessage())
+                .build();
         }
         //检索异常错误码对象
         ObjectDataResponse objectDataResponse = ObjectDataResponse.builder()
-                .code(status.code())
-                .msg(status.message())
-                .build();
+            .code(status.code())
+            .msg(status.message())
+            .build();
         return objectDataResponse;
     }
 

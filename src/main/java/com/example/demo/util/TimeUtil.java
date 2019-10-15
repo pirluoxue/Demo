@@ -2,6 +2,7 @@ package com.example.demo.util;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.time.Instant;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.ZoneOffset;
@@ -342,6 +343,22 @@ public class TimeUtil {
      */
     public static long getNowMilliSecond(){
         return LocalDateTime.now().toInstant(ZoneOffset.of("+8")).toEpochMilli();
+    }
+    
+    /**
+     * @Author chen_bq
+     * @Description 时间戳转localdatetime
+     * @Date 2019/10/15 15:52
+     * @Param [millis]
+     * @return java.time.LocalDateTime
+     */
+    public static LocalDateTime millis2LocaldateTime(long millis){
+        Instant instant = Instant.ofEpochMilli(millis);
+        return LocalDateTime.ofInstant(instant, ZoneOffset.of("+8"));
+    }
+
+    public static LocalDateTime second2LocaldateTime(long millis){
+        return LocalDateTime.ofEpochSecond(millis, 0, ZoneOffset.ofHours(8));
     }
 
 }
