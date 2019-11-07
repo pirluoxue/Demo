@@ -361,4 +361,14 @@ public class TimeUtil {
         return LocalDateTime.ofEpochSecond(millis, 0, ZoneOffset.ofHours(8));
     }
 
+    /**
+     * @Author chen_bq
+     * @Description 简单格式化LocalDateTime
+     * @Date 2019/10/29 19:01
+     * @Param [localDateTime, dateFormat]
+     * @return java.lang.String
+     */
+    public static String simpleFormatLocalDateTime(LocalDateTime localDateTime, String dateFormat){
+        return localDateTime.format(DateTimeFormatter.ofPattern(dateFormat));
+    }
 }

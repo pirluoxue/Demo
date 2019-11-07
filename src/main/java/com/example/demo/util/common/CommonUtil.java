@@ -119,6 +119,9 @@ public class CommonUtil {
     public static String getGetParamToStringByRequest(HttpServletRequest request) {
 		Map<String, String[]> paramMap = request.getParameterMap();
 		StringBuilder paramString = new StringBuilder();
+		if (paramMap == null || paramMap.size() <= 0){
+		    return null;
+        }
 		String suffix = ", ";
 		for (Map.Entry<String, String[]> entry: paramMap.entrySet()){
 			paramString.append(entry.getKey() + ":" + Arrays.toString(entry.getValue()) + suffix);

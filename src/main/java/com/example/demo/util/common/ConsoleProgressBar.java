@@ -23,8 +23,9 @@ public class ConsoleProgressBar implements Runnable{
     private final static String FIFTH_EIGHTH = "▋";
     private final static String THIRD_FORTH = "▊";
     private final static String SEVENTH_EIGHTH = "▉";
+    private final static int BIGDECIMAL_SCALE = 4;
     // 总格数
-    public static int COMPLETE_NUMBER = 250;
+    public static int COMPLETE_NUMBER = 100;
     // 百分比
     public final static int PERCENT = 100;
     // 刷新时长
@@ -69,12 +70,13 @@ public class ConsoleProgressBar implements Runnable{
      * @return void
      */
     private void printProgressBar(){
-        BigDecimal percent = BigDecimal.valueOf(completeTask).divide(BigDecimal.valueOf(totalTask));
+        // 使用bigdecimal时，一定要设置精度和舍入规则，否则出现除不尽的情况会抛异常。当然可以当不推荐抛异常之后再设置精度，除非场景有需求
+        BigDecimal percent = BigDecimal.valueOf(completeTask).divide(BigDecimal.valueOf(totalTask), BIGDECIMAL_SCALE, BigDecimal.ROUND_HALF_UP);
         if (completeTask < totalTask){
             int currentProgress = percent.multiply(BigDecimal.valueOf(COMPLETE_NUMBER)).setScale(BigDecimal.ROUND_HALF_UP).intValue();
             int surplusProgress = totalTask - currentProgress;
             while (currentProgress -- > 0){
-                System.out.print(ARROW);
+                System.out.print(THIRD_FORTH);
             }
             // 保留2位小数，四舍五入 向上取整
             System.out.println("  " + percent.multiply(BigDecimal.valueOf(PERCENT)).setScale(2, BigDecimal.ROUND_HALF_UP) + "%");

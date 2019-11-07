@@ -17,10 +17,8 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.StringReader;
 import java.math.BigDecimal;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Date;
-import java.util.List;
+import java.util.*;
+import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicLong;
 import java.util.stream.Collectors;
 
@@ -138,7 +136,14 @@ public class SimpleTest {
             System.out.println(b);
         }
         System.out.println("****************************");
+        // 顺便测试一下直接使用sort
+        list.sort((p1, p2) -> (p2.getTest1().subtract(p1.getTest1()).intValue()));
+        for (BigDecimalEntity b : list) {
+            System.out.println(b);
+        }
+        System.out.println("****************************");
         // 从大到小排序排序，解释：p2为前者，p1为后者，前后对比大小，默认小到大，但前后顺序相反则打印为从大到小
+        // 即，判断大于0则交换位置
         listOrdered = list.stream().sorted((p2, p1) -> (p1.getTest1().subtract(p2.getTest1()).intValue()))
             .collect(Collectors.toList());
         for (BigDecimalEntity b : listOrdered) {
@@ -283,12 +288,18 @@ public class SimpleTest {
      * @Date 2019/9/29 16:47
      */
     @Test
-    public void redisTest(){
+    public void redisTest() throws InterruptedException {
         redisTemplate.opsForList().leftPush("test1", "redis pop test");
         // pop即取出
         System.out.println(redisTemplate.opsForList().leftPop("test1"));
         // 返回为null
         System.out.println(redisTemplate.opsForList().leftPop("test1"));
+        redisTemplate.opsForValue().set("asd", "喵喵喵？？？", 2, TimeUnit.SECONDS);
+        System.out.println(redisTemplate.opsForValue().get("asd"));
+        Thread.sleep(2000);
+        // 超时抛弃
+        System.out.println(redisTemplate.opsForValue().get("asd"));
+
     }
 
     /**
@@ -304,6 +315,33 @@ public class SimpleTest {
         System.out.println(atomicLong.getAndIncrement());
         System.out.println(atomicLong.getAndIncrement());
         System.out.println(atomicLong.getAndIncrement());
+    }
+
+    @Test
+    public void listItertorTet(){
+        List<User> list1 = new ArrayList();
+        for (int i = 0 ; i < 10 ; i ++){
+            list1.add(getUser(i +" list1"));
+        }
+        List<User> list2 = new ArrayList();
+        for (int i = 0 ; i < 10 ; i ++){
+            list2.add(getUser(i +" list2"));
+        }
+        Iterator<User> it = list2.iterator();
+        for (int i = 0 ; i < list1.size() ; i++){
+            while (it.hasNext()){
+                list1.get(i).setStr(list1.get(i).getStr() + it.next().getStr());
+                it.remove();
+                break;
+            }
+        }
+        System.out.println(list1);
+    }
+
+    private User getUser(String string){
+        User user = new User();
+        user.setStr(string);
+        return user;
     }
 
 }

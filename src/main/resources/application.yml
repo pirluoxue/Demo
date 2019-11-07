@@ -25,9 +25,9 @@ logging:
   path: ./log
   file: demo.log
   level:
-    root: WARN
+#    root: WARN
 #    root: DEBUG
-#    root: info
+    root: info
     org.springframework.web: DEBUG
 
 server:

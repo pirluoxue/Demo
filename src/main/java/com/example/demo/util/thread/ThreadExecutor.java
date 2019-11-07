@@ -1,7 +1,5 @@
 package com.example.demo.util.thread;
 
-import lombok.Data;
-
 import java.util.concurrent.CountDownLatch;
 
 /**
@@ -17,7 +15,6 @@ public class ThreadExecutor implements Runnable{
     public ThreadExecutor(CountDownLatch countDownLatch){
         this.countDownLatch = countDownLatch;
     }
-
 
     @Override
     public void run() {
