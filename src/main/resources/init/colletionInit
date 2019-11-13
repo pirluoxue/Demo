@@ -1,0 +1,3 @@
+db.onofflineUserHistorySplitInit.ensureIndex({"groupId":1},{background:true})
+db.onofflineUserHistorySplitInit.ensureIndex({"updateTime":1},{expireAfterSeconds:2764800,background:true})
+db.onofflineUserHistorySplitInit.ensureIndex({"offlineTime":1, "wifiUpDown":1},{background:true})
