@@ -106,8 +106,8 @@ public class IoStreamUtilsTest {
 
 
     private List<String> getIndexCommandList() {
-        File file = new File("src/main/resources/init/colletionInit");
-        String url = this.getClass().getClassLoader().getResource("init/colletionInit").getPath() + "";
+        File file = new File("src/main/resources/init/collectionInit");
+        String url = this.getClass().getClassLoader().getResource("init/collectionInit").getPath() + "";
         file = new File(url);
         InputStream inputStream = null;
         List<String> list = new ArrayList<>();

@@ -25,7 +25,7 @@ public class ConsoleProgressBar implements Runnable{
     private final static String SEVENTH_EIGHTH = "▉";
     private final static int BIGDECIMAL_SCALE = 4;
     // 总格数
-    public static int COMPLETE_NUMBER = 100;
+    public static int COMPLETE_NUMBER = 80;
     // 百分比
     public final static int PERCENT = 100;
     // 刷新时长
@@ -74,7 +74,8 @@ public class ConsoleProgressBar implements Runnable{
         BigDecimal percent = BigDecimal.valueOf(completeTask).divide(BigDecimal.valueOf(totalTask), BIGDECIMAL_SCALE, BigDecimal.ROUND_HALF_UP);
         if (completeTask < totalTask){
             int currentProgress = percent.multiply(BigDecimal.valueOf(COMPLETE_NUMBER)).setScale(BigDecimal.ROUND_HALF_UP).intValue();
-            int surplusProgress = totalTask - currentProgress;
+            // 剩余进度
+//            int surplusProgress = totalTask - currentProgress;
             while (currentProgress -- > 0){
                 System.out.print(THIRD_FORTH);
             }

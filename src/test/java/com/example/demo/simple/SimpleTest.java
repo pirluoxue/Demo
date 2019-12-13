@@ -13,9 +13,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.test.context.junit4.SpringRunner;
 
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.StringReader;
+import java.io.*;
 import java.math.BigDecimal;
 import java.util.*;
 import java.util.concurrent.TimeUnit;
@@ -235,17 +233,17 @@ public class SimpleTest {
      * @Date 2019/9/29 16:46
      */
     @Test
-    public void slf4jTest(){
+    public void slf4jTest() {
         logger.info("info 喵喵喵？？？");
         logger.debug("debug 喵喵喵？？？");
-        String[] test = {"1","2"};
+        String[] test = {"1", "2"};
         List<String> list = Arrays.asList(test);
         try {
             list.add("3");
             for (String str : list) {
                 System.out.println(str);
             }
-        }catch (UnsupportedOperationException e){
+        } catch (UnsupportedOperationException e) {
             System.out.println(e.getCause());
             System.out.println("不支持Arrays.asList() 之后的add/clear/remove 操作");
         }
@@ -308,7 +306,7 @@ public class SimpleTest {
      * @Date 2019/9/25 13:59
      */
     @Test
-    public void atomicLongTest(){
+    public void atomicLongTest() {
         // Java原子类，用于计数器，效率低于longAdder
         AtomicLong atomicLong = new AtomicLong();
         // 相当于getNum(); num++;
@@ -318,18 +316,18 @@ public class SimpleTest {
     }
 
     @Test
-    public void listItertorTet(){
+    public void listItertorTet() {
         List<User> list1 = new ArrayList();
-        for (int i = 0 ; i < 10 ; i ++){
-            list1.add(getUser(i +" list1"));
+        for (int i = 0; i < 10; i++) {
+            list1.add(getUser(i + " list1"));
         }
         List<User> list2 = new ArrayList();
-        for (int i = 0 ; i < 10 ; i ++){
-            list2.add(getUser(i +" list2"));
+        for (int i = 0; i < 10; i++) {
+            list2.add(getUser(i + " list2"));
         }
         Iterator<User> it = list2.iterator();
-        for (int i = 0 ; i < list1.size() ; i++){
-            while (it.hasNext()){
+        for (int i = 0; i < list1.size(); i++) {
+            while (it.hasNext()) {
                 list1.get(i).setStr(list1.get(i).getStr() + it.next().getStr());
                 it.remove();
                 break;
@@ -338,10 +336,34 @@ public class SimpleTest {
         System.out.println(list1);
     }
 
-    private User getUser(String string){
+    private User getUser(String string) {
         User user = new User();
         user.setStr(string);
         return user;
+    }
+
+    @Test
+    public void test() {
+//        redisTemplate.opsForValue().set("test1", true);
+//        Object o = redisTemplate.opsForValue().get("test1");
+        Object o = redisTemplate.opsForValue().get("Warn.Device.Offline.DetectStop");
+        if (o instanceof Boolean && (boolean) o){
+            System.out.println("true");
+        }else{
+            System.out.println("false");
+        }
+    }
+
+    @Test
+    public void test3() throws IOException {
+        InputStream inputStream = this.getClass().getResourceAsStream("/init/collectionInit");
+        BufferedReader br = new BufferedReader(new InputStreamReader(inputStream));
+        String line;
+        List list = new ArrayList();
+        while ((line = br.readLine()) != null) {
+            list.add(line);
+        }
+        System.out.println(list);
     }
 
 }

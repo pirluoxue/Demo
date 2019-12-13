@@ -1,6 +1,5 @@
 package com.example.demo.util.io;
 
-import com.google.common.base.Utf8;
 import lombok.Data;
 import org.fusesource.hawtbuf.BufferOutputStream;
 import org.slf4j.Logger;
@@ -69,8 +68,9 @@ public class IoStreamUtils {
 
     public static String getStringByFile(File file) {
         BufferedReader br = null;
+        InputStream inputStream = null;
         try {
-            InputStream inputStream = new FileInputStream(file);
+            inputStream = new FileInputStream(file);
             br = new BufferedReader(new InputStreamReader(inputStream));
             byte[] bytes = new byte[inputStream.available()];
             inputStream.read(bytes);
@@ -79,6 +79,14 @@ public class IoStreamUtils {
             e.printStackTrace();
         } catch (IOException e) {
             e.printStackTrace();
+        } finally {
+            if (inputStream != null){
+                try {
+                    inputStream.close();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
         }
         return null;
     }

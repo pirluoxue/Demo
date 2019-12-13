@@ -7,12 +7,13 @@ import com.example.demo.util.common.JudgeUtils;
 import com.example.demo.util.common.TypeChangeUtils;
 import com.example.demo.util.io.IoStreamUtils;
 import com.example.demo.util.mongo.analysis.entity.StatisticsLog;
-import com.example.demo.util.mongo.analysis.entity.StatisticsLog;
+import com.example.demo.util.test.simple.rabbitmq.helloworld.P;
 import com.google.common.base.Strings;
-import io.lettuce.core.protocol.CommandType;
 
 import java.io.File;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
@@ -25,8 +26,10 @@ import java.util.stream.Collectors;
 public class LogAnalysisUtils {
 
     public static final String PUBLIC_REGEX_PRIFIX = "COMMAND";
-    public static final String AGGREGATE_REGEX_SUFFIX = ".*?op_query [0-9].{4,}ms";
-    public static final String QUERY_INSERT_REGEX_SUFFIX = ".*?} } } [0-9]{4,}ms";
+//    public static final String AGGREGATE_REGEX_SUFFIX = ".*?op_query [0-9].{4,}ms";
+//    public static final String QUERY_INSERT_REGEX_SUFFIX = ".*?} } } [0-9]{4,}ms";
+    public static final String AGGREGATE_REGEX_SUFFIX = ".*?op_query [0-9]+ms";
+    public static final String QUERY_INSERT_REGEX_SUFFIX = ".*?} } } [0-9]+ms";
     public static final String DATE_REGEX_SUFFIX = ".{13}";
     public static final String CHARACTERISTIC_REGEX = "(\\$.*?(?=:|\"))|((?<= )[a-z|A-Z|_]{2,}(?=:))";
     public static final String COMMAND_JSON_REGEX = "((update: |query: |aggregate |count ).*?}(?=( [a-z])))|(ninserted:[0-9]+)";
@@ -92,6 +95,7 @@ public class LogAnalysisUtils {
      */
     public static List<StatisticsLog> collectUseinfomation(List<StatisticsLog> logs) {
         analysisMongoLogByMongoLog(logs);
+        clearNPE(logs);
         int index = 0;
         List<StatisticsLog> checkOutLogs = new ArrayList<>();
         while (logs.size() > 0) {
@@ -118,6 +122,17 @@ public class LogAnalysisUtils {
             checkOutLogs.add(uniqueLog);
         }
         return checkOutLogs;
+    }
+
+    private static void clearNPE(List<StatisticsLog> logs){
+        Iterator<StatisticsLog> it = logs.iterator();
+        while (it.hasNext()){
+            StatisticsLog log = it.next();
+            if (Strings.isNullOrEmpty(log.getCollectionName())){
+                System.out.println(log.getCommandTypeDescrition() + log);
+                it.remove();
+            }
+        }
     }
 
     /**

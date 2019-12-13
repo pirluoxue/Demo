@@ -188,6 +188,9 @@ public class PoiUtils {
             return;
         }
         for (int i = 0; i < tableList.size(); i++) {
+            if (tableList.get(i) == null){
+                continue;
+            }
             row.createCell(i).setCellValue(tableList.get(i).toString());
         }
     }

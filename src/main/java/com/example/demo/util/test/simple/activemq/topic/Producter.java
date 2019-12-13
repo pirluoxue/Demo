@@ -15,6 +15,7 @@ import org.springframework.jms.core.JmsTemplate;
 public class Producter {
 
     private final static String TOPIC_NAME = "test_activemq_topic";
+//    private final static String TOPIC_NAME = "activemq_topic";
 
     /**
      * @Author chen_bq

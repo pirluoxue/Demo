@@ -3,8 +3,12 @@ package com.example.demo.util;
 import org.junit.Test;
 
 import java.text.SimpleDateFormat;
+import java.time.Duration;
+import java.time.Instant;
+import java.time.LocalDateTime;
+import java.time.ZoneOffset;
+import java.time.format.DateTimeFormatter;
 import java.util.*;
-import java.util.stream.Collectors;
 
 /**
  * @author chen_bq
@@ -14,14 +18,29 @@ import java.util.stream.Collectors;
 public class TimeZoneTest {
 
     @Test
-    public void test(){
-        List<String> list = new ArrayList<>();
-        list.add("20191110");
-        list.add("20191111");
-        list.add("20191112");
-        list.add("20191113");
-        list.add("20191112");
-        System.out.println(list.stream().distinct().collect(Collectors.toList()));
+    public void localdatetimeVSCalendarTest(){
+        // enable predict
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMdd");
+        DateTimeFormatter dtf = DateTimeFormatter.ofPattern("yyyyMMdd");
+        long timestamp = System.currentTimeMillis();
+
+        long begin = System.currentTimeMillis();
+        String day = "";
+        for (int i = 0 ; i < 100000; i++){
+            Instant instant = Instant.ofEpochMilli(timestamp);
+            LocalDateTime localDateTime = LocalDateTime.ofInstant(instant, ZoneOffset.of("+8"));
+            day = localDateTime.format(dtf);
+        }
+        System.out.println(day + " completed " + Duration.ofMillis(System.currentTimeMillis() - begin));
+
+        begin = System.currentTimeMillis();
+        for (int i = 0 ; i < 100000; i++){
+            Calendar calendar = Calendar.getInstance();
+            calendar.setTime(new Date(timestamp));
+            calendar.setTimeZone(TimeZone.getTimeZone("GMT+8"));
+            day = sdf.format(calendar.getTime());
+        }
+        System.out.println(day + " completed " + Duration.ofMillis(System.currentTimeMillis() - begin));
     }
 
     @Test
@@ -45,6 +64,19 @@ public class TimeZoneTest {
         sdf.setTimeZone(TimeZone.getTimeZone("GMT-12"));
         time = sdf.format(new Date(timestamp));
         System.out.println(time);
+    }
+
+    @Test
+    public void calenderTest(){
+        long timestamp = System.currentTimeMillis();
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+        Calendar calendar = Calendar.getInstance();
+        calendar.setTimeZone(TimeZone.getTimeZone("GMT+4"));
+        calendar.setTime(new Date(timestamp));
+        calendar.set(Calendar.HOUR_OF_DAY, 10);
+        calendar.set(Calendar.SECOND, 0);
+        System.out.println(sdf.format(calendar.getTime()));
+        System.out.println(new Date(calendar.getTimeInMillis() + calendar.get(Calendar.ZONE_OFFSET)));
     }
 
     @Test
