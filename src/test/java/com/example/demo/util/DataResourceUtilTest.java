@@ -1,5 +1,6 @@
 package com.example.demo.util;
 
+import com.example.demo.model.entity.enums.LogCode;
 import com.example.demo.model.entity.jooq.tables.records.UserRecord;
 import com.example.demo.util.io.IoStreamUtils;
 import com.google.common.base.Strings;
@@ -7,6 +8,7 @@ import org.junit.Test;
 
 import java.io.File;
 import java.io.IOException;
+import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -30,20 +32,38 @@ public class DataResourceUtilTest {
         }
         List<String> targetList = new ArrayList<>();
 
-        ConnectionUtil connectionUtil = new ConnectionUtil(driver, url, username, password);
+        ConnectionUtil connectionUtil = getConnectionUtil();
         for (LogCode logCode : logCodes){
-            String sql = "select * from intl_log_msg_en where code = " + logCode.getTargetCode();
+            com.example.demo.model.entity.enums.LogCode logCode1 = com.example.demo.model.entity.enums.LogCode.getBySingleCode(logCode.getTargetCode());
+            if (logCode1 == null){
+                continue;
+            }
+            String sql = "select * from intl_log_msg_en where code = " + logCode1.getCode();
             PreparedStatement pstmt = connectionUtil.getConn().prepareStatement(sql);
             ResultSet rs = pstmt.executeQuery();
             if (!rs.next()){
                 targetList.add(logCode.getEnumCode());
             }else{
-                System.out.println(rs);
+                System.out.println(logCode1.getCode() + " - - - - " + rs);
             }
         }
         for (String str : targetList){
             System.out.println(str);
         }
+        connectionUtil.closeConnection();
+    }
+
+    @Test
+    public void recursionSearch(){
+    }
+
+    private ConnectionUtil getConnectionUtil(){
+        String driver = "";
+        String url = "";
+        String username = "";
+        String password = "";
+        ConnectionUtil connectionUtil = new ConnectionUtil(driver, url, username, password);
+        return connectionUtil;
     }
 
     private List<LogCode> matchCodeFile(String findPath, String modelPath) {
