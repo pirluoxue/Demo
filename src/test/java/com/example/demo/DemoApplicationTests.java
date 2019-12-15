@@ -191,7 +191,8 @@ public class DemoApplicationTests {
     private NoteService noteService;
     @Ignore
     public void testNoteService(){
-        noteService.collectionNoteByIndexUrl("https://www.biqudu.com/54_54836/", "e:\\notePack\\", "test");
+//        noteService.collectionNoteByIndexUrl("https://www.biqudu.com/54_54836/", "e:\\notePack\\", "test");
+        noteService.collectionNoteByIndexUrl("https://novel.zhwenpg.com/b.php?id=aun4tm", "D:\\notePack\\", "六朝燕歌行");
     }
     
     @Test
