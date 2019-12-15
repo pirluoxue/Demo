@@ -83,19 +83,22 @@ public class LogAnalysisUtilsTest {
     public void statisticsByMongoLogTest() {
 //        String url = "E:\\work\\工作文档\\littleLog.txt";
 //        String url = "E:\\work\\工作文档\\mongod相关\\mongo.out";
-//        String url = "E:\\work\\工作文档\\mongod相关\\mongod.master.log";
-        String url = "E:\\work\\工作文档\\mongod相关\\mongo.out";
+        String url = "E:\\work\\工作文档\\mongod相关\\临时mongo日志\\mongod.log-20191203";
+//        String url = "E:\\work\\工作文档\\mongod相关\\临时mongo日志\\mongod.log-20191208";
 //        String outFileName = "E:\\work\\工作文档\\littleOutText.txt";
 //        String excelName = "E:\\work\\工作文档\\analysisExcel";
-        String excelName = "E:\\work\\工作文档\\mongod相关\\analysis_mongodMaster2";
+        String excelName = "E:\\work\\工作文档\\mongod相关\\临时mongo日志\\analysis_all_";
         File file = new File(url);
-        String formatDate = "2019-10-15";
+        String formatDate = "2019-12-03";
         long beginTime = System.currentTimeMillis();
         List<StatisticsLog> mongoLogEntities = LogAnalysisUtils.collectMongoDBLogForSlow(file, formatDate);
         LogAnalysisUtils.analysisMongoLogByMongoLog(mongoLogEntities);
         List<StatisticsLog> analysisResult = collectUseinfomation(mongoLogEntities);
         analysisResult = analysisResult.stream().sorted((p1, p2) -> (p2.getUseTimes() - p1.getUseTimes())).collect(Collectors.toList());
-        PoiUtils.exportExcel(getStatisticsReportForWriteXlsx(analysisResult), excelName);
+        if (analysisResult.size() <= 0){
+            return ;
+        }
+        PoiUtils.exportExcel(getStatisticsReportForWriteXlsx(analysisResult), excelName + formatDate);
         System.out.println("任务完成！耗时：" + Duration.ofMillis(System.currentTimeMillis() - beginTime));
     }
 

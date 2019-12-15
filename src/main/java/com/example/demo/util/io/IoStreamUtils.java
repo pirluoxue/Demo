@@ -1,6 +1,12 @@
 package com.example.demo.util.io;
 
+import com.example.demo.model.entity.enums.LogCode;
+import com.example.demo.model.entity.simple.MatchInfo;
+import com.example.demo.util.common.CommonUtil;
+import com.google.common.base.Strings;
 import lombok.Data;
+import org.apache.xmlbeans.impl.regex.Match;
+import org.aspectj.weaver.tools.MatchingContext;
 import org.fusesource.hawtbuf.BufferOutputStream;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -9,9 +15,12 @@ import java.io.*;
 import java.nio.channels.FileLock;
 import java.nio.file.Files;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
 import java.util.concurrent.atomic.LongAdder;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 /**
  * @author chen_bq
@@ -129,23 +138,6 @@ public class IoStreamUtils {
         return true;
     }
 
-//    public static void test(String fullPathName) {
-//        Thread thread = new Thread(new Runnable() {
-//            @Override
-//            public void run() {
-//                while (true) {
-//                    try {
-//                        Thread.sleep(100);
-//                        outputPageLog(fullPathName);
-//                    } catch (InterruptedException e) {
-//                        e.printStackTrace();
-//                    }
-//                }
-//            }
-//        });
-//        thread.start();
-//    }
-
     /**
      * @return void
      * @Author chen_bq
@@ -224,6 +216,73 @@ public class IoStreamUtils {
             file = null;
         } catch (IOException e) {
             e.printStackTrace();
+        }
+    }
+
+    public static void findPreciseForDir(String key, File dirFile, List outList){
+        if (Strings.isNullOrEmpty(key) || dirFile == null){
+            return;
+        }
+        List list = new ArrayList();
+        list.add(key);
+        findPreciseForDir(list, dirFile, outList);
+    }
+
+    /**
+     *  @author: chen_bangqiang
+     *  @Date: 2019/12/15 20:09
+     *  @Description: 匹配路径下的所有文件的正则匹配对象，通过outList返回
+     */
+    public static void findPreciseForDir(List<String> regexList, File dirFile, List outList){
+        if (regexList == null || regexList.size() <= 0 || dirFile == null){
+            return;
+        }
+        if (dirFile.isDirectory()){
+            List<File> files = Arrays.asList(dirFile.listFiles());
+            if (files != null && files.size() > 0){
+                for (File findFile: files){
+                    findPreciseForDir(regexList, findFile, outList);
+                }
+            }
+        }else {
+            String document = getStringByFile(dirFile);
+            for (String regex : regexList){
+                if (regexMatchDocument(document, regex) != null){
+                    outList.add(regex);
+                }
+            }
+        }
+    }
+
+    /**
+     *  @author: chen_bangqiang
+     *  @Date: 2019/12/15 20:56
+     *  @Description: 正则匹配文档
+     *  @Param [document, regex]
+     *  @return java.lang.String
+     */
+    private static String regexMatchDocument(String document, String regex){
+        if (Strings.isNullOrEmpty(regex) || Strings.isNullOrEmpty(document)){
+            return null;
+        }
+        Pattern pattern = Pattern.compile(regex);
+        Matcher matcher = pattern.matcher(document);
+        if (matcher.find()) {
+            return matcher.group();
+        }
+        return null;
+    }
+
+    public static void main(String[] args) {
+        String dirPath = "D:\\worksplace\\java\\Demo\\src\\main\\java\\com\\example\\demo\\util";
+        File dirFile = new File(dirPath);
+        if (dirFile == null){
+            return;
+        }
+        List<String> matchList = new ArrayList();
+        findPreciseForDir("LOG_TEST", dirFile, matchList);
+        for (String info: matchList){
+            System.out.println(info);
         }
     }
 
