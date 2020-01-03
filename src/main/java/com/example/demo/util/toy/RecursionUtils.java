@@ -89,8 +89,11 @@ public class RecursionUtils {
             try {
                 Integer code = Integer.parseInt(queryParam);
                 info.setMatchCode(code);
+                info.setMatchResource(queryParam);
+                info.setMatchMsg(LogCode.getByCode(code).getMsg());
+                info.setMatchTitle(LogCode.getByCode(code).getTitle());
             } catch (Exception e) {
-                info.setMatchParameter(queryParam);
+                info.setMatchMsg(queryParam);
             }
             logCodes.add(info);
         }
