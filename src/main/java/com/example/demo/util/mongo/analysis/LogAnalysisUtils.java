@@ -94,6 +94,9 @@ public class LogAnalysisUtils {
      * @return java.util.List<com.example.demo.util.mongo.analysis.entity.StatisticsLog>
      */
     public static List<StatisticsLog> collectUseinfomation(List<StatisticsLog> logs) {
+        if (logs == null || logs.size() <= 0){
+            return new ArrayList<>();
+        }
         analysisMongoLogByMongoLog(logs);
         clearNPE(logs);
         int index = 0;

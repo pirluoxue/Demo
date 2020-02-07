@@ -1,11 +1,15 @@
 package com.example.demo.util.io;
 
 import org.apache.poi.ss.usermodel.BorderStyle;
+import org.apache.poi.ss.usermodel.CellStyle;
 import org.apache.poi.ss.usermodel.HorizontalAlignment;
 import org.apache.poi.ss.usermodel.IndexedColors;
 import org.apache.poi.ss.util.CellRangeAddress;
 import org.apache.poi.ss.util.CellUtil;
 import org.apache.poi.ss.util.RegionUtil;
+import org.apache.poi.xssf.streaming.SXSSFRow;
+import org.apache.poi.xssf.streaming.SXSSFSheet;
+import org.apache.poi.xssf.streaming.SXSSFWorkbook;
 import org.apache.poi.xssf.usermodel.*;
 
 import java.io.File;
@@ -108,7 +112,34 @@ public class PoiUtils {
                 fullFileName += FILE_FORMAT_XLSX;
             }
             File file = new File(fullFileName);
-            if (file.exists()){
+            if (file.exists()) {
+                fullFileName = fullFileName.replaceAll(FORMAT_REGEX, "_tmp" + REPLACE_REGEX);
+            }
+            fileOut = new FileOutputStream(fullFileName);
+            workbook.write(fileOut);
+            fileOut.close();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    public static <T> void exportExcelForLarge(List<T> dataList, String fullFileName) {
+        if (dataList == null || dataList.size() <= 0) {
+            return;
+        }
+        SXSSFWorkbook workbook = new SXSSFWorkbook ();
+        if (dataList.get(0) instanceof List && ((List)dataList.get(0)).get(0) instanceof String) {
+            buildXSSFWorkbook(workbook, (List<List<String>>)dataList);
+        }
+
+        FileOutputStream fileOut;
+        try {
+            if (!fullFileName.endsWith(FILE_FORMAT_XLSX)) {
+                fullFileName = fullFileName.replaceAll(FORMAT_REGEX, "");
+                fullFileName += FILE_FORMAT_XLSX;
+            }
+            File file = new File(fullFileName);
+            if (file.exists()) {
                 fullFileName = fullFileName.replaceAll(FORMAT_REGEX, "_tmp" + REPLACE_REGEX);
             }
             fileOut = new FileOutputStream(fullFileName);
@@ -120,18 +151,18 @@ public class PoiUtils {
     }
 
     /**
+     * @return void
      * @Author chen_bq
      * @Description 默认装饰表格
      * @Date 2019/10/18 17:06
      * @Param [sheet, row, column]
-     * @return void
      */
-    private static void defaultDecorationTable(XSSFWorkbook workbook, int row, int column, int maRow, int maxColumn){
+    private static void defaultDecorationTable(XSSFWorkbook workbook, int row, int column, int maRow, int maxColumn) {
         XSSFSheet sheet = workbook.getSheet(DEFAULT_TABLE_FIRST_PAGE_NAME);
-        if (AUTO_SIZE_COLUMN){
+        if (AUTO_SIZE_COLUMN) {
             sheet.autoSizeColumn(column);
         }
-        if (row == 0){
+        if (row == 0) {
             XSSFRow sheetRow = sheet.getRow(0);
             XSSFCellStyle cellStyle = workbook.createCellStyle();
             cellStyle.setBorderBottom(BorderStyle.THIN); // 下边框
@@ -143,27 +174,55 @@ public class PoiUtils {
         }
     }
 
+    private static void defaultDecorationTable(SXSSFWorkbook workbook, int row, int column, int maRow, int maxColumn) {
+        SXSSFSheet sheet = workbook.getSheet(DEFAULT_TABLE_FIRST_PAGE_NAME);
+        if (AUTO_SIZE_COLUMN) {
+            // 高版本需要提前使用这个
+            sheet.trackAllColumnsForAutoSizing();
+            sheet.autoSizeColumn(column);
+        }
+//        SXSSFRow无法装饰
+//        if (row == 0) {
+//            SXSSFRow sheetRow = sheet.getRow(0);
+//            CellStyle cellStyle = workbook.createCellStyle();
+//            cellStyle.setBorderBottom(BorderStyle.THIN); // 下边框
+//            cellStyle.setBorderLeft(BorderStyle.THIN);// 左边框
+//            cellStyle.setBorderTop(BorderStyle.THIN);// 上边框
+//            cellStyle.setBorderRight(BorderStyle.THIN);// 右边框
+//            cellStyle.setAlignment(HorizontalAlignment.CENTER);// 水平居中
+//            CellUtil.getCell(sheetRow, maxColumn).setCellStyle(cellStyle);
+//        }
+    }
+
     /**
+     * @return void
      * @Author chen_bq
      * @Description 构建工作表
      * @Date 2019/10/18 17:07
      * @Param [workbook, dataList]
-     * @return void
      */
     public static void buildXSSFWorkbook(XSSFWorkbook workbook, List<List<String>> dataList) {
         XSSFSheet sheet = workbook.createSheet(DEFAULT_TABLE_FIRST_PAGE_NAME);
         buildTable(sheet, dataList);
-        for (int i = 0 ; i < dataList.get(0).size(); i++){
-            defaultDecorationTable(workbook, i, i, dataList.size(),dataList.get(0).size());
+        for (int i = 0; i < dataList.get(0).size(); i++) {
+            defaultDecorationTable(workbook, i, i, dataList.size(), dataList.get(0).size());
+        }
+    }
+
+    public static void buildXSSFWorkbook(SXSSFWorkbook workbook, List<List<String>> dataList) {
+        SXSSFSheet sheet = workbook.createSheet(DEFAULT_TABLE_FIRST_PAGE_NAME);
+        buildTable(sheet, dataList);
+        for (int i = 0; i < dataList.get(0).size(); i++) {
+            defaultDecorationTable(workbook, i, i, dataList.size(), dataList.get(0).size());
         }
     }
 
     /**
+     * @return void
      * @Author chen_bq
      * @Description 构建表格数据
      * @Date 2019/10/18 17:07
      * @Param [sheet, dataList]
-     * @return void
      */
     private static void buildTable(XSSFSheet sheet, List<List<String>> dataList) {
         if (sheet == null || dataList == null || dataList.size() <= 0) {
@@ -173,22 +232,43 @@ public class PoiUtils {
             XSSFRow row = sheet.createRow(i);
             buildRow(row, dataList.get(i));
         }
+    }
 
+    private static void buildTable(SXSSFSheet sheet, List<List<String>> dataList) {
+        if (sheet == null || dataList == null || dataList.size() <= 0) {
+            return;
+        }
+        for (int i = 0; i < dataList.size(); i++) {
+            SXSSFRow row = sheet.createRow(i);
+            buildRow(row, dataList.get(i));
+        }
     }
 
     /**
+     * @return void
      * @Author chen_bq
      * @Description 构建行数据
      * @Date 2019/10/18 17:07
      * @Param [row, tableList]
-     * @return void
      */
     private static <T> void buildRow(XSSFRow row, List<T> tableList) {
         if (row == null || tableList == null || tableList.size() <= 0) {
             return;
         }
         for (int i = 0; i < tableList.size(); i++) {
-            if (tableList.get(i) == null){
+            if (tableList.get(i) == null) {
+                continue;
+            }
+            row.createCell(i).setCellValue(tableList.get(i).toString());
+        }
+    }
+
+    private static <T> void buildRow(SXSSFRow row, List<T> tableList) {
+        if (row == null || tableList == null || tableList.size() <= 0) {
+            return;
+        }
+        for (int i = 0; i < tableList.size(); i++) {
+            if (tableList.get(i) == null) {
                 continue;
             }
             row.createCell(i).setCellValue(tableList.get(i).toString());

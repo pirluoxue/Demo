@@ -2,14 +2,14 @@ package com.example.demo.model.thread;
 
 import com.example.demo.util.IntelligentUtil;
 import com.example.demo.util.SpringContextUtils;
+import com.example.demo.util.io.IoStreamUtils;
 import lombok.Data;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.client.RestTemplate;
 
-import java.io.*;
 import java.util.List;
-import java.util.concurrent.*;
+import java.util.concurrent.Callable;
 
 /**
  * @author chen_bq
@@ -33,30 +33,9 @@ public class NoteTask implements Callable<Boolean> {
 //    }
 
     private void writeText(String text, int childNumber){
-        String fullFileName = this.fileName.replace(".", childNumber + ".");
-        File outFile = new File(this.path + fullFileName);
-        //不存在则创建文件夹目录
-        if(!outFile.getParentFile().exists()){
-            if (!outFile.getParentFile().mkdirs()) {
-                System.out.println(
-                        "- ERROR creating output direcrory '" + outFile.getParentFile().getAbsolutePath() + "'");
-            }
-        }
-        Writer out = null;
-        try {
-            out = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(outFile),"UTF-8"));
-            out.append(text);
-            //关闭流
-            out.flush();
-            out.close();
-            System.out.println("fullFileName 完成" + Thread.currentThread().getName());
-        } catch (UnsupportedEncodingException e) {
-            e.printStackTrace();
-        } catch (FileNotFoundException e) {
-            e.printStackTrace();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+        String fullFileName = this.path + this.fileName.replace(".", childNumber + ".");
+        IoStreamUtils.writeTextIntoFile(text, fullFileName, true);
+        System.out.println("fullFileName 完成" + Thread.currentThread().getName());
     }
 
 
