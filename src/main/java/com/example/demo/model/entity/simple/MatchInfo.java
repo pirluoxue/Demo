@@ -7,6 +7,7 @@ public class MatchInfo {
 
     private String matchResource;
     private Integer matchCode;
-    private String matchParameter;
+    private String matchMsg;
+    private String matchTitle;
 
 }

@@ -1,9 +1,6 @@
 package com.example.demo.util.io;
 
-import org.apache.poi.ss.usermodel.BorderStyle;
-import org.apache.poi.ss.usermodel.CellStyle;
-import org.apache.poi.ss.usermodel.HorizontalAlignment;
-import org.apache.poi.ss.usermodel.IndexedColors;
+import org.apache.poi.ss.usermodel.*;
 import org.apache.poi.ss.util.CellRangeAddress;
 import org.apache.poi.ss.util.CellUtil;
 import org.apache.poi.ss.util.RegionUtil;
@@ -14,6 +11,7 @@ import org.apache.poi.xssf.usermodel.*;
 
 import java.io.File;
 import java.io.FileOutputStream;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -129,10 +127,10 @@ public class PoiUtils {
         }
         SXSSFWorkbook workbook = new SXSSFWorkbook ();
         if (dataList.get(0) instanceof List && ((List)dataList.get(0)).get(0) instanceof String) {
-            buildXSSFWorkbook(workbook, (List<List<String>>)dataList);
+            buildSXSSFWorkbook(workbook, (List<List<String>>)dataList);
         }
 
-        FileOutputStream fileOut;
+        FileOutputStream fileOutputStream = null;
         try {
             if (!fullFileName.endsWith(FILE_FORMAT_XLSX)) {
                 fullFileName = fullFileName.replaceAll(FORMAT_REGEX, "");
@@ -142,11 +140,20 @@ public class PoiUtils {
             if (file.exists()) {
                 fullFileName = fullFileName.replaceAll(FORMAT_REGEX, "_tmp" + REPLACE_REGEX);
             }
-            fileOut = new FileOutputStream(fullFileName);
-            workbook.write(fileOut);
-            fileOut.close();
+            fileOutputStream = new FileOutputStream(fullFileName);
+            workbook.write(fileOutputStream);
+            fileOutputStream.flush();
+            workbook.dispose();
         } catch (Exception e) {
             e.printStackTrace();
+        } finally {
+            if (fileOutputStream != null){
+                try {
+                    fileOutputStream.close();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
         }
     }
 
@@ -157,7 +164,7 @@ public class PoiUtils {
      * @Date 2019/10/18 17:06
      * @Param [sheet, row, column]
      */
-    private static void defaultDecorationTable(XSSFWorkbook workbook, int row, int column, int maRow, int maxColumn) {
+    private static void defaultDecorationTable(XSSFWorkbook workbook, int row, int column, int maxRow, int maxColumn) {
         XSSFSheet sheet = workbook.getSheet(DEFAULT_TABLE_FIRST_PAGE_NAME);
         if (AUTO_SIZE_COLUMN) {
             sheet.autoSizeColumn(column);
@@ -174,24 +181,24 @@ public class PoiUtils {
         }
     }
 
-    private static void defaultDecorationTable(SXSSFWorkbook workbook, int row, int column, int maRow, int maxColumn) {
+    private static void defaultDecorationTable(SXSSFWorkbook workbook, int row, int column, int maxRow, int maxColumn) {
         SXSSFSheet sheet = workbook.getSheet(DEFAULT_TABLE_FIRST_PAGE_NAME);
-        if (AUTO_SIZE_COLUMN) {
-            // 高版本需要提前使用这个
-            sheet.trackAllColumnsForAutoSizing();
-            sheet.autoSizeColumn(column);
-        }
-//        SXSSFRow无法装饰
-//        if (row == 0) {
-//            SXSSFRow sheetRow = sheet.getRow(0);
-//            CellStyle cellStyle = workbook.createCellStyle();
-//            cellStyle.setBorderBottom(BorderStyle.THIN); // 下边框
-//            cellStyle.setBorderLeft(BorderStyle.THIN);// 左边框
-//            cellStyle.setBorderTop(BorderStyle.THIN);// 上边框
-//            cellStyle.setBorderRight(BorderStyle.THIN);// 右边框
-//            cellStyle.setAlignment(HorizontalAlignment.CENTER);// 水平居中
-//            CellUtil.getCell(sheetRow, maxColumn).setCellStyle(cellStyle);
+//        if (AUTO_SIZE_COLUMN) {
+//            // 高版本需要提前使用这个
+//            sheet.trackAllColumnsForAutoSizing();
+//            sheet.autoSizeColumn(column);
 //        }
+//        SXSSFRow装饰前要先创建excel
+        if (row == 0) {
+            Row sheetRow = sheet.createRow(0);
+            CellStyle cellStyle = workbook.createCellStyle();
+            cellStyle.setBorderBottom(BorderStyle.THIN); // 下边框
+            cellStyle.setBorderLeft(BorderStyle.THIN);// 左边框
+            cellStyle.setBorderTop(BorderStyle.THIN);// 上边框
+            cellStyle.setBorderRight(BorderStyle.THIN);// 右边框
+            cellStyle.setAlignment(HorizontalAlignment.CENTER);// 水平居中
+            CellUtil.getCell(sheetRow, maxColumn).setCellStyle(cellStyle);
+        }
     }
 
     /**
@@ -209,12 +216,13 @@ public class PoiUtils {
         }
     }
 
-    public static void buildXSSFWorkbook(SXSSFWorkbook workbook, List<List<String>> dataList) {
+    public static void buildSXSSFWorkbook(SXSSFWorkbook workbook, List<List<String>> dataList) {
         SXSSFSheet sheet = workbook.createSheet(DEFAULT_TABLE_FIRST_PAGE_NAME);
+        defaultDecorationTable(workbook, 0, 0, dataList.size(), dataList.get(0).size());
         buildTable(sheet, dataList);
-        for (int i = 0; i < dataList.get(0).size(); i++) {
-            defaultDecorationTable(workbook, i, i, dataList.size(), dataList.get(0).size());
-        }
+//        for (int i = 0; i < dataList.get(0).size(); i++) {
+//            defaultDecorationTable(workbook, i, i, dataList.size(), dataList.get(0).size());
+//        }
     }
 
     /**

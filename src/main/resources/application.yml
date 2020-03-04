@@ -13,10 +13,36 @@ spring:
         max-idle: 8
     database: 0
     timeout: 2000
-
-
   jooq:
     sql-dialect: mysql
+    # 极简的配置
+  quartz:
+    scheduler-name: quartzScheduler
+    overwrite-existing-jobs: true
+    startup-delay: 3
+    auto-startup: true
+    wait-for-jobs-to-complete-on-shutdown: false
+    # 内存存储job，无需配置jdbc
+    job-store-type: memory
+    # 额外的配置，可以不配
+#    properties:
+#      org:
+#        quartz:
+#          scheduler:
+#            instanceName: clusteredScheduler
+#            instanceId: AUTO
+#          jobStore:
+#            class: org.quartz.impl.jdbcjobstore.JobStoreTX
+#            driverDelegateClass: org.quartz.impl.jdbcjobstore.StdJDBCDelegate
+#            tablePrefix: QRTZ_
+#            isClustered: true
+#            clusterCheckinInterval: 10000
+#            useProperties: false
+#          threadPool:
+#            class: org.quartz.simpl.SimpleThreadPool
+#            threadCount: 10
+#            threadPriority: 5
+#            threadsInheritContextClassLoaderOfInitializingThread: true
 
 debug: true
 

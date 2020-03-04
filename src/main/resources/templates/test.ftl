@@ -15,5 +15,10 @@ ArrayTagMethodModel : ${ArrayTags.ArrayTagMethodModel()}
 ArrayTagDirectiveModel : <@ArrayTags.ArrayTagDirectiveModel name="喵喵喵" act="撸">0_0&nbsp;&nbsp;${paramList.act}&nbsp;&nbsp; ${paramList.name}</@ArrayTags.ArrayTagDirectiveModel>
 <hr/>
 ArrayTagDirectiveModel : <@ArrayTags.ArrayTagDirectiveModel name="汪汪汪" act="撸">-.-&nbsp;&nbsp;${paramList.act}&nbsp;&nbsp; ${paramList.name}</@ArrayTags.ArrayTagDirectiveModel>
+<hr/>
+<hr/>
+CamelToUnderScoreTest 转下划线 ${"CamelToUnderScoreTest"?replace("([a-z])([A-Z]+)","$1_$2","r")}
+<hr/>
+camel_to_under_score_test 转驼峰 ${"camel_to_under_score_test"?replace("_+"," ","r")?capitalize?replace(" ", "", "r")?uncap_first}
 </body>
 </html>

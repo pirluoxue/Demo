@@ -5,6 +5,7 @@ import com.example.demo.model.entity.enums.RestCode;
 import com.example.demo.model.entity.simple.MatchInfo;
 import com.example.demo.util.io.IoStreamUtils;
 import com.google.common.base.Strings;
+import org.springframework.data.mongodb.core.aggregation.ComparisonOperators;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -60,38 +61,43 @@ public class RecursionUtils {
         if (!clazz.isEnum()) {
             return new ArrayList<>();
         }
-        if (clazz.equals(LogCode.class)){
-            List<String> enumList = new ArrayList<>();
+        if (!clazz.equals(LogCode.class) && !clazz.equals(RestCode.class)){
+            System.out.println("暂不支持的枚举类型");
+            return new ArrayList<>();
+        }
+        List<String> enumList = new ArrayList<>();
+        if (clazz.equals(LogCode.class)) {
             for (LogCode logCode : LogCode.getAll()) {
                 enumList.add(logCode.name());
             }
-            List<String> matchList = listMatchEnunsByEnumList(enumList, dirPath);
-            return getMatchInfoByMatchList(matchList);
         }
         if (clazz.equals(RestCode.class)) {
-            List<String> enumList = new ArrayList<>();
             for (RestCode restCode : RestCode.getAll()) {
                 enumList.add(restCode.name());
             }
-            List<String> matchList = listMatchEnunsByEnumList(enumList, dirPath);
-            return getMatchInfoByMatchList(matchList);
         }
-        System.out.println("不支持的枚举类型");
-        return new ArrayList();
+        List<String> matchList = listMatchEnunsByEnumList(enumList, dirPath);
+        return getMatchInfoByMatchList(matchList, clazz);
     }
 
-    private static List<MatchInfo> getMatchInfoByMatchList(List<String> matchList) {
+    private static List<MatchInfo> getMatchInfoByMatchList(List<String> matchList, Class clazz) {
         List<MatchInfo> logCodes = new ArrayList<>();
         for (String segment : matchList) {
-            String queryParam = foreachSearch(segment);
+            String queryParam = foreachSearch(segment, clazz);
             MatchInfo info = new MatchInfo();
             info.setMatchResource(segment);
             try {
                 Integer code = Integer.parseInt(queryParam);
                 info.setMatchCode(code);
                 info.setMatchResource(queryParam);
-                info.setMatchMsg(LogCode.getByCode(code).getMsg());
-                info.setMatchTitle(LogCode.getByCode(code).getTitle());
+                if (clazz.equals(LogCode.class)) {
+                    info.setMatchMsg(LogCode.getByCode(code).getMsg());
+                    info.setMatchTitle(LogCode.getByCode(code).getTitle());
+                }
+                if (clazz.equals(RestCode.class)) {
+                    info.setMatchMsg(RestCode.getByCode(code).getMsg());
+                    info.setMatchTitle(RestCode.getByCode(code).getMsg());
+                }
             } catch (Exception e) {
                 info.setMatchMsg(queryParam);
             }
@@ -100,12 +106,23 @@ public class RecursionUtils {
         return logCodes;
     }
 
-    private static String foreachSearch(String segment) {
-        Integer code = findLogCode(segment);
+    private static String foreachSearch(String segment, Class clazz) {
+        Integer code = 0;
+        if (clazz.equals(LogCode.class)) {
+            code = findLogCode(segment);
+        }
+        if (clazz.equals(RestCode.class)) {
+            code = findRestCode(segment);
+        }
         if (code != null) {
             return String.valueOf(code);
         }
         return null;
+    }
+
+    private static Integer findRestCode(String segment) {
+        RestCode restCode = RestCode.valueOf(segment);
+        return restCode.getCode();
     }
 
     private static Integer findLogCode(String segment) {
