@@ -3,6 +3,7 @@ package com.example.demo.model.entity.simple;
 import com.alibaba.fastjson.annotation.JSONField;
 import lombok.Data;
 
+import javax.validation.constraints.NotNull;
 import java.io.Serializable;
 import java.sql.Timestamp;
 
@@ -16,6 +17,7 @@ public class TestHttpPostEntity implements Serializable {
 
     private static final long serialVersionUID = 1234567890L;
 
+    @NotNull
     private String name;
     private Timestamp createTime;
 

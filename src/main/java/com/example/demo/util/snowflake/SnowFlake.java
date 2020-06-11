@@ -11,7 +11,7 @@ public class SnowFlake {
     /**
      * 起始的时间戳
      */
-    private final static long START_STMP = 1480166465631L;
+    private final static long START_STMP = 1583481939000L;
 
     /**
      * 每一部分占用的位数
@@ -95,10 +95,11 @@ public class SnowFlake {
 
     public static void main(String[] args) {
         SnowFlake snowFlake = new SnowFlake(2, 3);
-
-        for (int i = 0; i < (1 << 12); i++) {
-            System.out.println(snowFlake.nextId());
-        }
+        // 降低级别
+//        SnowFlake snowFlake = new SnowFlake(0, 0);
+//        for (int i = 0; i < (1 << 12); i++) {
+//            System.out.println(snowFlake.nextId());
+//        }
 
     }
 }

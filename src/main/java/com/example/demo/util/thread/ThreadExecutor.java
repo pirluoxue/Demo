@@ -4,7 +4,7 @@ import java.util.concurrent.CountDownLatch;
 
 /**
  * @Classname ThreadExecutor
- * @Description 直接注入TaskExecutor，调用execute使用线程
+ * @Description 用于注入到TaskExecutor，调用execute使用线程
  * @Date 2019-05-09
  * @Created by chen_bq
  */

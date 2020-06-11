@@ -10,8 +10,20 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.core.io.FileSystemResource;
+import org.springframework.dao.DataAccessException;
+import org.springframework.data.redis.connection.RedisConnection;
+import org.springframework.data.redis.connection.RedisSentinelConnection;
+import org.springframework.data.redis.core.RedisCallback;
 import org.springframework.data.redis.core.RedisTemplate;
+import org.springframework.http.HttpEntity;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.test.context.junit4.SpringRunner;
+import org.springframework.util.LinkedMultiValueMap;
+import org.springframework.util.MultiValueMap;
+import org.springframework.web.client.RestTemplate;
 
 import java.io.*;
 import java.math.BigDecimal;
@@ -343,18 +355,6 @@ public class SimpleTest {
     }
 
     @Test
-    public void test() {
-//        redisTemplate.opsForValue().set("test1", true);
-//        Object o = redisTemplate.opsForValue().get("test1");
-        Object o = redisTemplate.opsForValue().get("Warn.Device.Offline.DetectStop");
-        if (o instanceof Boolean && (boolean) o){
-            System.out.println("true");
-        }else{
-            System.out.println("false");
-        }
-    }
-
-    @Test
     public void test3() throws IOException {
         InputStream inputStream = this.getClass().getResourceAsStream("/init/collectionInit");
         BufferedReader br = new BufferedReader(new InputStreamReader(inputStream));
@@ -364,6 +364,57 @@ public class SimpleTest {
             list.add(line);
         }
         System.out.println(list);
+    }
+
+    @Autowired
+    private RestTemplate restTemplate;
+
+    private static final String CHANNEL_KEY = "rj_networks_overseas_partner";
+    private static final String CHANNEL_SECRET = "14c3271d8e6347b19e489f39d9d54f84";
+    private static final String GET_TOKEN_URL = "http://test.ruijienetworks.com/api/token/get";
+    @Test
+    public void test4() throws IOException {
+        HttpHeaders httpHeaders = new HttpHeaders();
+        httpHeaders.setContentType(MediaType.APPLICATION_JSON);
+        JSONObject jsonObject = new JSONObject();
+        jsonObject.put("key", CHANNEL_KEY);
+        jsonObject.put("secret", CHANNEL_SECRET);
+        HttpEntity httpEntity = new HttpEntity(jsonObject, httpHeaders);
+        ResponseEntity<String> response = restTemplate.postForEntity(GET_TOKEN_URL, httpEntity, String.class);
+        System.out.println(response);
+    }
+
+    @Test
+    public void test5(){
+        String json = "{\"userId\":\"04000000@qq.com\",\"tenantId\":1,\"accountId\":3,\"company\":\"company\",\"location\":\"FuZhou\",\"position\":\"CEO\",\"punchPercent\":90,\"imageUrl\":\"/asd/asd\",\"evaluation\":3}";
+        JSONObject jsonObject = JSONObject.parseObject(json);
+        File file = new File("C:\\Users\\bangqiang chen\\Desktop\\timg.jpg");
+        FileSystemResource resource = new FileSystemResource(file);
+        MultiValueMap<String, Object> mapFile = new LinkedMultiValueMap<>();
+        mapFile.add("file", resource);
+        mapFile.add("punch", json);
+
+        HttpHeaders headers = new HttpHeaders();
+        headers.add("Content-Type","multipart/form-data");
+        HttpEntity<MultiValueMap<String, Object>> httpEntity = new HttpEntity<MultiValueMap<String, Object>>(mapFile,headers);
+        ResponseEntity<String> postForEntity = restTemplate.postForEntity("http://localhost:8080/service/api/workshop/punch",
+            httpEntity, String.class);
+        String body = postForEntity.getBody();
+    }
+
+    @Test
+    public void test6(){
+        String key = "test";
+        redisTemplate.opsForValue().set(key, 1);
+        System.out.println(redisTemplate.opsForValue().get(key));
+        Object o = redisTemplate.opsForValue().get(key);
+        if (o != null){
+            Integer val = (Integer)o;
+            val += 1;
+            redisTemplate.opsForValue().set(key, val);
+        }
+//        redisTemplate.opsForValue().increment(key);
+        System.out.println(redisTemplate.opsForValue().get(key));
     }
 
 }

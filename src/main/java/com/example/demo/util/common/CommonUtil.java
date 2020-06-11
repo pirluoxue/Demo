@@ -34,15 +34,29 @@ public class CommonUtil {
     public static String httpsRequest(String requestUrl, RequestMethod requestMethod, String outputStr) {
         try {
             // 创建SSLContext对象，并使用我们指定的信任管理器初始化
-	/*		TrustManager[] tm = { new MyX509TrustManager() };
+			/*TrustManager[] tm = {new X509TrustManager() {
+                @Override
+                public void checkClientTrusted(X509Certificate[] x509Certificates, String s) throws CertificateException {
+
+                }
+
+                @Override
+                public void checkServerTrusted(X509Certificate[] x509Certificates, String s) throws CertificateException {
+
+                }
+
+                @Override
+                public X509Certificate[] getAcceptedIssuers() {
+                    return new X509Certificate[0];
+                }
+            }};
 			SSLContext sslContext = SSLContext.getInstance("SSL", "SunJSSE");
 			sslContext.init(null, tm, new java.security.SecureRandom());
 			// 从上述SSLContext对象中得到SSLSocketFactory对象
-			SSLSocketFactory ssf = sslContext.getSocketFactory(); */
+			SSLSocketFactory ssf = sslContext.getSocketFactory();*/
             URL url = new URL(requestUrl);
-//			HttpsURLConnection conn = (HttpsURLConnection) url.openConnection();
             HttpURLConnection conn = (HttpURLConnection)url.openConnection();
-            //		conn.setSSLSocketFactory(ssf);
+//            conn.setSSLSocketFactory(ssf);
             conn.setConnectTimeout(30000); // 设置连接主机超时（单位：毫秒)
             conn.setReadTimeout(30000); // 设置从主机读取数据超时（单位：毫秒)
             conn.setDoOutput(true);

@@ -1,22 +1,14 @@
 package com.example.demo.util.io;
 
-import com.example.demo.model.entity.enums.LogCode;
-import com.example.demo.model.entity.simple.MatchInfo;
-import com.example.demo.util.common.CommonUtil;
 import com.google.common.base.Strings;
 import lombok.Data;
-import org.apache.xmlbeans.impl.regex.Match;
-import org.aspectj.weaver.tools.MatchingContext;
-import org.fusesource.hawtbuf.BufferOutputStream;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.io.*;
-import java.nio.channels.FileLock;
 import java.nio.file.Files;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Date;
 import java.util.List;
 import java.util.concurrent.atomic.LongAdder;
 import java.util.regex.Matcher;
@@ -225,7 +217,16 @@ public class IoStreamUtils {
         }
         List list = new ArrayList();
         list.add(key);
-        findPreciseForDir(list, dirFile, outList);
+        findPreciseForDir(list, dirFile, outList, null);
+    }
+
+    public static void findPreciseForDir(String key, File dirFile, List outList, String suffix){
+        if (Strings.isNullOrEmpty(key) || dirFile == null){
+            return;
+        }
+        List list = new ArrayList();
+        list.add(key);
+        findPreciseForDir(list, dirFile, outList, suffix);
     }
 
     /**
@@ -233,7 +234,7 @@ public class IoStreamUtils {
      *  @Date: 2019/12/15 20:09
      *  @Description: 匹配路径下的所有文件的正则匹配对象，通过outList返回
      */
-    public static void findPreciseForDir(List<String> regexList, File dirFile, List outList){
+    public static void findPreciseForDir(List<String> regexList, File dirFile, List outList, String suffix){
         if (regexList == null || regexList.size() <= 0 || dirFile == null){
             return;
         }
@@ -241,17 +242,31 @@ public class IoStreamUtils {
             List<File> files = Arrays.asList(dirFile.listFiles());
             if (files != null && files.size() > 0){
                 for (File findFile: files){
-                    findPreciseForDir(regexList, findFile, outList);
+                    findPreciseForDir(regexList, findFile, outList, suffix);
                 }
             }
         }else {
+            // 判断后缀
+            if (!Strings.isNullOrEmpty(suffix) && !dirFile.getName().endsWith(suffix)){
+                return;
+            }
+            // todo test 临时加上的判断
+            if (dirFile.getName().contains("Code") || dirFile.getName().contains("Resources")
+                || dirFile.getName().contains("Key") || dirFile.getName().contains("WarnThresholdType")){
+                return;
+            }
             String document = getStringByFile(dirFile);
             for (String regex : regexList){
-                if (regexMatchDocument(document, regex) != null){
-                    outList.add(regex);
+                List<String> list = regexMatchListDocument(document, regex);
+                if (list != null && list.size() > 0) {
+                    outList.addAll(list);
                 }
             }
         }
+    }
+
+    public static void findPreciseForDir(List<String> regexList, File dirFile, List outList){
+        findPreciseForDir(regexList, dirFile, outList, null);
     }
 
     /**
@@ -261,16 +276,40 @@ public class IoStreamUtils {
      *  @Param [document, regex]
      *  @return java.lang.String
      */
-    private static String regexMatchDocument(String document, String regex){
+    public static String regexMatchDocument(String document, String regex){
+        return regexMatchDocument(document, regex, 0);
+    }
+
+    /**
+     * @Author chen_bq
+     * @Description 提供group查询
+     * @Date 2020/3/9 16:38
+     * @Param [document, regex, group]
+     * @return java.lang.String
+     */
+    public static String regexMatchDocument(String document, String regex, int group){
         if (Strings.isNullOrEmpty(regex) || Strings.isNullOrEmpty(document)){
             return null;
         }
         Pattern pattern = Pattern.compile(regex);
         Matcher matcher = pattern.matcher(document);
         if (matcher.find()) {
-            return matcher.group();
+            return matcher.group(group);
         }
         return null;
+    }
+
+    public static List<String> regexMatchListDocument(String document, String regex){
+        List<String> list = new ArrayList<>();
+        if (Strings.isNullOrEmpty(regex) || Strings.isNullOrEmpty(document)){
+            return list;
+        }
+        Pattern pattern = Pattern.compile(regex);
+        Matcher matcher = pattern.matcher(document);
+        while (matcher.find()) {
+            list.add(matcher.group());
+        }
+        return list;
     }
 
     public static void main(String[] args) {

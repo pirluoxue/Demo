@@ -16,6 +16,7 @@ import java.math.BigDecimal;
 import java.math.MathContext;
 import java.sql.Timestamp;
 import java.util.HashMap;
+import java.util.UUID;
 
 /**
  * @author chen_bq
@@ -29,9 +30,22 @@ public class QRCodeUtil {
 //        createQRcode("微信QRcode支付测试","weixin://wxpay/bizpayurl?pr=d32VoWT");
 //        createQRcode("嵌入二维码","weixin://wxpay/bizpayurl?pr=d32VoWT");
 //        createLogoQRcode(new File("E:\\test\\659C5583C41D4DA1823BBA5DCD5EB8DC.png"), new File("E:\\test\\企业微信截图_15829834499418.png"));
-        createLogoQRcode("E:\\test\\qrcode\\test2", "weixin://wxpay/bizpayurl?pr=d32VoWT", "E:\\test\\test123.png");
+//        createLogoQRcode("E:\\test\\qrcode\\test2", "weixin://wxpay/bizpayurl?pr=d32VoWT", "E:\\test\\test123.png");
+
+//        createLogoQRcode("E:\\test\\qrcode\\test2-1", "6503853103C34A779F5FA645B9114FF2", "E:\\test\\test125.jpg");
+//        readQRcode("E:\\test\\qrcode\\test\\8318a6ea-78ea-410d-b7c9-a04c90154bf3.png" );
 //        createLogoQRcode(new File("E:\\test\\659C5583C41D4DA1823BBA5DCD5EB8DC.png"), new File("E:\\test\\1989ff29-b351-4392-bb2c-2a377d0c837b.jpg"));
+
+        for (int i = 0 ; i < 10000; i++){
+            String uuid = UUID.randomUUID().toString();
+            createLogoQRcode("E:\\test\\qrcode\\test\\" + uuid, uuid, "E:\\test\\test125.jpg");
+            if (!readQRcode("E:\\test\\qrcode\\test\\" + uuid + ".png")){
+                break;
+            }
+        }
+
     }
+
 
     private static final Integer LOGO_WIDTH = 120;
     private static final Integer DEFAULT_QRCODE_WIDTH = 300;
@@ -63,6 +77,11 @@ public class QRCodeUtil {
             g.drawImage(logoImage, (int)Math.round(qrCodeWidth / 2 - LOGO_WIDTH / 2), (int)Math.round(qrCodeHeight / 2 - logoOutputHeigh / 2), LOGO_WIDTH, logoOutputHeigh, null);
             g.dispose();
             String formatName = "png";
+            File file = new File(filePath);
+            //文件夹存在与否判断
+            if (!file.getParentFile().exists()) {
+                file.getParentFile().mkdirs();
+            }
             ImageIO.write(outputImage, formatName, new File(filePath + "." + formatName));
         } catch (IOException e) {
             e.printStackTrace();
@@ -90,7 +109,7 @@ public class QRCodeUtil {
         //定义二维码的参数
         HashMap hints = new HashMap();
         hints.put(EncodeHintType.CHARACTER_SET, "utf-8");
-        hints.put(EncodeHintType.ERROR_CORRECTION, ErrorCorrectionLevel.M);
+        hints.put(EncodeHintType.ERROR_CORRECTION, ErrorCorrectionLevel.H);
         hints.put(EncodeHintType.MARGIN, 1);
         try {
             BitMatrix bitMatrix = new MultiFormatWriter().encode(content, BarcodeFormat.QR_CODE, width, height, hints);
@@ -134,9 +153,9 @@ public class QRCodeUtil {
         createQRcode(fileName, text, 0, 0);
     }
 
-    public static void readQRcode(String fileName) {
+    public static boolean readQRcode(String fileName) {
         MultiFormatReader formatReader = new MultiFormatReader();
-        File file = new File("D:/QRcode/" + fileName + ".png");
+        File file = new File(fileName);
 
         BufferedImage image = null;
         try {
@@ -146,6 +165,10 @@ public class QRCodeUtil {
             //定义二维码的参数
             HashMap hints = new HashMap();
             hints.put(EncodeHintType.CHARACTER_SET, "utf-8");
+            // 优化精度
+            hints.put(DecodeHintType.TRY_HARDER, Boolean.TRUE);
+            // 复杂模式
+            hints.put(DecodeHintType.PURE_BARCODE, Boolean.TRUE);
 
             Result result = null;
             result = formatReader.decode(binaryBitmap, hints);
@@ -158,7 +181,10 @@ public class QRCodeUtil {
             System.out.println("getTimestamp：" + new Timestamp(result.getTimestamp()));
         } catch (Exception e) {
             e.printStackTrace();
+            System.out.println(" - - - - - - - " + fileName + " - - - - - - ");
+            return false;
         }
+        return true;
     }
 
 

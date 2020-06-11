@@ -2,9 +2,7 @@ package com.example.demo.util.io;
 
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
-import com.example.demo.model.entity.jooq.tables.pojos.User;
 import com.mongodb.client.model.IndexOptions;
-import lombok.Data;
 import org.bson.Document;
 import org.junit.Test;
 import org.slf4j.Logger;
@@ -13,7 +11,6 @@ import org.slf4j.LoggerFactory;
 import java.io.*;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
-import java.text.SimpleDateFormat;
 import java.time.Duration;
 import java.util.*;
 import java.util.concurrent.CountDownLatch;
@@ -21,8 +18,11 @@ import java.util.concurrent.Executor;
 import java.util.concurrent.TimeUnit;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+import java.util.stream.Collectors;
 
 public class IoStreamUtilsTest {
+
+    private static final Logger logger = LoggerFactory.getLogger(IoStreamUtilsTest.class);
 
     @Test
     public void writeLogTest() throws IOException {
@@ -41,8 +41,53 @@ public class IoStreamUtilsTest {
         file = new File(file.getAbsolutePath());
     }
 
-
-    private static final Logger logger = LoggerFactory.getLogger(IoStreamUtilsTest.class);
+    /**
+     * @Author chen_bq
+     * @Description 扫描路径下所有正则匹配对象
+     * @Date 2020/4/15 17:21
+     * @return void
+     */
+    @Test
+    public void scanFileDirTest(){
+//        String path = "E:\\workplace\\domestic2\\server";
+//        String path = "E:\\workplace\\merge2";
+//        String path = "E:\\workplace\\domestic2\\server\\macc-org\\src\\main\\java\\com\\ruijie\\cloud\\macc\\org\\entity\\enums";
+        String path = "E:\\workplace\\merge0430\\macc-msw";
+        List<String> list = new ArrayList<>();
+        List<String> removeList = new ArrayList<>();
+        List<String> removeNotesList = new ArrayList<>();
+        String regex = "\"( |,)*[\\u4e00-\\u9fa5]+.*?\"";
+        String removeNotesRegex = "//.*\"( |,)*[\\u4e00-\\u9fa5]+.*?\"";
+        String removeLogRegex = "(?<=((error|info|warn|Exception)\\())\"( |,)*[\\u4e00-\\u9fa5]+.*?\"";
+        System.out.println("开始扫描");
+        IoStreamUtils.findPreciseForDir(regex, new File(path), list, ".java");
+        IoStreamUtils.findPreciseForDir(removeNotesRegex, new File(path), removeList, ".java");
+        IoStreamUtils.findPreciseForDir(removeLogRegex, new File(path), removeNotesList, ".java");
+        System.out.println("扫描结束");
+        if (list == null || list.size() <= 0){
+            System.out.println("没有检索到信息");
+            return;
+        }
+        System.out.println("检索到条目总数：" + list.size());
+        System.out.println("检索到无效条目总数：" + removeList.size());
+        System.out.println("检索到日志条目总数：" + removeNotesList.size());
+        if (removeNotesList != null && removeNotesList.size() > 0){
+            removeList.addAll(removeNotesList);
+        }
+        list = list.stream().distinct().collect(Collectors.toList());
+        removeList = removeList.stream().distinct().collect(Collectors.toList());
+        String saveFile = "E:\\test\\list.out";
+        for (String removeKey : removeList){
+            list.removeIf(n -> removeKey.contains(n));
+        }
+        System.out.println("最终输出行数： " + list.size());
+        StringBuilder sb = new StringBuilder();
+        for (String key : list){
+            sb.append(key + "\n");
+        }
+//        IoStreamUtils.fastWriteText(sb.toString(), saveFile);
+        IoStreamUtils.writeTextIntoFile(sb.toString(), saveFile);
+    }
 
     @Test
     public void fastWriteTextTest() throws InterruptedException {
@@ -183,7 +228,7 @@ public class IoStreamUtilsTest {
         Reflect r = new Reflect();
         // 反射不需要实例化
         Method m = Reflect.class.getMethod("asd", boolean.class);
-        // 调用方法需要实力化
+        // 调用方法需要实例化
         m.invoke(r, false);
     }
 
@@ -196,4 +241,5 @@ public class IoStreamUtilsTest {
             System.out.println("test2");
         }
     }
+
 }

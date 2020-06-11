@@ -54,7 +54,38 @@ public class DataResourceUtilTest {
     }
 
     @Test
-    public void recursionSearch(){
+    public void test1() throws SQLException {
+        ConnectionUtil connectionUtil = getConnectionUtil();
+        String sql = "SELECT IF(\n" +
+            "    (SELECT count(1)\n" +
+            "        FROM conf_cmd_template\n" +
+            "        WHERE cmd_item_name='RADIO_GLOBAL_SET' and os_type = 'mcfi-l' and product_type = 'MCFI' and conf_mode_type = 'config'\n" +
+            "    ) > 0,\n" +
+            "\t'select 1',\n" +
+            "\t'update conf_cmd_template set product_type = \"MCFI\"\n" +
+            "    where cmd_item_name=\"RADIO_GLOBAL_SET\" and os_type = \"mcfi-l\" and product_type = \"UNKNOWN\" and conf_mode_type = \"config\"'\n" +
+            ")";
+        PreparedStatement pstmt = connectionUtil.getConn().prepareStatement(sql);
+        ResultSet rs = pstmt.executeQuery();
+        if (rs.next()){
+            System.out.println(rs);
+        }
+        sql = "(SELECT IF(\n" +
+            "    (SELECT count(1)\n" +
+            "        FROM conf_cmd_template\n" +
+            "        WHERE cmd_item_name='RADIO_GLOBAL_SET' and os_type = 'openwrt-mtfi' and product_type = 'MTFI' and conf_mode_type = 'config'\n" +
+            "    ) > 0,\n" +
+            "\t\"select 1\",\n" +
+            "\t\"update conf_cmd_template set product_type = 'MTFI'\n" +
+            "    where cmd_item_name='RADIO_GLOBAL_SET' and os_type = 'openwrt-mtfi' and product_type = 'UNKNOWN' and conf_mode_type = 'config'\"\n" +
+            "));\n";
+         pstmt = connectionUtil.getConn().prepareStatement(sql);
+         rs = pstmt.executeQuery();
+        if (rs.next()){
+            System.out.println(rs);
+        }
+
+
     }
 
     private ConnectionUtil getConnectionUtil(){

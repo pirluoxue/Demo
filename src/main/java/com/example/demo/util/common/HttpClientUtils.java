@@ -5,11 +5,9 @@ import com.example.demo.model.entity.simple.TestHttpPostEntity;
 import com.google.common.base.Strings;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.w3c.dom.Document;
 
-import java.io.FileNotFoundException;
-import java.io.IOException;
-import java.net.URI;
+import java.io.*;
+import java.net.*;
 import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
@@ -19,9 +17,9 @@ import java.time.Duration;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.CountDownLatch;
-import java.util.function.Function;
 
 /**
  * @author chen_bq
@@ -133,16 +131,15 @@ public class HttpClientUtils {
     }
 
 
-
-    public static HttpResponse requestForPost(String url, Duration timeout){
+    public static HttpResponse requestForPost(String url, Duration timeout) {
         return requestForPost(url, timeout, null, null);
     }
 
-    public static HttpResponse requestForPost(String url, Duration timeout, Class<?> postBody){
-        return requestForPost(url,timeout, postBody, null);
+    public static HttpResponse requestForPost(String url, Duration timeout, Class<?> postBody) {
+        return requestForPost(url, timeout, postBody, null);
     }
 
-    public static HttpResponse requestForPost(String url, Duration timeout, Class<?> postBody, ConcurrentHashMap<String, String> headers){
+    public static HttpResponse requestForPost(String url, Duration timeout, Class<?> postBody, ConcurrentHashMap<String, String> headers) {
         HttpRequest request = getHttpRequestForPost(url, timeout, postBody, headers);
         HttpClient client = HttpClient.newBuilder().build();
         HttpResponse httpResponse = null;
@@ -154,6 +151,62 @@ public class HttpClientUtils {
             e.printStackTrace();
         }
         return httpResponse;
+    }
+
+    public static CompletableFuture<HttpResponse> requestForAsyncPost(String url, Duration timeout, CountDownLatch latch){
+        return requestForAsyncPost(url, timeout, null, null, latch);
+    }
+
+    /**
+     * @Author chen_bq
+     * @Description 发送异步的post请求，获得一个CompletableFuture对象
+     * 调用方需要可以手动调用get()方法获得信息，并且必须对应可能出现的，如：timeout问题进行处理
+     * @Date 2020/3/13 18:13
+     * @Param [url, timeout, postBody, headers]
+     * @return java.util.concurrent.CompletableFuture
+     */
+    public static CompletableFuture<HttpResponse> requestForAsyncPost(String url, Duration timeout, Class<?> postBody, ConcurrentHashMap<String, String> headers, CountDownLatch latch) {
+        // 客户端设置的超时时间，若超过了，httpClient异步请求将没有返回
+        HttpRequest request = getHttpRequestForPost(url, timeout, postBody, headers);
+//        HttpClient client = HttpClient.newBuilder().build();
+        HttpClient client = HttpClient.newBuilder().build();
+        // 异步请求
+        CompletableFuture future = client.sendAsync(request, HttpResponse.BodyHandlers.ofString())
+            // 返回体
+            .thenApply(rsp -> rsp)
+            // 返回时处理
+            .thenAccept(rsp -> {
+                if (!Strings.isNullOrEmpty(rsp.body())) {
+                    logger.warn("request {} response body: {}", url, rsp.body());
+                }
+                latch.countDown();
+            }).exceptionallyAsync(e -> {
+                e.printStackTrace();
+                latch.countDown();
+                throw new RuntimeException("has error");
+            });
+        return future;
+    }
+
+    private static ProxySelector getProxySelector(){
+        String PROXY_ADDR = "112.192.234.123";
+        int PROXY_PORT = 8088;
+        // 匿名代理
+        ProxySelector proxySelector = new ProxySelector() {
+            @Override
+            public List<Proxy> select(URI uri) {
+                System.out.println(" - -  - -  - -  - -  - -  - - " + uri);
+                List<Proxy> list = new ArrayList<Proxy>();
+                list.add(new Proxy(Proxy.Type.HTTP, new InetSocketAddress(PROXY_ADDR, PROXY_PORT)));
+                return list;
+            }
+
+            @Override
+            public void connectFailed(URI uri, SocketAddress sa, IOException ioe) {
+                logger.warn("This URI {} has error. SocketAddress {}", uri, sa);
+            }
+        };
+        return proxySelector;
     }
 
     public static HttpRequest getHttpRequestForGet(String url, Duration timeout) {
@@ -182,36 +235,54 @@ public class HttpClientUtils {
             .version(HttpClient.Version.HTTP_1_1)
             .uri(URI.create(url))
             // 默认超时时间
-            .timeout(Duration.ofMinutes(2))
+            .timeout(timeout)
             .headers(formatHeardersMap(headers))
             // 请求类型，参数体需要转换成string
             .POST(getBodyPublisherByEntity(postBody))
             .build();
     }
 
-    private static HttpRequest.BodyPublisher getBodyPublisherByEntity(Class<?> postBody){
+    private static HttpRequest.BodyPublisher getBodyPublisherByEntity(Class<?> postBody) {
         HttpRequest.BodyPublisher bodyPublisher;
         if (postBody == null) {
             bodyPublisher = HttpRequest.BodyPublishers.noBody();
-        }else {
+        } else {
             bodyPublisher = HttpRequest.BodyPublishers.ofString(JSON.toJSONString(postBody));
         }
         return bodyPublisher;
     }
 
-    private static String[] formatHeardersMap(ConcurrentHashMap<String, String> headers){
+    private static String[] formatHeardersMap(ConcurrentHashMap<String, String> headers) {
         List headersList = new ArrayList();
-        if (headers != null){
-            for (Map.Entry entry: headers.entrySet()){
+        if (headers != null) {
+            for (Map.Entry entry : headers.entrySet()) {
                 headersList.add(entry.getKey());
                 headersList.add(entry.getValue());
             }
         }
-        if (headersList == null || headersList.size() <= 0){
+        if (headersList == null || headersList.size() <= 0) {
             headersList.add("Content-Type");
             headersList.add("application/json;charset=UTF-8");
         }
         return TypeChangeUtils.list2StringArrays(headersList);
+    }
+
+    public static void download(String downloadUrl, File file) {
+        try {
+            FileOutputStream fileOutputStream = new FileOutputStream(file);
+            URL url = new URL(downloadUrl);
+            URLConnection connection = url.openConnection();
+            InputStream inputStream = connection.getInputStream();
+            int length = 0;
+            byte[] bytes = new byte[1024];
+            while ((length = inputStream.read(bytes)) != -1) {
+                fileOutputStream.write(bytes, 0, length);
+            }
+            fileOutputStream.close();
+            inputStream.close();
+        } catch (IOException e) {
+        }
+        System.out.println("end");
     }
 
     /**
@@ -227,9 +298,25 @@ public class HttpClientUtils {
         System.out.println(rsp.body());
     }
 
-    public static void main(String[] args) {
-        new HttpClientUtils().postTest();
-        new HttpClientUtils().getTest();
+    public static void main(String[] args) throws InterruptedException {
+//        new HttpClientUtils().postTest();
+//        new HttpClientUtils().getTest();
+//        for (int i = 0; i < 10000; i++) {
+//            HttpResponse httpResponse = requestForPost("http://localhost:8088/test/longPolling", Duration.ofMinutes(1000L));
+//            System.out.println(httpResponse.body());
+//        }
+//        String baseUrl = "http://localhost:8088/test/rest";
+        String baseUrl = "https://localhost:8089/test/freemarker/https";
+//        String baseUrl = "https://cloudtest-as.ruijienetworks.com/";
+//        String baseUrl = "http://www.baidu.com";
+//        CountDownLatch latch = new CountDownLatch(1);
+//        HttpClientUtils.requestForAsyncGet(baseUrl, Duration.ofMillis(6000), latch);
+//        latch.await();
+        HttpResponse httpResponse = HttpClientUtils.requestForGet(baseUrl, Duration.ofMillis(60000));
+        if (httpResponse.body() != null){
+            System.out.println(httpResponse.body());
+        }
+
     }
 
 }

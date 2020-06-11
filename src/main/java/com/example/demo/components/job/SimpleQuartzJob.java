@@ -21,6 +21,6 @@ public class SimpleQuartzJob extends QuartzJobBean {
 
     @Override
     protected void executeInternal(JobExecutionContext jobExecutionContext) throws JobExecutionException {
-        System.out.println("test SimpleQuartzJob " + new Timestamp(System.currentTimeMillis()));
+        System.out.println("SimpleQuartzJob " + new Timestamp(System.currentTimeMillis()));
     }
 }

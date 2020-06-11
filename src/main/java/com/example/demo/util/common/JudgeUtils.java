@@ -1,5 +1,6 @@
 package com.example.demo.util.common;
 
+import com.example.demo.model.entity.simple.User;
 import com.example.demo.util.mongo.analysis.entity.MongoLogEntity;
 
 import java.util.ArrayList;
@@ -56,6 +57,9 @@ public class JudgeUtils {
         System.out.println(list1);
         list1 = list1.stream().sorted((e1, e2) -> (e1.compareTo(e2))).collect(Collectors.toList());
         System.out.println(list1);
+        User user = new User();
+        System.out.println(user.getBool() == Boolean.TRUE);
+
     }
 
 

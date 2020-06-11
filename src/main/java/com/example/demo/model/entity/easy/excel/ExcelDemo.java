@@ -4,7 +4,6 @@ import com.alibaba.excel.annotation.ExcelIgnore;
 import com.alibaba.excel.annotation.ExcelProperty;
 import lombok.Data;
 
-import java.sql.Timestamp;
 import java.util.Date;
 
 /**
@@ -34,7 +33,7 @@ public class ExcelDemo {
     @ExcelProperty("createTime 标题")
     private Date createTime;
     @ExcelProperty("updateTime 标题")
-    private Timestamp updateTime;
+    private Date updateTime;
     private Integer enable;
 
     @ExcelIgnore

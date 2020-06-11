@@ -8,13 +8,21 @@ import com.example.demo.model.entity.common.Description;
 import com.example.demo.model.entity.common.LogType;
 import com.example.demo.model.entity.jooq.tables.pojos.User;
 import com.example.demo.model.entity.simple.TestHttpPostEntity;
+import com.example.demo.service.Impl.SparkServiceImpl;
 import com.example.demo.util.common.CommonUtil;
 import com.example.demo.util.pingan.TLinx2Util;
 import com.google.common.base.Strings;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.context.request.async.DeferredResult;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.validation.Valid;
+import java.io.UnsupportedEncodingException;
 import java.util.Objects;
+import java.util.concurrent.ForkJoinPool;
 
 /**
  * @Classname TestRest
@@ -24,6 +32,9 @@ import java.util.Objects;
  */
 @RestController
 public class TestRest {
+
+    @Autowired
+    private SparkServiceImpl sparkService;
 
     @RequestMapping("test/restSimple")
     public String testRest() {
@@ -43,14 +54,86 @@ public class TestRest {
         return "hello world";
     }
 
+    @RequestMapping(value = "test/longPolling", method = RequestMethod.POST)
+    public DeferredResult testLongPolling(){
+        // 初始化并设备1000ms的超时时间
+        DeferredResult output = new DeferredResult<>(2000L);
+        // DeferredResult支持设置超时，即在后端一致没有数据的情况下，多长时间断开连接。使用的是onTimeout()方法。
+        output.onTimeout(() ->
+            output.setErrorResult(ResponseEntity.status(HttpStatus.REQUEST_TIMEOUT)
+                .body("Request timeout occurred.")));
+        // 如果后端出现了错误，可以设置onError()方法修改返回状态码：
+        output.onError(o -> {
+            output.setErrorResult(
+                ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body("An error occurred."));
+        });
+
+        // 模拟6s后才有数据返回
+//        ForkJoinPool.commonPool().submit(() -> {
+//            System.out.println("Processing in separate thread");
+//            try {
+//                Thread.sleep(6000);
+//            } catch (InterruptedException e) {
+//            }
+//            output.setResult(ResponseEntity.ok("ok"));
+//        });
+
+        // 模拟出现数据后返回
+        ForkJoinPool.commonPool().submit(() -> {
+            if (longPolling()){
+                try {
+                    output.setResult(ResponseEntity.ok("longpolling return 喵喵喵".getBytes("utf8")));
+                    System.out.println("成功返回");
+                } catch (UnsupportedEncodingException e) {
+                    e.printStackTrace();
+                }
+            }else {
+                // 模拟超时
+                try {
+                    Thread.sleep(6000L);
+                    output.setResult(ResponseEntity.ok("timeout 6000L".getBytes("utf8")));
+                } catch (InterruptedException | UnsupportedEncodingException e) {
+                    e.printStackTrace();
+                }
+                System.out.println("timeout 6000L");
+            }
+        });
+
+        System.out.println("servlet thread freed");
+        return output;
+    }
+
+    private static int longpolling = 0;
+    private boolean longPolling(){
+        longpolling ++;
+        if (longpolling < 90){
+            return false;
+        }
+        if (longpolling >= 100){
+            longpolling = 0;
+        }
+        return true;
+    }
+
     @RequestMapping(value = "test/post_entity", method = RequestMethod.POST)
-    public String testPostEntity(HttpServletRequest request, @RequestBody TestHttpPostEntity entity) {
+    public String testPostEntity(HttpServletRequest request, @Valid @RequestBody TestHttpPostEntity entity) {
         if (entity != null) {
             System.out.println(entity);
             return "success";
         }
         String str = CommonUtil.getPostBodyToStringByRequest(request);
         System.out.println(str);
+        return "can't received";
+    }
+
+    @RequestMapping(value = "test/serializable", method = RequestMethod.POST)
+    public String testSerializable(@Valid @RequestBody TestHttpPostEntity entity) {
+        if (entity != null) {
+            System.out.println(entity);
+            // 手动序列化返回，否则JsonField的配置可能无效
+            return JSON.toJSONString(entity);
+        }
         return "can't received";
     }
 
@@ -124,6 +207,13 @@ public class TestRest {
 //        }
         JSONObject success = new JSONObject();
         success.put("result", "notify_success");
+        return success;
+    }
+
+    @RequestMapping(value = "test/spark", method = RequestMethod.GET)
+    public JSONObject testSpark() {
+        JSONObject success = new JSONObject();
+        success.put("result", sparkService.test());
         return success;
     }
 

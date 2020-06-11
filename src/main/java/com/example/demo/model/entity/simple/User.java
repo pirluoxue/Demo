@@ -11,6 +11,7 @@ import lombok.Data;
 public class User extends SuperUser {
 
     private String str;
+    private Boolean bool;
 
     @Override
     public void test(){

@@ -55,7 +55,7 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(Exception.class)
     public ObjectDataResponse exception(Exception e, HttpServletRequest request) {
         // 记录日志，避免拦截器等出入异常引发的问题难以发现
-        logger.warn(e.getCause().getStackTrace().toString());
+        logger.warn(e.toString());
         final RestStatus status = EXCEPTION_MAPPINGS.get(e.getClass());
         if (status == null) {
             return ObjectDataResponse.builder()

@@ -1,9 +1,8 @@
 package com.example.demo.components.job;
 
-import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 
-import java.util.Date;
+import java.sql.Timestamp;
 
 /**
  * @author chen_bq
@@ -13,9 +12,9 @@ import java.util.Date;
 @Component
 public class SimpleJob {
 
-    @Scheduled(cron="0/5 * * * * ?")
+//    @Scheduled(cron="0/5 * * * * ?")
     public void testJob(){
-        System.out.println("testJob " + new Date());
+        System.out.println("SimpleJob " + new Timestamp(System.currentTimeMillis()));
     }
 
 
