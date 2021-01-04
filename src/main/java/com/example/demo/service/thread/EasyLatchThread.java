@@ -9,5 +9,7 @@ import java.util.concurrent.CountDownLatch;
  */
 public interface EasyLatchThread extends Runnable {
     CountDownLatch latch = new CountDownLatch(1);
-    CountDownLatch getLatch();
+    default CountDownLatch getLatch(){
+        return latch;
+    }
 }

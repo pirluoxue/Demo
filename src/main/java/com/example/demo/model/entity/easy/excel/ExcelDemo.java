@@ -34,10 +34,13 @@ public class ExcelDemo {
     private Date createTime;
     @ExcelProperty("updateTime 标题")
     private Date updateTime;
+    @ExcelProperty(value = {"一级表头","二级表头1"}, index = 10)
+    private String title1;
+    @ExcelProperty(value = {"一级表头","二级表头2"}, index = 11)
+    private String title2;
     private Integer enable;
 
     @ExcelIgnore
     private String ignore;
-
 
 }

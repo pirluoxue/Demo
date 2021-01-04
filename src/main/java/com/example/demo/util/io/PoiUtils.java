@@ -112,6 +112,11 @@ public class PoiUtils {
             File file = new File(fullFileName);
             if (file.exists()) {
                 fullFileName = fullFileName.replaceAll(FORMAT_REGEX, "_tmp" + REPLACE_REGEX);
+            } else if (!file.getParentFile().exists()) {
+                if (!file.getParentFile().mkdirs()){
+                    System.out.println("创建目录失败");
+                    return;
+                }
             }
             fileOut = new FileOutputStream(fullFileName);
             workbook.write(fileOut);

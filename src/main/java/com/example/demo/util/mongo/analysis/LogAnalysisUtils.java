@@ -20,7 +20,7 @@ import java.util.stream.Collectors;
 
 /**
  * @author chen_bq
- * @description
+ * @description mongo慢查询分析工具
  * @create: 2019/10/16 10:27
  **/
 public class LogAnalysisUtils {

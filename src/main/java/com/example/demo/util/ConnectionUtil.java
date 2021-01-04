@@ -1,15 +1,14 @@
 package com.example.demo.util;
 
-import lombok.Data;
-
-import java.sql.*;
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.SQLException;
 
 /**
  * @author chen_bq
  * @description java数据库连接工具类
  * @create: 2019-01-24 14:55
  **/
-@Data
 public class ConnectionUtil {
 
     private String url;
@@ -18,8 +17,9 @@ public class ConnectionUtil {
     private String passWord;
 
     private Connection conn;
-    private Statement stat;
-    private ResultSet rs;
+    private Long lastPacketSent;
+
+    private static final Long CONNECTION_EXPIRE_TIME = 1 * 60 * 60 * 1000L;
 
     public ConnectionUtil() {
     }
@@ -29,6 +29,7 @@ public class ConnectionUtil {
         this.driver = driver;
         this.userName = userName;
         this.passWord = passWord;
+        this.lastPacketSent = System.currentTimeMillis();
         try {
             // 加载MySql的驱动类
             Class.forName(driver);
@@ -36,64 +37,18 @@ public class ConnectionUtil {
             System.out.println("找不到驱动程序类 ，加载驱动失败！");
             e.printStackTrace();
         }
-        this.setConnection();
+        this.createConnection();
     }
 
-    /**
-     * 获取数据库链接
-     * @return Connection
-     */
-    public Connection setConnection() {
+    public void createConnection() {
         try {
             this.setConn(DriverManager.getConnection(this.getUrl(),
                     this.getUserName(), this.getPassWord()));
+            this.lastPacketSent = System.currentTimeMillis();
         } catch (SQLException se) {
             System.out.println("数据库连接失败！");
             se.printStackTrace();
         }
-        return this.getConn();
-    }
-
-    /**
-     * 执行更新语句
-     * @Param sql
-     * @return
-     */
-    public boolean executeSqlUpdate(String sql) {
-        int result = -1;
-        try {
-            this.setStat(this.getConn().createStatement());
-            result = this.getStat().executeUpdate(sql);
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }finally{
-            try {
-                if (this.getStat()!=null){
-                    this.getStat().close();
-                }
-            } catch (SQLException e) {
-                // TODO Auto-generated catch block
-                e.printStackTrace();
-            }
-        }
-        if (result >= 0) {
-            return true;
-        }
-        return false;
-    }
-
-    /**
-     * 执行查询sql，获取结果集
-     * @return ResultSet
-     */
-    public ResultSet executeQuery(String sql){
-        try {
-            this.setStat(this.getConn().createStatement(ResultSet.TYPE_SCROLL_INSENSITIVE,ResultSet.CONCUR_READ_ONLY));
-            this.setRs(this.getStat().executeQuery(sql));
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
-        return this.getRs();
     }
 
     /**
@@ -102,20 +57,6 @@ public class ConnectionUtil {
      */
     public boolean closeConnection() {
         try {
-            if (this.getRs() != null) { // 关闭记录集
-                try {
-                    this.getRs().close();
-                } catch (SQLException e) {
-                    e.printStackTrace();
-                }
-            }
-            if (this.getStat() != null) { // 关闭声明
-                try {
-                    this.getStat().close();
-                } catch (SQLException e) {
-                    e.printStackTrace();
-                }
-            }
             if (this.getConn() != null) { // 关闭连接对象
                 try {
                     this.getConn().close();
@@ -130,7 +71,28 @@ public class ConnectionUtil {
         return true;
     }
 
-    // getter , setter
+    public Connection getConn() {
+        try {
+            if (conn == null || conn.isClosed()){
+                createConnection();
+            }
+        } catch (SQLException throwables) {
+            throwables.printStackTrace();
+        }
+        return conn;
+    }
+
+    public void updateLastPacketSent() {
+        this.lastPacketSent = System.currentTimeMillis();
+    }
+
+    public Boolean hadExpiredConn(){
+        if (lastPacketSent != null && lastPacketSent < System.currentTimeMillis() - CONNECTION_EXPIRE_TIME){
+            return true;
+        }
+        return false;
+    }
+
     public String getUrl() {
         return url;
     }
@@ -163,28 +125,15 @@ public class ConnectionUtil {
         this.passWord = passWord;
     }
 
-    public Connection getConn() {
-        return conn;
-    }
-
     public void setConn(Connection conn) {
         this.conn = conn;
     }
 
-    public Statement getStat() {
-        return stat;
+    public Long getLastPacketSent() {
+        return lastPacketSent;
     }
 
-    public void setStat(Statement stat) {
-        this.stat = stat;
+    public void setLastPacketSent(Long lastPacketSent) {
+        this.lastPacketSent = lastPacketSent;
     }
-
-    public ResultSet getRs() {
-        return rs;
-    }
-
-    public void setRs(ResultSet rs) {
-        this.rs = rs;
-    }
-
 }
