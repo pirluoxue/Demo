@@ -11,10 +11,6 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.core.io.FileSystemResource;
-import org.springframework.dao.DataAccessException;
-import org.springframework.data.redis.connection.RedisConnection;
-import org.springframework.data.redis.connection.RedisSentinelConnection;
-import org.springframework.data.redis.core.RedisCallback;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
@@ -24,6 +20,7 @@ import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
 import org.springframework.web.client.RestTemplate;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.io.*;
 import java.math.BigDecimal;
@@ -369,8 +366,8 @@ public class SimpleTest {
     @Autowired
     private RestTemplate restTemplate;
 
-    private static final String CHANNEL_KEY = "rj_networks_overseas_partner";
-    private static final String CHANNEL_SECRET = "14c3271d8e6347b19e489f39d9d54f84";
+    private static final String CHANNEL_KEY = "";
+    private static final String CHANNEL_SECRET = "";
     private static final String GET_TOKEN_URL = "http://test.ruijienetworks.com/api/token/get";
     @Test
     public void test4() throws IOException {
@@ -382,13 +379,14 @@ public class SimpleTest {
         HttpEntity httpEntity = new HttpEntity(jsonObject, httpHeaders);
         ResponseEntity<String> response = restTemplate.postForEntity(GET_TOKEN_URL, httpEntity, String.class);
         System.out.println(response);
+
     }
 
     @Test
     public void test5(){
         String json = "{\"userId\":\"04000000@qq.com\",\"tenantId\":1,\"accountId\":3,\"company\":\"company\",\"location\":\"FuZhou\",\"position\":\"CEO\",\"punchPercent\":90,\"imageUrl\":\"/asd/asd\",\"evaluation\":3}";
         JSONObject jsonObject = JSONObject.parseObject(json);
-        File file = new File("C:\\Users\\bangqiang chen\\Desktop\\timg.jpg");
+        File file = new File("C:\\Users\\chen_bangqiang\\Pictures\\Saved Pictures\\test.jpg");
         FileSystemResource resource = new FileSystemResource(file);
         MultiValueMap<String, Object> mapFile = new LinkedMultiValueMap<>();
         mapFile.add("file", resource);
